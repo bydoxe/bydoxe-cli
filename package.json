@@ -1,0 +1,29 @@
+{
+  "name": "@bydoxe/bydoxe-cli",
+  "version": "0.1.0",
+  "description": "Command-line tool for interacting with the BYDOXE Open API.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "bin": {
+    "bydoxe": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "DISCLAIMER.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3"
+  }
+}
