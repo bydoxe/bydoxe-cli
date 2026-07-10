@@ -6,17 +6,19 @@ It provides a safe execution layer for market data, account queries, spot tradin
 
 ## Status
 
-This repository is in the initial scaffold phase.
+This repository is in the CLI MVP phase.
 
-Implemented in this phase:
+Implemented:
 
 - TypeScript project structure
 - CLI entry point
 - Configuration loading from environment variables
 - HMAC signature helper
 - REST request builder
+- Public REST command routing
 - Dry-run request preview support
-- Signature unit test using Node.js built-in test runner
+- Public REST execution through Node.js fetch
+- Unit tests using Node.js built-in test runner
 
 ## Default Domains
 
@@ -60,6 +62,25 @@ Do not paste API secrets into AI chat sessions. Configure them locally in your s
 
 ```sh
 bydoxe public time --dry-run
+bydoxe spot market tickers --symbol BTCUSDT --dry-run --format json
+bydoxe spot market orderbook --symbol BTCUSDT --limit 20 --dry-run
+bydoxe spot market candles --symbol BTCUSDT --granularity 1m --limit 100 --dry-run
+bydoxe future market ticker --symbol BTCUSDT --dry-run
+bydoxe future market mark-price --symbol BTCUSDT --dry-run
 ```
 
 The dry-run mode prints the request that would be sent without making a network call.
+
+## Public REST Commands
+
+| Command | Endpoint |
+| --- | --- |
+| `bydoxe public time` | `GET /public/time` |
+| `bydoxe spot market symbols` | `GET /spot/market/symbols` |
+| `bydoxe spot market tickers` | `GET /spot/market/tickers` |
+| `bydoxe spot market orderbook` | `GET /spot/market/orderbook` |
+| `bydoxe spot market candles` | `GET /spot/market/candles` |
+| `bydoxe future market ticker` | `GET /future/market/24h-ticker` |
+| `bydoxe future market mark-price` | `GET /future/market/mark-price` |
+
+Command flags that are not global options are forwarded as query parameters. For example, `--symbol BTCUSDT --limit 100` becomes `?symbol=BTCUSDT&limit=100`.

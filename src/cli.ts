@@ -2,13 +2,16 @@
 
 import { loadConfig } from './config/load-config.js';
 import { buildRequest } from './http/request.js';
+import { executeRequest } from './http/execute.js';
 import { printOutput, type OutputFormat } from './output/format.js';
 import { CliError } from './errors/cli-error.js';
-
-interface ParsedArgs {
-  command: string[];
-  flags: Record<string, string | boolean>;
-}
+import {
+  commandToString,
+  findPublicRestCommand,
+  parseArgs,
+  PUBLIC_REST_COMMANDS,
+  type DryRunPreview,
+} from './commands/public-rest.js';
 
 async function main(argv: string[]): Promise<void> {
   const parsed = parseArgs(argv);
@@ -20,54 +23,38 @@ async function main(argv: string[]): Promise<void> {
 
   const format = getFormat(parsed.flags);
   const dryRun = Boolean(parsed.flags['dry-run']);
+  const loadedConfig = loadConfig();
   const config = {
-    ...loadConfig(),
+    ...loadedConfig,
     restBaseUrl:
       typeof parsed.flags['base-url'] === 'string'
         ? parsed.flags['base-url']
-        : loadConfig().restBaseUrl,
+        : loadedConfig.restBaseUrl,
   };
 
-  if (matches(parsed.command, ['public', 'time'])) {
+  const publicRestCommand = findPublicRestCommand(parsed);
+  if (publicRestCommand) {
     const request = buildRequest(config, {
-      method: 'GET',
-      path: '/public/time',
+      method: publicRestCommand.definition.method,
+      path: publicRestCommand.definition.path,
+      query: publicRestCommand.query,
     });
 
     if (dryRun) {
-      printOutput({ dryRun: true, request }, format);
+      const preview: DryRunPreview = {
+        dryRun: true,
+        command: commandToString(parsed.command),
+        request,
+      };
+      printOutput(preview, format);
       return;
     }
 
-    throw new CliError('Network execution is not implemented in this scaffold.');
+    printOutput(await executeRequest(request), format);
+    return;
   }
 
   throw new CliError(`Unknown command: ${parsed.command.join(' ')}`);
-}
-
-function parseArgs(argv: string[]): ParsedArgs {
-  const command: string[] = [];
-  const flags: Record<string, string | boolean> = {};
-
-  for (let index = 0; index < argv.length; index += 1) {
-    const token = argv[index];
-
-    if (token.startsWith('--')) {
-      const name = token.slice(2);
-      const next = argv[index + 1];
-      if (next && !next.startsWith('--')) {
-        flags[name] = next;
-        index += 1;
-      } else {
-        flags[name] = true;
-      }
-      continue;
-    }
-
-    command.push(token);
-  }
-
-  return { command, flags };
 }
 
 function getFormat(flags: Record<string, string | boolean>): OutputFormat {
@@ -76,27 +63,25 @@ function getFormat(flags: Record<string, string | boolean>): OutputFormat {
   throw new CliError(`Unsupported output format: ${String(flags.format)}`);
 }
 
-function matches(command: string[], expected: string[]): boolean {
-  return (
-    command.length === expected.length &&
-    expected.every((part, index) => command[index] === part)
-  );
-}
-
 function printHelp(): void {
+  const commands = PUBLIC_REST_COMMANDS.map(
+    (command) =>
+      `  ${command.command.join(' ').padEnd(31)}${command.description}`,
+  ).join('\n');
+
   console.log(`BYDOXE CLI
 
 Usage:
   bydoxe <group> <command> [options]
 
 Commands:
-  public time          Build or execute a server time request
+${commands}
 
 Options:
-  --base-url <url>     Override the REST base URL
-  --format <format>    Output format: human or json
-  --dry-run            Print the request without sending it
-  --help               Show this help message
+  --base-url <url>                  Override the REST base URL
+  --format <format>                 Output format: human or json
+  --dry-run                         Print the request without sending it
+  --help                            Show this help message
 
 Environment:
   BYDOXE_ACCESS_KEY
