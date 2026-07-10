@@ -12,6 +12,11 @@ import {
   PUBLIC_REST_COMMANDS,
   type DryRunPreview,
 } from './commands/public-rest.js';
+import {
+  findPrivateRestCommand,
+  PRIVATE_REST_COMMANDS,
+  redactPrivateRequest,
+} from './commands/private-rest.js';
 
 async function main(argv: string[]): Promise<void> {
   const parsed = parseArgs(argv);
@@ -54,6 +59,29 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  const privateRestCommand = findPrivateRestCommand(parsed);
+  if (privateRestCommand) {
+    const request = buildRequest(config, {
+      method: privateRestCommand.definition.method,
+      path: privateRestCommand.definition.path,
+      query: privateRestCommand.query,
+      privateRequest: true,
+    });
+
+    if (dryRun) {
+      const preview: DryRunPreview = {
+        dryRun: true,
+        command: commandToString(parsed.command),
+        request: redactPrivateRequest(request),
+      };
+      printOutput(preview, format);
+      return;
+    }
+
+    printOutput(await executeRequest(request), format);
+    return;
+  }
+
   throw new CliError(`Unknown command: ${parsed.command.join(' ')}`);
 }
 
@@ -64,9 +92,14 @@ function getFormat(flags: Record<string, string | boolean>): OutputFormat {
 }
 
 function printHelp(): void {
-  const commands = PUBLIC_REST_COMMANDS.map(
+  const commandColumnWidth = 38;
+  const publicCommands = PUBLIC_REST_COMMANDS.map(
     (command) =>
-      `  ${command.command.join(' ').padEnd(31)}${command.description}`,
+      `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
+  ).join('\n');
+  const privateCommands = PRIVATE_REST_COMMANDS.map(
+    (command) =>
+      `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
   ).join('\n');
 
   console.log(`BYDOXE CLI
@@ -75,7 +108,11 @@ Usage:
   bydoxe <group> <command> [options]
 
 Commands:
-${commands}
+Public REST:
+${publicCommands}
+
+Authenticated REST:
+${privateCommands}
 
 Options:
   --base-url <url>                  Override the REST base URL

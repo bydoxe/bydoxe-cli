@@ -12,3 +12,5 @@
 - Add public REST command routing for time, spot market, and futures market data.
 - Add public REST execution through Node.js fetch.
 - Add request URL and mocked execution tests.
+- Add authenticated REST read command routing with signed requests.
+- Add redacted dry-run previews for authenticated requests.
