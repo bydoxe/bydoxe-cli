@@ -72,6 +72,8 @@ npm run build
 
 `docs/command-summary.md` is generated from the command catalog. It is the quick status summary for command counts, group coverage, risk profile, and safety scope.
 
+Use [docs/release-readiness.md](docs/release-readiness.md) before publishing or tagging a release.
+
 ## Command Reference
 
 Use [docs/command-reference.md](docs/command-reference.md) for the full generated CLI command surface. It includes REST endpoints, WebSocket scopes, auth requirements, risk levels, required parameters, optional parameters, and write validation rules.
