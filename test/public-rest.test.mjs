@@ -139,6 +139,15 @@ test('future market depth command includes metadata for symbol and limit', () =>
   });
 });
 
+test('public REST command rejects missing required parameters', () => {
+  const parsed = parseArgs(['future', 'market', 'depth', '--dry-run']);
+
+  assert.throws(
+    () => findPublicRestCommand(parsed),
+    /Missing required parameter for bydoxe future market depth: symbol/,
+  );
+});
+
 test('public REST registry includes expanded market data commands', () => {
   const commands = new Set(
     PUBLIC_REST_COMMANDS.map((command) => command.command.join(' ')),

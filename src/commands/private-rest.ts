@@ -1,6 +1,7 @@
 import type { HttpMethod } from '../auth/signature.js';
 import type { BuiltRequest } from '../http/request.js';
 import {
+  assertRequiredParamsPresent,
   type CommandMetadata,
   withCommandMetadata,
 } from './metadata.js';
@@ -400,9 +401,12 @@ export function findPrivateRestCommand(
 
   if (!definition) return undefined;
 
+  const query = getQueryFlags(parsed.flags);
+  assertRequiredParamsPresent(definition, query, `bydoxe ${parsed.command.join(' ')}`);
+
   return {
     definition,
-    query: getQueryFlags(parsed.flags),
+    query,
   };
 }
 

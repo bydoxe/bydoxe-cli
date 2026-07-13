@@ -1,6 +1,7 @@
 import { CliError } from '../errors/cli-error.js';
 import type { HttpMethod } from '../auth/signature.js';
 import {
+  assertRequiredParamsPresent,
   type CommandMetadata,
   withCommandMetadata,
 } from './metadata.js';
@@ -447,9 +448,16 @@ export function findWriteRestCommand(
 
   if (!definition) return undefined;
 
+  const body = getBody(parsed.flags);
+  assertRequiredParamsPresent(
+    definition,
+    getBodyParamValues(body),
+    `bydoxe ${parsed.command.join(' ')}`,
+  );
+
   return {
     definition,
-    body: getBody(parsed.flags),
+    body,
   };
 }
 
@@ -479,6 +487,11 @@ function getBody(flags: Record<string, string | boolean>): unknown {
   );
 
   return Object.keys(body).length > 0 ? body : undefined;
+}
+
+function getBodyParamValues(body: unknown): Record<string, unknown> {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return {};
+  return body as Record<string, unknown>;
 }
 
 function matches(command: string[], expected: string[]): boolean {

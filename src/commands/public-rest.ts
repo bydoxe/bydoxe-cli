@@ -1,6 +1,7 @@
 import type { HttpMethod } from '../auth/signature.js';
 import type { BuiltRequest } from '../http/request.js';
 import {
+  assertRequiredParamsPresent,
   type CommandMetadata,
   withCommandMetadata,
 } from './metadata.js';
@@ -245,9 +246,12 @@ export function findPublicRestCommand(
 
   if (!definition) return undefined;
 
+  const query = getQueryFlags(parsed.flags);
+  assertRequiredParamsPresent(definition, query, commandToString(parsed.command));
+
   return {
     definition,
-    query: getQueryFlags(parsed.flags),
+    query,
   };
 }
 

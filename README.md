@@ -94,6 +94,8 @@ bydoxe websocket private login --dry-run --format json
 
 The dry-run mode prints the request that would be sent without making a network call.
 
+Commands with required parameter metadata fail before building a request when required values are missing.
+
 ## Public REST Commands
 
 | Command | Endpoint |

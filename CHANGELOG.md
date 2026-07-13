@@ -27,3 +27,4 @@
 - Add command registry metadata for auth, risk level, parameter mode, and future parameter validation.
 - Add expanded public REST market data commands for spot metadata, spot trades, futures depth, futures candles, futures funding, and futures open interest.
 - Add private REST read and write command parameter metadata hints.
+- Add required parameter validation before REST request construction.

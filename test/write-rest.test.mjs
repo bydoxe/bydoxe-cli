@@ -47,13 +47,15 @@ test('write command builds body from JSON body flag', () => {
     'trade',
     'place-order',
     '--body',
-    '{"symbol":"BTCUSDT","amount":"0.001"}',
+    '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}',
   ]);
   const match = findWriteRestCommand(parsed);
 
   assert.ok(match);
   assert.deepEqual(match.body, {
     symbol: 'BTCUSDT',
+    orderType: 'MARKET',
+    tradeType: 'BUY',
     amount: '0.001',
   });
 
@@ -70,8 +72,27 @@ test('write command builds body from JSON body flag', () => {
 
   assert.equal(request.method, 'POST');
   assert.equal(request.requestPath, '/spot/trade/place-order');
-  assert.equal(request.body, '{"symbol":"BTCUSDT","amount":"0.001"}');
+  assert.equal(
+    request.body,
+    '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}',
+  );
   assert.ok(request.headers['ACCESS-SIGN']);
+});
+
+test('write command rejects missing required body parameters', () => {
+  const parsed = parseArgs([
+    'spot',
+    'trade',
+    'place-order',
+    '--body',
+    '{"symbol":"BTCUSDT","amount":"0.001"}',
+    '--dry-run',
+  ]);
+
+  assert.throws(
+    () => findWriteRestCommand(parsed),
+    /Missing required parameters for bydoxe spot trade place-order: orderType, tradeType/,
+  );
 });
 
 test('write command execution requires exact confirmation token', () => {

@@ -129,3 +129,12 @@ test('copy trading follower settings command maps to follower settings endpoint'
     traderId: 'trader-1',
   });
 });
+
+test('private read command rejects missing required parameters', () => {
+  const parsed = parseArgs(['future', 'position', 'single', '--dry-run']);
+
+  assert.throws(
+    () => findPrivateRestCommand(parsed),
+    /Missing required parameter for bydoxe future position single: symbol/,
+  );
+});
