@@ -49,10 +49,11 @@ node dist/cli.js --help
 npm run validate
 npm run typecheck
 npm test
+npm run smoke:readme
 npm run build
 ```
 
-`npm run validate` runs type checking, unit tests, README command coverage checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts.
+`npm run validate` runs type checking, unit tests, README dry-run smoke examples, README command coverage checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts.
 
 ## Credentials
 
