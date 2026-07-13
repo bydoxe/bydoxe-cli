@@ -120,6 +120,14 @@ The optional public REST live smoke runs a bounded `public time` request only wh
 BYDOXE_RUN_LIVE_REST_TESTS=1 npm run smoke:public-rest-live
 ```
 
+Public REST market samples are a second opt-in layer:
+
+```sh
+BYDOXE_RUN_LIVE_REST_TESTS=1 BYDOXE_RUN_LIVE_REST_MARKET_TESTS=1 npm run smoke:public-rest-live
+```
+
+Set `BYDOXE_REST_LIVE_SYMBOL` to override the default market sample symbol.
+
 ## Public REST Commands
 
 | Command | Endpoint |
