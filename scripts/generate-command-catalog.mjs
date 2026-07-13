@@ -117,6 +117,8 @@ function normalizeValidation(validation) {
     positiveNumberParams: validation.positiveNumberParams,
     enumParams: validation.enumParams,
     requireAnyParams: validation.requireAnyParams,
+    arrayParams: validation.arrayParams,
+    requireAnyNonEmptyArrayParams: validation.requireAnyNonEmptyArrayParams,
   });
 }
 

@@ -1,10 +1,10 @@
 # Write Body Validation Plan
 
-This document defines the next validation boundary for high-risk write request bodies. The current CLI validates top-level required parameters, common positive numeric fields, enum-like fields, and order identifier alternatives. Nested batch bodies need a separate validation layer before stricter live execution.
+This document defines the validation boundary for high-risk write request bodies. The current CLI validates top-level required parameters, common positive numeric fields, enum-like fields, order identifier alternatives, and the primary nested batch body targets listed below.
 
 ## Current Boundary
 
-The current write validation layer checks top-level body fields only.
+The current write validation layer checks top-level body fields and primary batch write arrays.
 
 Covered top-level rule types:
 
@@ -15,9 +15,18 @@ Covered top-level rule types:
 
 Generated references expose these rules when they are attached to a command.
 
+Covered nested rule types:
+
+- Non-empty `orders[]` arrays for supported batch place and batch cancel-replace commands.
+- Required fields inside supported `orders[]` items.
+- Positive numeric fields inside supported `orders[]` items.
+- Enum-like fields inside supported `orders[]` items.
+- Identifier alternatives inside supported cancel-replace `orders[]` items.
+- Non-empty `orderIds[]` or `clientOids[]` alternatives for supported batch cancel commands.
+
 ## Nested Validation Scope
 
-The next validation layer should cover array and object fields used by batch write commands.
+The nested validation layer covers array and object fields used by primary batch write commands.
 
 Primary batch targets:
 
@@ -36,10 +45,9 @@ Secondary targets after the batch layer:
 
 ## Rule Types
 
-Nested validation should support these rule types:
+Nested validation supports these rule types:
 
 - `arrayRequired`: the field must be an array with at least one item.
-- `arrayMaxItems`: the field must not exceed a documented or locally configured item limit.
 - `arrayItemRequiredParams`: each array item must include required fields.
 - `arrayItemPositiveNumberParams`: each array item must use positive numbers for amount, size, price, trigger price, or leverage-like fields.
 - `arrayItemEnumParams`: each array item must use known enum values.
@@ -48,6 +56,8 @@ Nested validation should support these rule types:
 - `identifierArrayItems`: identifier arrays must contain only usable string or number values.
 
 ## Suggested Rule Mapping
+
+Implemented mapping:
 
 Spot batch place:
 
@@ -98,7 +108,7 @@ The CLI should continue to aggregate validation failures into one `CliError` mes
 
 ## Generated Reference Impact
 
-The command catalog should expose nested validation rules when they are implemented. The human-readable command reference should summarize nested rules without rendering large schema blocks.
+The command catalog exposes nested validation rules. The human-readable command reference summarizes nested rules without rendering large schema blocks.
 
 Suggested generated summary examples:
 

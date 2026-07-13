@@ -118,9 +118,9 @@ The dry-run mode prints the request that would be sent without making a network 
 
 Commands with required parameter metadata fail before building a request when required values are missing.
 
-Write commands validate common positive numeric fields, enum-like fields, and order identifier alternatives before building a request.
+Write commands validate common positive numeric fields, enum-like fields, order identifier alternatives, and supported nested batch body fields before building a request.
 
-Nested batch body validation is planned separately. See [docs/write-body-validation-plan.md](docs/write-body-validation-plan.md) for the target scope.
+Nested batch body validation covers supported spot and futures batch order arrays and batch cancel identifier arrays. See [docs/write-body-validation-plan.md](docs/write-body-validation-plan.md) for the current scope.
 
 Dry-run output includes command metadata for auth scope, risk level, parameter mode, required parameters, and optional parameters.
 

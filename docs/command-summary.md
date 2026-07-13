@@ -8,7 +8,7 @@ This file is generated from `docs/command-catalog.json`. Run `npm run summary:ge
 - Version: `0.1.0`
 - Schema version: `1`
 - Command count: `106`
-- Write commands with local validation rules: `21/34`
+- Write commands with local validation rules: `26/34`
 - Commands requiring exact confirmation: `35`
 
 ## Command Groups

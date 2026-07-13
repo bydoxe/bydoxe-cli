@@ -1280,7 +1280,51 @@
       ],
       "method": "POST",
       "path": "/spot/trade/batch-cancel-replace-order",
-      "description": "Requires CONFIRM: batch cancel and replace spot orders"
+      "description": "Requires CONFIRM: batch cancel and replace spot orders",
+      "validation": {
+        "arrayParams": [
+          {
+            "param": "orders",
+            "requiredParams": [
+              "symbol"
+            ],
+            "positiveNumberParams": [
+              "amount",
+              "price"
+            ],
+            "enumParams": [
+              {
+                "param": "orderType",
+                "values": [
+                  "MARKET",
+                  "LIMIT"
+                ]
+              },
+              {
+                "param": "timeInForce",
+                "values": [
+                  "GTC",
+                  "IOC",
+                  "FOK"
+                ]
+              },
+              {
+                "param": "tradeType",
+                "values": [
+                  "BUY",
+                  "SELL"
+                ]
+              }
+            ],
+            "requireAnyParams": [
+              [
+                "orderId",
+                "clientOid"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe spot trade batch-orders",
@@ -1295,7 +1339,48 @@
       ],
       "method": "POST",
       "path": "/spot/trade/batch-orders",
-      "description": "Requires CONFIRM: place batch spot orders"
+      "description": "Requires CONFIRM: place batch spot orders",
+      "validation": {
+        "arrayParams": [
+          {
+            "param": "orders",
+            "requiredParams": [
+              "symbol",
+              "orderType",
+              "tradeType",
+              "amount"
+            ],
+            "positiveNumberParams": [
+              "amount",
+              "price"
+            ],
+            "enumParams": [
+              {
+                "param": "orderType",
+                "values": [
+                  "MARKET",
+                  "LIMIT"
+                ]
+              },
+              {
+                "param": "timeInForce",
+                "values": [
+                  "GTC",
+                  "IOC",
+                  "FOK"
+                ]
+              },
+              {
+                "param": "tradeType",
+                "values": [
+                  "BUY",
+                  "SELL"
+                ]
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe spot trade batch-cancel-orders",
@@ -1312,7 +1397,15 @@
       ],
       "method": "POST",
       "path": "/spot/trade/batch-cancel-orders",
-      "description": "Requires CONFIRM: cancel batch spot orders"
+      "description": "Requires CONFIRM: cancel batch spot orders",
+      "validation": {
+        "requireAnyNonEmptyArrayParams": [
+          [
+            "orderIds",
+            "clientOids"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe spot trade cancel-symbol-order",
@@ -1607,7 +1700,55 @@
       ],
       "method": "POST",
       "path": "/future/order/batch-place-order",
-      "description": "Requires CONFIRM: place batch futures orders"
+      "description": "Requires CONFIRM: place batch futures orders",
+      "validation": {
+        "arrayParams": [
+          {
+            "param": "orders",
+            "requiredParams": [
+              "symbol",
+              "side",
+              "orderType",
+              "size"
+            ],
+            "positiveNumberParams": [
+              "size",
+              "price"
+            ],
+            "enumParams": [
+              {
+                "param": "orderType",
+                "values": [
+                  "MARKET",
+                  "LIMIT"
+                ]
+              },
+              {
+                "param": "timeInForce",
+                "values": [
+                  "GTC",
+                  "IOC",
+                  "FOK"
+                ]
+              },
+              {
+                "param": "side",
+                "values": [
+                  "BUY",
+                  "SELL"
+                ]
+              },
+              {
+                "param": "holdSide",
+                "values": [
+                  "LONG",
+                  "SHORT"
+                ]
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe future order modify",
@@ -1682,7 +1823,15 @@
       ],
       "method": "POST",
       "path": "/future/order/batch-cancel-orders",
-      "description": "Requires CONFIRM: cancel batch futures orders"
+      "description": "Requires CONFIRM: cancel batch futures orders",
+      "validation": {
+        "requireAnyNonEmptyArrayParams": [
+          [
+            "orderIds",
+            "clientOids"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe future order close-positions",

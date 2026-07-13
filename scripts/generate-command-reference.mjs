@@ -142,8 +142,51 @@ function formatValidation(command) {
       ),
     );
   }
+  if (Array.isArray(validation.arrayParams)) {
+    parts.push(
+      ...validation.arrayParams.flatMap((rule) => formatArrayValidation(rule)),
+    );
+  }
+  if (Array.isArray(validation.requireAnyNonEmptyArrayParams)) {
+    parts.push(
+      ...validation.requireAnyNonEmptyArrayParams.map((paramGroup) =>
+        `one of ${paramGroup.map((param) => code(`${param}[]`)).join(', ')}`,
+      ),
+    );
+  }
 
   return parts.length > 0 ? parts.join('<br>') : 'none';
+}
+
+function formatArrayValidation(rule) {
+  const parts = [`${code(`${rule.param}[]`)} required`];
+
+  if (Array.isArray(rule.requiredParams)) {
+    parts.push(
+      `each ${code(`${rule.param}[]`)} requires ${rule.requiredParams.map(code).join(', ')}`,
+    );
+  }
+  if (Array.isArray(rule.positiveNumberParams)) {
+    parts.push(
+      `${code(`${rule.param}[]`)} positive: ${rule.positiveNumberParams.map(code).join(', ')}`,
+    );
+  }
+  if (Array.isArray(rule.enumParams)) {
+    parts.push(
+      ...rule.enumParams.map((enumRule) =>
+        `${code(`${rule.param}[]`)} ${code(enumRule.param)} in ${enumRule.values.map(code).join(', ')}`,
+      ),
+    );
+  }
+  if (Array.isArray(rule.requireAnyParams)) {
+    parts.push(
+      ...rule.requireAnyParams.map((paramGroup) =>
+        `each ${code(`${rule.param}[]`)} one of ${paramGroup.map(code).join(', ')}`,
+      ),
+    );
+  }
+
+  return parts;
 }
 
 function code(value) {

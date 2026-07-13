@@ -203,10 +203,20 @@ export type EnumRule = {
   values: string[];
 };
 
+export type ArrayItemValidationRule = {
+  param: string;
+  requiredParams?: string[];
+  positiveNumberParams?: string[];
+  enumParams?: EnumRule[];
+  requireAnyParams?: string[][];
+};
+
 export type WriteValidationRule = {
   positiveNumberParams?: string[];
   enumParams?: EnumRule[];
   requireAnyParams?: string[][];
+  arrayParams?: ArrayItemValidationRule[];
+  requireAnyNonEmptyArrayParams?: string[][];
 };
 
 const COMMON_ORDER_ENUMS = [
@@ -238,6 +248,30 @@ export const WRITE_REST_VALIDATION_BY_PATH: Record<string, WriteValidationRule> 
     enumParams: SPOT_ORDER_ENUMS,
     requireAnyParams: [['orderId', 'clientOid']],
   },
+  '/spot/trade/batch-cancel-replace-order': {
+    arrayParams: [
+      {
+        param: 'orders',
+        requiredParams: ['symbol'],
+        positiveNumberParams: ['amount', 'price'],
+        enumParams: SPOT_ORDER_ENUMS,
+        requireAnyParams: [['orderId', 'clientOid']],
+      },
+    ],
+  },
+  '/spot/trade/batch-orders': {
+    arrayParams: [
+      {
+        param: 'orders',
+        requiredParams: ['symbol', 'orderType', 'tradeType', 'amount'],
+        positiveNumberParams: ['amount', 'price'],
+        enumParams: SPOT_ORDER_ENUMS,
+      },
+    ],
+  },
+  '/spot/trade/batch-cancel-orders': {
+    requireAnyNonEmptyArrayParams: [['orderIds', 'clientOids']],
+  },
   '/spot/account/transfer': {
     positiveNumberParams: ['amount'],
   },
@@ -262,12 +296,25 @@ export const WRITE_REST_VALIDATION_BY_PATH: Record<string, WriteValidationRule> 
     positiveNumberParams: ['size'],
     enumParams: FUTURES_ORDER_ENUMS,
   },
+  '/future/order/batch-place-order': {
+    arrayParams: [
+      {
+        param: 'orders',
+        requiredParams: ['symbol', 'side', 'orderType', 'size'],
+        positiveNumberParams: ['size', 'price'],
+        enumParams: FUTURES_ORDER_ENUMS,
+      },
+    ],
+  },
   '/future/order/modify-order': {
     positiveNumberParams: ['size', 'price'],
     requireAnyParams: [['orderId', 'clientOid']],
   },
   '/future/order/cancel-order': {
     requireAnyParams: [['orderId', 'clientOid']],
+  },
+  '/future/order/batch-cancel-orders': {
+    requireAnyNonEmptyArrayParams: [['orderIds', 'clientOids']],
   },
   '/future/order/close-positions': {
     enumParams: [{ param: 'holdSide', values: ['LONG', 'SHORT'] }],
@@ -616,8 +663,10 @@ function assertWriteBodyMatchesRules(
 
   const problems = [
     ...findMissingAlternativeParamProblems(rule, body),
+    ...findMissingArrayAlternativeParamProblems(rule, body),
     ...findPositiveNumberProblems(rule, body),
     ...findEnumProblems(rule, body),
+    ...findArrayItemProblems(rule, body),
   ];
 
   if (problems.length > 0) {
@@ -634,6 +683,27 @@ function findMissingAlternativeParamProblems(
   return (rule.requireAnyParams ?? [])
     .filter((paramGroup) => !paramGroup.some((param) => hasUsableValue(body[param])))
     .map((paramGroup) => `one of ${paramGroup.join(', ')} is required`);
+}
+
+function findMissingArrayAlternativeParamProblems(
+  rule: WriteValidationRule,
+  body: Record<string, unknown>,
+): string[] {
+  const problems = [];
+
+  for (const paramGroup of rule.requireAnyNonEmptyArrayParams ?? []) {
+    if (!paramGroup.some((param) => hasNonEmptyUsableArray(body[param]))) {
+      problems.push(`one of ${paramGroup.join('[], ')}[] must be a non-empty array`);
+    }
+
+    for (const param of paramGroup) {
+      if (body[param] !== undefined && !isUsableArray(body[param])) {
+        problems.push(`${param}[] must contain only usable string or number values`);
+      }
+    }
+  }
+
+  return problems;
 }
 
 function findPositiveNumberProblems(
@@ -657,8 +727,99 @@ function findEnumProblems(
     .map(({ param, values }) => `${param} must be one of ${values.join(', ')}`);
 }
 
+function findArrayItemProblems(
+  rule: WriteValidationRule,
+  body: Record<string, unknown>,
+): string[] {
+  const problems = [];
+
+  for (const arrayRule of rule.arrayParams ?? []) {
+    const value = body[arrayRule.param];
+    if (!Array.isArray(value) || value.length === 0) {
+      problems.push(`${arrayRule.param} must be a non-empty array`);
+      continue;
+    }
+
+    value.forEach((item, index) => {
+      const prefix = `${arrayRule.param}[${index}]`;
+
+      if (!item || typeof item !== 'object' || Array.isArray(item)) {
+        problems.push(`${prefix} must be an object`);
+        return;
+      }
+
+      const itemBody = item as Record<string, unknown>;
+      problems.push(
+        ...findMissingArrayItemRequiredParamProblems(arrayRule, itemBody, prefix),
+        ...findMissingArrayItemAlternativeParamProblems(arrayRule, itemBody, prefix),
+        ...findArrayItemPositiveNumberProblems(arrayRule, itemBody, prefix),
+        ...findArrayItemEnumProblems(arrayRule, itemBody, prefix),
+      );
+    });
+  }
+
+  return problems;
+}
+
+function findMissingArrayItemRequiredParamProblems(
+  rule: ArrayItemValidationRule,
+  body: Record<string, unknown>,
+  prefix: string,
+): string[] {
+  return (rule.requiredParams ?? [])
+    .filter((param) => !hasUsableValue(body[param]))
+    .map((param) => `${prefix}.${param} is required`);
+}
+
+function findMissingArrayItemAlternativeParamProblems(
+  rule: ArrayItemValidationRule,
+  body: Record<string, unknown>,
+  prefix: string,
+): string[] {
+  return (rule.requireAnyParams ?? [])
+    .filter((paramGroup) => !paramGroup.some((param) => hasUsableValue(body[param])))
+    .map((paramGroup) =>
+      `one of ${paramGroup.map((param) => `${prefix}.${param}`).join(', ')} is required`,
+    );
+}
+
+function findArrayItemPositiveNumberProblems(
+  rule: ArrayItemValidationRule,
+  body: Record<string, unknown>,
+  prefix: string,
+): string[] {
+  return (rule.positiveNumberParams ?? [])
+    .filter((param) => hasUsableValue(body[param]) && !isPositiveNumber(body[param]))
+    .map((param) => `${prefix}.${param} must be a positive number`);
+}
+
+function findArrayItemEnumProblems(
+  rule: ArrayItemValidationRule,
+  body: Record<string, unknown>,
+  prefix: string,
+): string[] {
+  return (rule.enumParams ?? [])
+    .filter(({ param, values }) =>
+      hasUsableValue(body[param]) &&
+      !values.includes(String(body[param]).toUpperCase()),
+    )
+    .map(({ param, values }) => `${prefix}.${param} must be one of ${values.join(', ')}`);
+}
+
 function hasUsableValue(value: unknown): boolean {
   return value !== undefined && value !== null && value !== '';
+}
+
+function hasNonEmptyUsableArray(value: unknown): boolean {
+  return Array.isArray(value) && value.length > 0 && value.every(isUsableIdentifier);
+}
+
+function isUsableArray(value: unknown): boolean {
+  return Array.isArray(value) && value.every(isUsableIdentifier);
+}
+
+function isUsableIdentifier(value: unknown): boolean {
+  return (typeof value === 'string' || typeof value === 'number') && hasUsableValue(value);
 }
 
 function isPositiveNumber(value: unknown): boolean {

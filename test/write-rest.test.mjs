@@ -159,6 +159,103 @@ test('write cancel and modify commands require an order identifier when supporte
   );
 });
 
+test('spot batch order command validates nested order items', () => {
+  const parsed = parseArgs([
+    'spot',
+    'trade',
+    'batch-orders',
+    '--body',
+    '{"orders":[{"symbol":"BTCUSDT","orderType":"TRAILING","amount":"0"},{"orderType":"LIMIT","tradeType":"BUY","amount":"0.01"}]}',
+    '--dry-run',
+  ]);
+
+  assert.throws(
+    () => findWriteRestCommand(parsed),
+    /orders\[0\]\.amount must be a positive number; orders\[0\]\.orderType must be one of MARKET, LIMIT; orders\[1\]\.symbol is required/,
+  );
+});
+
+test('spot batch cancel replace command requires nested identifiers', () => {
+  const parsed = parseArgs([
+    'spot',
+    'trade',
+    'batch-cancel-replace-order',
+    '--body',
+    '{"orders":[{"symbol":"BTCUSDT","orderType":"LIMIT","tradeType":"BUY","amount":"0.01"}]}',
+    '--dry-run',
+  ]);
+
+  assert.throws(
+    () => findWriteRestCommand(parsed),
+    /one of orders\[0\]\.orderId, orders\[0\]\.clientOid is required/,
+  );
+});
+
+test('future batch place command accepts valid nested order items', () => {
+  const parsed = parseArgs([
+    'future',
+    'order',
+    'batch-place',
+    '--body',
+    '{"orders":[{"symbol":"BTCUSDT","side":"BUY","orderType":"LIMIT","size":"0.01","price":"60000","holdSide":"LONG"}]}',
+    '--dry-run',
+  ]);
+  const match = findWriteRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/future/order/batch-place-order');
+  assert.deepEqual(match.body, {
+    orders: [
+      {
+        symbol: 'BTCUSDT',
+        side: 'BUY',
+        orderType: 'LIMIT',
+        size: '0.01',
+        price: '60000',
+        holdSide: 'LONG',
+      },
+    ],
+  });
+});
+
+test('batch cancel commands require a non-empty identifier array', () => {
+  assert.throws(
+    () => findWriteRestCommand(parseArgs([
+      'future',
+      'order',
+      'batch-cancel',
+      '--body',
+      '{"symbol":"BTCUSDT","orderIds":[]}',
+      '--dry-run',
+    ])),
+    /one of orderIds\[\], clientOids\[\] must be a non-empty array/,
+  );
+
+  assert.throws(
+    () => findWriteRestCommand(parseArgs([
+      'spot',
+      'trade',
+      'batch-cancel-orders',
+      '--body',
+      '{"symbol":"BTCUSDT","orderIds":[""]}',
+      '--dry-run',
+    ])),
+    /one of orderIds\[\], clientOids\[\] must be a non-empty array; orderIds\[\] must contain only usable string or number values/,
+  );
+
+  const match = findWriteRestCommand(parseArgs([
+    'future',
+    'order',
+    'batch-cancel',
+    '--body',
+    '{"symbol":"BTCUSDT","clientOids":["client-1"]}',
+    '--dry-run',
+  ]));
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/future/order/batch-cancel-orders');
+});
+
 test('futures tpsl command validates plan type and trigger price', () => {
   const parsed = parseArgs([
     'future',
