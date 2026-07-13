@@ -33,6 +33,151 @@ const PRIVATE_QUERY_METADATA = {
   parameterMode: 'query',
 } satisfies CommandMetadata;
 
+const PRIVATE_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
+  '/common/trade-fee': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['tradeType'],
+  },
+  '/account/funding-assets': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['coin'],
+  },
+  '/account/all-account-balance': PRIVATE_QUERY_METADATA,
+  '/spot/trade/unfilled-orders': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'orderId', 'clientOid', 'limit', 'startTime', 'endTime'],
+  },
+  '/spot/trade/history-orders': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'orderId', 'clientOid', 'limit', 'startTime', 'endTime'],
+  },
+  '/spot/trade/fills': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'orderId', 'limit', 'startTime', 'endTime'],
+  },
+  '/spot/account/assets': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['coin', 'assetType'],
+  },
+  '/spot/account/transfer-coin-info': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['coin'],
+  },
+  '/spot/account/withdrawal-records': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['coin', 'limit', 'startTime', 'endTime'],
+  },
+  '/spot/account/deposit-records': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['coin', 'limit', 'startTime', 'endTime'],
+  },
+  '/spot/account/transfer-records': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['coin', 'fromType', 'toType', 'limit', 'startTime', 'endTime'],
+  },
+  '/spot/account/deposit-address': {
+    ...PRIVATE_QUERY_METADATA,
+    requiredParams: ['coin'],
+    optionalParams: ['chain'],
+  },
+  '/future/position/single-position': {
+    ...PRIVATE_QUERY_METADATA,
+    requiredParams: ['symbol'],
+  },
+  '/future/position/all-position': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol'],
+  },
+  '/future/position/history-position': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'limit', 'startTime', 'endTime'],
+  },
+  '/future/account': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol'],
+  },
+  '/future/account/max-open': {
+    ...PRIVATE_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['posSide', 'orderType', 'openPrice', 'leverage'],
+  },
+  '/future/account/liq-price': {
+    ...PRIVATE_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['posSide', 'orderType', 'openAmount', 'openPrice'],
+  },
+  '/future/account/open-count': {
+    ...PRIVATE_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['posSide', 'orderType', 'openPrice', 'openAmount'],
+  },
+  '/future/order/detail': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'orderId', 'clientOid'],
+  },
+  '/future/order/fills': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'orderId', 'limit', 'startTime', 'endTime'],
+  },
+  '/future/order/fill-history': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'orderId', 'limit', 'startTime', 'endTime'],
+  },
+  '/future/order/orders-pending': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'limit', 'startTime', 'endTime'],
+  },
+  '/future/order/orders-history': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'limit', 'startTime', 'endTime'],
+  },
+  '/copy/mix-trader/order-current-track': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'trackingNo', 'pageNo', 'pageSize'],
+  },
+  '/copy/mix-trader/order-history-track': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'trackingNo', 'pageNo', 'pageSize'],
+  },
+  '/copy/mix-trader/order-total-detail': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'trackingNo'],
+  },
+  '/copy/mix-trader/profit-history-summarys': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'pageNo', 'pageSize', 'startTime', 'endTime'],
+  },
+  '/copy/mix-trader/profit-history-details': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'trackingNo', 'pageNo', 'pageSize'],
+  },
+  '/copy/mix-trader/profit-details': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'trackingNo'],
+  },
+  '/copy/mix-trader/query-followers': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['pageNo', 'pageSize'],
+  },
+  '/copy/mix-follower/query-current-orders': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'traderId', 'trackingNo', 'pageNo', 'pageSize'],
+  },
+  '/copy/mix-follower/query-history-orders': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['symbol', 'traderId', 'trackingNo', 'pageNo', 'pageSize'],
+  },
+  '/copy/mix-follower/query-copy-trade-settings': {
+    ...PRIVATE_QUERY_METADATA,
+    requiredParams: ['traderId'],
+    optionalParams: ['symbol'],
+  },
+  '/copy/mix-follower/query-my-traders': {
+    ...PRIVATE_QUERY_METADATA,
+    optionalParams: ['pageNo', 'pageSize'],
+  },
+};
+
 export const PRIVATE_REST_COMMANDS: PrivateRestCommand[] = withCommandMetadata([
   {
     command: ['common', 'trade-fee'],
@@ -244,7 +389,7 @@ export const PRIVATE_REST_COMMANDS: PrivateRestCommand[] = withCommandMetadata([
     path: '/copy/mix-follower/query-my-traders',
     description: 'Build or execute a copy trading follower traders request',
   },
-], PRIVATE_QUERY_METADATA);
+], (command) => PRIVATE_REST_METADATA_BY_PATH[command.path] ?? PRIVATE_QUERY_METADATA);
 
 export function findPrivateRestCommand(
   parsed: ParsedArgs,

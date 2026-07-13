@@ -47,3 +47,46 @@ test('public read commands stay low risk', () => {
     assert.equal(command.riskLevel, 'low');
   }
 });
+
+test('private read commands expose parameter hints for common lookups', () => {
+  const fundingAssets = PRIVATE_REST_COMMANDS.find(
+    (command) => command.command.join(' ') === 'account funding-assets',
+  );
+  const singlePosition = PRIVATE_REST_COMMANDS.find(
+    (command) => command.command.join(' ') === 'future position single',
+  );
+  const followerSettings = PRIVATE_REST_COMMANDS.find(
+    (command) => command.command.join(' ') === 'copytrading follower settings',
+  );
+
+  assert.ok(fundingAssets);
+  assert.deepEqual(fundingAssets.optionalParams, ['coin']);
+  assert.ok(singlePosition);
+  assert.deepEqual(singlePosition.requiredParams, ['symbol']);
+  assert.ok(followerSettings);
+  assert.deepEqual(followerSettings.requiredParams, ['traderId']);
+});
+
+test('write commands expose body parameter hints for risky actions', () => {
+  const spotPlaceOrder = WRITE_REST_COMMANDS.find(
+    (command) => command.command.join(' ') === 'spot trade place-order',
+  );
+  const futuresSetLeverage = WRITE_REST_COMMANDS.find(
+    (command) => command.command.join(' ') === 'future account set-leverage',
+  );
+  const cancelFollow = WRITE_REST_COMMANDS.find(
+    (command) => command.command.join(' ') === 'copytrading follower cancel-follow',
+  );
+
+  assert.ok(spotPlaceOrder);
+  assert.deepEqual(spotPlaceOrder.requiredParams, [
+    'symbol',
+    'orderType',
+    'tradeType',
+    'amount',
+  ]);
+  assert.ok(futuresSetLeverage);
+  assert.deepEqual(futuresSetLeverage.requiredParams, ['symbol']);
+  assert.ok(cancelFollow);
+  assert.deepEqual(cancelFollow.requiredParams, ['traderId']);
+});

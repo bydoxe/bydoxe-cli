@@ -38,6 +38,165 @@ const WRITE_BODY_METADATA = {
   parameterMode: 'body',
 } satisfies CommandMetadata;
 
+const WRITE_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
+  '/spot/trade/place-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'orderType', 'tradeType', 'amount'],
+    optionalParams: ['price', 'clientOid'],
+  },
+  '/spot/trade/cancel-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['orderId', 'clientOid'],
+  },
+  '/spot/trade/cancel-replace-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['orderId', 'clientOid', 'orderType', 'tradeType', 'price', 'amount'],
+  },
+  '/spot/trade/batch-cancel-replace-order': {
+    ...WRITE_BODY_METADATA,
+    optionalParams: ['symbol', 'orders'],
+  },
+  '/spot/trade/batch-orders': {
+    ...WRITE_BODY_METADATA,
+    optionalParams: ['orders'],
+  },
+  '/spot/trade/batch-cancel-orders': {
+    ...WRITE_BODY_METADATA,
+    optionalParams: ['symbol', 'orderIds', 'clientOids'],
+  },
+  '/spot/trade/cancel-symbol-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+  },
+  '/spot/account/transfer': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['coin', 'amount', 'fromType', 'toType'],
+  },
+  '/spot/account/withdraw': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['coin', 'chain', 'address', 'amount'],
+    optionalParams: ['tag', 'clientOid'],
+  },
+  '/spot/account/cancel-withdraw': {
+    ...WRITE_BODY_METADATA,
+    optionalParams: ['orderId', 'clientOid'],
+  },
+  '/future/account/set-leverage': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['longLeverage', 'shortLeverage', 'leverage', 'marginCoin'],
+  },
+  '/future/account/set-margin': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'holdSide', 'amount'],
+  },
+  '/future/account/set-margin-mode': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'marginMode'],
+  },
+  '/future/order/place-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'side', 'orderType', 'size'],
+    optionalParams: ['price', 'holdSide', 'clientOid', 'timeInForce'],
+  },
+  '/future/order/click-backhand': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['side', 'size', 'holdSide'],
+  },
+  '/future/order/batch-place-order': {
+    ...WRITE_BODY_METADATA,
+    optionalParams: ['orders'],
+  },
+  '/future/order/modify-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['orderId', 'clientOid', 'price', 'size'],
+  },
+  '/future/order/cancel-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['orderId', 'clientOid'],
+  },
+  '/future/order/batch-cancel-orders': {
+    ...WRITE_BODY_METADATA,
+    optionalParams: ['symbol', 'orderIds', 'clientOids'],
+  },
+  '/future/order/close-positions': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['holdSide'],
+  },
+  '/future/order/cancel-all-orders': {
+    ...WRITE_BODY_METADATA,
+    optionalParams: ['symbol'],
+  },
+  '/future/order/place-plan-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'side', 'triggerPrice', 'orderType', 'size'],
+    optionalParams: ['price', 'holdSide', 'clientOid'],
+  },
+  '/future/order/modify-plan-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['orderId', 'clientOid', 'triggerPrice', 'price', 'size'],
+  },
+  '/future/order/cancel-plan-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['orderId', 'clientOid'],
+  },
+  '/future/order/place-tpsl-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'planType', 'triggerPrice'],
+    optionalParams: ['holdSide', 'size', 'clientOid'],
+  },
+  '/future/order/modify-tpsl-order': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['orderId', 'clientOid', 'triggerPrice'],
+  },
+  '/copy/mix-trader/order-modify-tpsl': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'trackingNo'],
+    optionalParams: ['stopSurplusPrice', 'stopLossPrice'],
+  },
+  '/copy/mix-trader/order-close-positions': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'trackingNo'],
+  },
+  '/copy/mix-trader/config-trader-setting': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['copyTradeMode'],
+  },
+  '/copy/mix-trader/remove-follower': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['followerId'],
+    optionalParams: ['symbol'],
+  },
+  '/copy/mix-follower/setting-tpsl': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'trackingNo'],
+    optionalParams: ['stopSurplusPrice', 'stopLossPrice'],
+  },
+  '/copy/mix-follower/setting-copy-trade': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['traderId', 'symbol'],
+    optionalParams: ['copyAmount', 'copyMode'],
+  },
+  '/copy/mix-follower/close-positions': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['symbol', 'trackingNo'],
+  },
+  '/copy/mix-follower/cancel-follow': {
+    ...WRITE_BODY_METADATA,
+    requiredParams: ['traderId'],
+  },
+};
+
 export const WRITE_REST_COMMANDS: WriteRestCommand[] = withCommandMetadata([
   {
     command: ['spot', 'trade', 'place-order'],
@@ -277,7 +436,7 @@ export const WRITE_REST_COMMANDS: WriteRestCommand[] = withCommandMetadata([
     description: 'Requires CONFIRM: cancel following a trader',
     risk: 'Stops following a copy trading trader.',
   },
-], WRITE_BODY_METADATA);
+], (command) => WRITE_REST_METADATA_BY_PATH[command.path] ?? WRITE_BODY_METADATA);
 
 export function findWriteRestCommand(
   parsed: ParsedArgs,
