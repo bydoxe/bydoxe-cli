@@ -82,6 +82,7 @@ bydoxe spot market fills --symbol BTCUSDT --limit 50 --dry-run --format json
 bydoxe future market ticker --symbol BTCUSDT --dry-run
 bydoxe future market mark-price --symbol BTCUSDT --dry-run
 bydoxe future market depth --symbol BTCUSDT --limit 500 --dry-run --format json
+bydoxe future market taker-buy-sell --symbol BTCUSDT --period 1h --dry-run --format json
 bydoxe account funding-assets --coin USDT --dry-run --format json
 bydoxe future position all --dry-run --format json
 bydoxe copytrading trader followers --pageNo 1 --pageSize 20 --dry-run --format json
@@ -116,10 +117,21 @@ Dry-run output includes command metadata for auth scope, risk level, parameter m
 | `bydoxe future market ticker` | `GET /future/market/24h-ticker` |
 | `bydoxe future market mark-price` | `GET /future/market/mark-price` |
 | `bydoxe future market book-ticker` | `GET /future/market/book-ticker` |
+| `bydoxe future market fills` | `GET /future/market/fills` |
+| `bydoxe future market fills-history` | `GET /future/market/fills-history` |
 | `bydoxe future market depth` | `GET /future/market/depth` |
 | `bydoxe future market candles` | `GET /future/market/candles` |
+| `bydoxe future market history-fund-rate` | `GET /future/market/history-fund-rate` |
+| `bydoxe future market history-candles` | `GET /future/market/history-candles` |
+| `bydoxe future market history-index-candles` | `GET /future/market/history-index-candles` |
+| `bydoxe future market history-mark-candles` | `GET /future/market/history-mark-candles` |
 | `bydoxe future market funding-info` | `GET /future/market/funding-info` |
 | `bydoxe future market open-interest` | `GET /future/market/open-interest` |
+| `bydoxe future market taker-buy-sell` | `GET /future/market/taker-buy-sell` |
+| `bydoxe future market account-long-short` | `GET /future/market/account-long-short` |
+| `bydoxe future market top-trader-position-long-short` | `GET /future/market/top-trader-position-long-short` |
+| `bydoxe future market top-trader-account-long-short` | `GET /future/market/top-trader-account-long-short` |
+| `bydoxe future market query-position-tier` | `GET /future/market/query-position-tier` |
 
 Command flags that are not global options are forwarded as query parameters. For example, `--symbol BTCUSDT --limit 100` becomes `?symbol=BTCUSDT&limit=100`.
 

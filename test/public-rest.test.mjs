@@ -139,6 +139,27 @@ test('future market depth command includes metadata for symbol and limit', () =>
   });
 });
 
+test('future market ratio command requires symbol and period metadata', () => {
+  const parsed = parseArgs([
+    'future',
+    'market',
+    'taker-buy-sell',
+    '--symbol',
+    'BTCUSDT',
+    '--period',
+    '1h',
+  ]);
+  const match = findPublicRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/future/market/taker-buy-sell');
+  assert.deepEqual(match.definition.requiredParams, ['symbol', 'period']);
+  assert.deepEqual(match.query, {
+    symbol: 'BTCUSDT',
+    period: '1h',
+  });
+});
+
 test('public REST command rejects missing required parameters', () => {
   const parsed = parseArgs(['future', 'market', 'depth', '--dry-run']);
 
@@ -163,6 +184,17 @@ test('public REST registry includes expanded market data commands', () => {
     'future market candles',
     'future market funding-info',
     'future market open-interest',
+    'future market fills',
+    'future market fills-history',
+    'future market history-fund-rate',
+    'future market history-candles',
+    'future market history-index-candles',
+    'future market history-mark-candles',
+    'future market taker-buy-sell',
+    'future market account-long-short',
+    'future market top-trader-position-long-short',
+    'future market top-trader-account-long-short',
+    'future market query-position-tier',
   ]) {
     assert.ok(commands.has(command), `Missing public REST command: ${command}`);
   }

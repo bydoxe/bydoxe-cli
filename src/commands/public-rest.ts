@@ -98,6 +98,16 @@ const PUBLIC_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
     ...PUBLIC_QUERY_METADATA,
     optionalParams: ['symbol'],
   },
+  '/future/market/fills': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['limit'],
+  },
+  '/future/market/fills-history': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['limit', 'idLessThan', 'startTime', 'endTime'],
+  },
   '/future/market/depth': {
     ...PUBLIC_QUERY_METADATA,
     requiredParams: ['symbol'],
@@ -108,8 +118,48 @@ const PUBLIC_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
     requiredParams: ['symbol', 'interval'],
     optionalParams: ['limit', 'startTime', 'endTime'],
   },
+  '/future/market/history-fund-rate': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['limit', 'startTime', 'endTime'],
+  },
+  '/future/market/history-candles': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'interval'],
+    optionalParams: ['limit', 'startTime', 'endTime'],
+  },
+  '/future/market/history-index-candles': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'interval'],
+    optionalParams: ['limit', 'startTime', 'endTime'],
+  },
+  '/future/market/history-mark-candles': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'interval'],
+    optionalParams: ['limit', 'startTime', 'endTime'],
+  },
   '/future/market/funding-info': PUBLIC_QUERY_METADATA,
   '/future/market/open-interest': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol'],
+  },
+  '/future/market/taker-buy-sell': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'period'],
+  },
+  '/future/market/account-long-short': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'period'],
+  },
+  '/future/market/top-trader-position-long-short': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'period'],
+  },
+  '/future/market/top-trader-account-long-short': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'period'],
+  },
+  '/future/market/query-position-tier': {
     ...PUBLIC_QUERY_METADATA,
     requiredParams: ['symbol'],
   },
@@ -190,6 +240,18 @@ export const PUBLIC_REST_COMMANDS: PublicRestCommand[] = withCommandMetadata(
       description: 'Build or execute a futures best bid and ask request',
     },
     {
+      command: ['future', 'market', 'fills'],
+      method: 'GET',
+      path: '/future/market/fills',
+      description: 'Build or execute a futures recent trades request',
+    },
+    {
+      command: ['future', 'market', 'fills-history'],
+      method: 'GET',
+      path: '/future/market/fills-history',
+      description: 'Build or execute a futures historical trades request',
+    },
+    {
       command: ['future', 'market', 'depth'],
       method: 'GET',
       path: '/future/market/depth',
@@ -202,6 +264,30 @@ export const PUBLIC_REST_COMMANDS: PublicRestCommand[] = withCommandMetadata(
       description: 'Build or execute a futures candles request',
     },
     {
+      command: ['future', 'market', 'history-fund-rate'],
+      method: 'GET',
+      path: '/future/market/history-fund-rate',
+      description: 'Build or execute a futures historical funding rate request',
+    },
+    {
+      command: ['future', 'market', 'history-candles'],
+      method: 'GET',
+      path: '/future/market/history-candles',
+      description: 'Build or execute a futures historical candles request',
+    },
+    {
+      command: ['future', 'market', 'history-index-candles'],
+      method: 'GET',
+      path: '/future/market/history-index-candles',
+      description: 'Build or execute a futures historical index candles request',
+    },
+    {
+      command: ['future', 'market', 'history-mark-candles'],
+      method: 'GET',
+      path: '/future/market/history-mark-candles',
+      description: 'Build or execute a futures historical mark candles request',
+    },
+    {
       command: ['future', 'market', 'funding-info'],
       method: 'GET',
       path: '/future/market/funding-info',
@@ -212,6 +298,36 @@ export const PUBLIC_REST_COMMANDS: PublicRestCommand[] = withCommandMetadata(
       method: 'GET',
       path: '/future/market/open-interest',
       description: 'Build or execute a futures open interest request',
+    },
+    {
+      command: ['future', 'market', 'taker-buy-sell'],
+      method: 'GET',
+      path: '/future/market/taker-buy-sell',
+      description: 'Build or execute a futures taker buy and sell volume request',
+    },
+    {
+      command: ['future', 'market', 'account-long-short'],
+      method: 'GET',
+      path: '/future/market/account-long-short',
+      description: 'Build or execute a futures account long and short ratio request',
+    },
+    {
+      command: ['future', 'market', 'top-trader-position-long-short'],
+      method: 'GET',
+      path: '/future/market/top-trader-position-long-short',
+      description: 'Build or execute a futures top trader position long and short ratio request',
+    },
+    {
+      command: ['future', 'market', 'top-trader-account-long-short'],
+      method: 'GET',
+      path: '/future/market/top-trader-account-long-short',
+      description: 'Build or execute a futures top trader account long and short ratio request',
+    },
+    {
+      command: ['future', 'market', 'query-position-tier'],
+      method: 'GET',
+      path: '/future/market/query-position-tier',
+      description: 'Build or execute a futures position tier request',
     },
   ],
   (command) => PUBLIC_REST_METADATA_BY_PATH[command.path] ?? PUBLIC_QUERY_METADATA,

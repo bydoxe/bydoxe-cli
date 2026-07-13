@@ -30,3 +30,4 @@
 - Add required parameter validation before REST request construction.
 - Add command metadata to REST and WebSocket dry-run previews.
 - Add required and optional parameter hints to CLI help output.
+- Add remaining futures public market REST commands.
