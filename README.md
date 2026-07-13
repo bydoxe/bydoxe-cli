@@ -73,7 +73,10 @@ bydoxe future market ticker --symbol BTCUSDT --dry-run
 bydoxe future market mark-price --symbol BTCUSDT --dry-run
 bydoxe account funding-assets --coin USDT --dry-run --format json
 bydoxe future position all --dry-run --format json
+bydoxe copytrading trader followers --pageNo 1 --pageSize 20 --dry-run --format json
+bydoxe copytrading follower settings --traderId trader-1 --dry-run --format json
 bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --dry-run --format json
+bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry-run --format json
 ```
 
 The dry-run mode prints the request that would be sent without making a network call.
@@ -122,6 +125,17 @@ Authenticated read commands require local credentials and never require chat-bas
 | `bydoxe future order fill-history` | `GET /future/order/fill-history` |
 | `bydoxe future order orders-pending` | `GET /future/order/orders-pending` |
 | `bydoxe future order orders-history` | `GET /future/order/orders-history` |
+| `bydoxe copytrading trader current-orders` | `GET /copy/mix-trader/order-current-track` |
+| `bydoxe copytrading trader history-orders` | `GET /copy/mix-trader/order-history-track` |
+| `bydoxe copytrading trader total-detail` | `GET /copy/mix-trader/order-total-detail` |
+| `bydoxe copytrading trader profit-summary` | `GET /copy/mix-trader/profit-history-summarys` |
+| `bydoxe copytrading trader profit-history` | `GET /copy/mix-trader/profit-history-details` |
+| `bydoxe copytrading trader profit-details` | `GET /copy/mix-trader/profit-details` |
+| `bydoxe copytrading trader followers` | `GET /copy/mix-trader/query-followers` |
+| `bydoxe copytrading follower current-orders` | `GET /copy/mix-follower/query-current-orders` |
+| `bydoxe copytrading follower history-orders` | `GET /copy/mix-follower/query-history-orders` |
+| `bydoxe copytrading follower settings` | `GET /copy/mix-follower/query-copy-trade-settings` |
+| `bydoxe copytrading follower traders` | `GET /copy/mix-follower/query-my-traders` |
 
 ## Write Commands
 
@@ -155,10 +169,20 @@ Write commands require local credentials and exact `--confirm CONFIRM` for live 
 | `bydoxe future trigger cancel` | `POST /future/order/cancel-plan-order` |
 | `bydoxe future tpsl place` | `POST /future/order/place-tpsl-order` |
 | `bydoxe future tpsl modify` | `POST /future/order/modify-tpsl-order` |
+| `bydoxe copytrading trader modify-tpsl` | `POST /copy/mix-trader/order-modify-tpsl` |
+| `bydoxe copytrading trader close-positions` | `POST /copy/mix-trader/order-close-positions` |
+| `bydoxe copytrading trader config` | `POST /copy/mix-trader/config-trader-setting` |
+| `bydoxe copytrading trader remove-follower` | `POST /copy/mix-trader/remove-follower` |
+| `bydoxe copytrading follower setting-tpsl` | `POST /copy/mix-follower/setting-tpsl` |
+| `bydoxe copytrading follower setting-copy-trade` | `POST /copy/mix-follower/setting-copy-trade` |
+| `bydoxe copytrading follower close-positions` | `POST /copy/mix-follower/close-positions` |
+| `bydoxe copytrading follower cancel-follow` | `POST /copy/mix-follower/cancel-follow` |
 
 Write request bodies can be built from flags or passed as JSON:
 
 ```sh
 bydoxe future account set-leverage --symbol BTCUSDT --longLeverage 5 --shortLeverage 5 --dry-run --format json
 bydoxe future account set-leverage --body '{"symbol":"BTCUSDT","longLeverage":5,"shortLeverage":5}' --dry-run --format json
+bydoxe copytrading trader config --body '{"symbol":"BTCUSDT","copyTradeMode":"fixed"}' --dry-run --format json
+bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry-run --format json
 ```

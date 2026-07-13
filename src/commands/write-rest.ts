@@ -209,6 +209,62 @@ export const WRITE_REST_COMMANDS: WriteRestCommand[] = [
     description: 'Requires CONFIRM: modify a futures TP/SL order',
     risk: 'Modifies a futures take-profit or stop-loss order.',
   },
+  {
+    command: ['copytrading', 'trader', 'modify-tpsl'],
+    method: 'POST',
+    path: '/copy/mix-trader/order-modify-tpsl',
+    description: 'Requires CONFIRM: modify copy trading trader TP/SL',
+    risk: 'Changes take-profit or stop-loss settings for tracked copy trading orders.',
+  },
+  {
+    command: ['copytrading', 'trader', 'close-positions'],
+    method: 'POST',
+    path: '/copy/mix-trader/order-close-positions',
+    description: 'Requires CONFIRM: close copy trading trader positions',
+    risk: 'Closes copy trading trader positions.',
+  },
+  {
+    command: ['copytrading', 'trader', 'config'],
+    method: 'POST',
+    path: '/copy/mix-trader/config-trader-setting',
+    description: 'Requires CONFIRM: change copy trading trader settings',
+    risk: 'Changes trader copy trading settings.',
+  },
+  {
+    command: ['copytrading', 'trader', 'remove-follower'],
+    method: 'POST',
+    path: '/copy/mix-trader/remove-follower',
+    description: 'Requires CONFIRM: remove a copy trading follower',
+    risk: 'Removes a follower from copy trading.',
+  },
+  {
+    command: ['copytrading', 'follower', 'setting-tpsl'],
+    method: 'POST',
+    path: '/copy/mix-follower/setting-tpsl',
+    description: 'Requires CONFIRM: set follower TP/SL',
+    risk: 'Changes follower take-profit or stop-loss settings.',
+  },
+  {
+    command: ['copytrading', 'follower', 'setting-copy-trade'],
+    method: 'POST',
+    path: '/copy/mix-follower/setting-copy-trade',
+    description: 'Requires CONFIRM: change follower copy trading settings',
+    risk: 'Changes follower copy trading settings.',
+  },
+  {
+    command: ['copytrading', 'follower', 'close-positions'],
+    method: 'POST',
+    path: '/copy/mix-follower/close-positions',
+    description: 'Requires CONFIRM: close follower copy trading positions',
+    risk: 'Closes follower copy trading positions.',
+  },
+  {
+    command: ['copytrading', 'follower', 'cancel-follow'],
+    method: 'POST',
+    path: '/copy/mix-follower/cancel-follow',
+    description: 'Requires CONFIRM: cancel following a trader',
+    risk: 'Stops following a copy trading trader.',
+  },
 ];
 
 export function findWriteRestCommand(

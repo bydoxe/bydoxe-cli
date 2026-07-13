@@ -166,6 +166,72 @@ export const PRIVATE_REST_COMMANDS: PrivateRestCommand[] = [
     path: '/future/order/orders-history',
     description: 'Build or execute a futures order history request',
   },
+  {
+    command: ['copytrading', 'trader', 'current-orders'],
+    method: 'GET',
+    path: '/copy/mix-trader/order-current-track',
+    description: 'Build or execute a copy trading trader current orders request',
+  },
+  {
+    command: ['copytrading', 'trader', 'history-orders'],
+    method: 'GET',
+    path: '/copy/mix-trader/order-history-track',
+    description: 'Build or execute a copy trading trader order history request',
+  },
+  {
+    command: ['copytrading', 'trader', 'total-detail'],
+    method: 'GET',
+    path: '/copy/mix-trader/order-total-detail',
+    description: 'Build or execute a copy trading trader total detail request',
+  },
+  {
+    command: ['copytrading', 'trader', 'profit-summary'],
+    method: 'GET',
+    path: '/copy/mix-trader/profit-history-summarys',
+    description: 'Build or execute a copy trading trader profit summary request',
+  },
+  {
+    command: ['copytrading', 'trader', 'profit-history'],
+    method: 'GET',
+    path: '/copy/mix-trader/profit-history-details',
+    description: 'Build or execute a copy trading trader profit history request',
+  },
+  {
+    command: ['copytrading', 'trader', 'profit-details'],
+    method: 'GET',
+    path: '/copy/mix-trader/profit-details',
+    description: 'Build or execute a copy trading trader profit details request',
+  },
+  {
+    command: ['copytrading', 'trader', 'followers'],
+    method: 'GET',
+    path: '/copy/mix-trader/query-followers',
+    description: 'Build or execute a copy trading trader followers request',
+  },
+  {
+    command: ['copytrading', 'follower', 'current-orders'],
+    method: 'GET',
+    path: '/copy/mix-follower/query-current-orders',
+    description: 'Build or execute a copy trading follower current orders request',
+  },
+  {
+    command: ['copytrading', 'follower', 'history-orders'],
+    method: 'GET',
+    path: '/copy/mix-follower/query-history-orders',
+    description: 'Build or execute a copy trading follower order history request',
+  },
+  {
+    command: ['copytrading', 'follower', 'settings'],
+    method: 'GET',
+    path: '/copy/mix-follower/query-copy-trade-settings',
+    description: 'Build or execute a copy trading follower settings request',
+  },
+  {
+    command: ['copytrading', 'follower', 'traders'],
+    method: 'GET',
+    path: '/copy/mix-follower/query-my-traders',
+    description: 'Build or execute a copy trading follower traders request',
+  },
 ];
 
 export function findPrivateRestCommand(

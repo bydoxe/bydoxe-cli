@@ -82,3 +82,42 @@ test('write command execution requires exact confirmation token', () => {
   );
   assert.doesNotThrow(() => assertWriteConfirmed({ confirm: 'CONFIRM' }));
 });
+
+test('copy trading trader close positions command builds body from flags', () => {
+  const parsed = parseArgs([
+    'copytrading',
+    'trader',
+    'close-positions',
+    '--symbol',
+    'BTCUSDT',
+    '--trackingNo',
+    'track-1',
+    '--dry-run',
+  ]);
+  const match = findWriteRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/copy/mix-trader/order-close-positions');
+  assert.deepEqual(match.body, {
+    symbol: 'BTCUSDT',
+    trackingNo: 'track-1',
+  });
+  assert.match(match.definition.risk, /Closes copy trading trader positions/);
+});
+
+test('copy trading follower cancel follow command maps to cancel endpoint', () => {
+  const parsed = parseArgs([
+    'copytrading',
+    'follower',
+    'cancel-follow',
+    '--traderId',
+    'trader-1',
+  ]);
+  const match = findWriteRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/copy/mix-follower/cancel-follow');
+  assert.deepEqual(match.body, {
+    traderId: 'trader-1',
+  });
+});

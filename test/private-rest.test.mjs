@@ -89,3 +89,43 @@ test('future order history command forwards query parameters', () => {
     limit: '100',
   });
 });
+
+test('copy trading trader followers command forwards query parameters', () => {
+  const parsed = parseArgs([
+    'copytrading',
+    'trader',
+    'followers',
+    '--pageNo',
+    '1',
+    '--pageSize',
+    '20',
+  ]);
+  const match = findPrivateRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/copy/mix-trader/query-followers');
+  assert.deepEqual(match.query, {
+    pageNo: '1',
+    pageSize: '20',
+  });
+});
+
+test('copy trading follower settings command maps to follower settings endpoint', () => {
+  const parsed = parseArgs([
+    'copytrading',
+    'follower',
+    'settings',
+    '--traderId',
+    'trader-1',
+  ]);
+  const match = findPrivateRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(
+    match.definition.path,
+    '/copy/mix-follower/query-copy-trade-settings',
+  );
+  assert.deepEqual(match.query, {
+    traderId: 'trader-1',
+  });
+});
