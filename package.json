@@ -19,7 +19,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "npm run build && node --test test/*.test.mjs",
     "smoke:readme": "npm run build && node scripts/smoke-readme-examples.mjs",
-    "validate": "npm run typecheck && npm test && npm run smoke:readme && node scripts/validate-project.mjs"
+    "smoke:websocket-live": "npm run build && node scripts/smoke-websocket-public-live.mjs",
+    "validate": "npm run typecheck && npm test && npm run smoke:readme && npm run smoke:websocket-live && node scripts/validate-project.mjs"
   },
   "engines": {
     "node": ">=20"

@@ -51,10 +51,11 @@ npm run validate
 npm run typecheck
 npm test
 npm run smoke:readme
+npm run smoke:websocket-live
 npm run build
 ```
 
-`npm run validate` runs type checking, unit tests, README dry-run smoke examples, README command coverage checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts.
+`npm run validate` runs type checking, unit tests, README dry-run smoke examples, the optional public WebSocket live smoke gate, README command coverage checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts. The public WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_WS_TESTS=1` is set.
 
 ## Credentials
 
@@ -224,6 +225,12 @@ Public live examples:
 ```text
 bydoxe websocket public ping --live --timeout-ms 5000 --format json
 bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCUSDT --live --max-messages 5 --timeout-ms 15000 --format json
+```
+
+Optional live smoke:
+
+```sh
+BYDOXE_RUN_LIVE_WS_TESTS=1 npm run smoke:websocket-live
 ```
 
 Private WebSocket login previews redact credential-bearing fields in dry-run output. Private spot trade messages require exact `--confirm CONFIRM` before any future live execution path.
