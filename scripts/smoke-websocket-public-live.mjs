@@ -66,8 +66,11 @@ function validateResult(result) {
   if (result?.connection?.scope !== 'public') {
     problems.push('Expected a public WebSocket connection scope.');
   }
-  if (result?.message?.event !== 'subscribe') {
-    problems.push('Expected a subscribe preview message.');
+  if (result?.sent?.op !== 'subscribe') {
+    problems.push('Expected a sent subscribe message.');
+  }
+  if (result?.received?.[0]?.event !== 'subscribe') {
+    problems.push('Expected a subscribe acknowledgement message.');
   }
   if (!Array.isArray(result?.received) || result.received.length < 1) {
     problems.push('Expected at least one received WebSocket message.');
