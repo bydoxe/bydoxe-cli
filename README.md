@@ -67,6 +67,10 @@ npm run build
 
 `docs/command-reference.md` is generated from the command catalog. It is the human-readable command reference for endpoint mapping, parameter hints, and write validation rules.
 
+## Command Reference
+
+Use [docs/command-reference.md](docs/command-reference.md) for the full generated CLI command surface. It includes REST endpoints, WebSocket scopes, auth requirements, risk levels, required parameters, optional parameters, and write validation rules.
+
 ## Credentials
 
 Private BYDOXE API requests require credentials. The initial scaffold reads credentials from environment variables:

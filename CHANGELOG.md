@@ -39,3 +39,4 @@
 - Document and enforce a private WebSocket live safety gate policy.
 - Add second-layer opt-in public REST market data live smoke samples.
 - Expose write command validation rules in the generated command catalog and reference.
+- Link the generated command reference from the README as the full CLI command surface.
