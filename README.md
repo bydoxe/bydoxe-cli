@@ -308,3 +308,5 @@ Private WebSocket live execution will remain disabled until these gates are impl
 - Bounded read-only private stream smoke tests.
 - Separate trade-send implementation with exact `CONFIRM`.
 - Explicit opt-in environment gate for live private sessions.
+
+See [docs/private-websocket-readonly-live-plan.md](docs/private-websocket-readonly-live-plan.md) for the proposed read-only private WebSocket live boundary. Private spot trade live execution is not part of that boundary.

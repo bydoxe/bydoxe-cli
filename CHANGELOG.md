@@ -40,3 +40,4 @@
 - Add second-layer opt-in public REST market data live smoke samples.
 - Expose write command validation rules in the generated command catalog and reference.
 - Link the generated command reference from the README as the full CLI command surface.
+- Document the proposed read-only private WebSocket live boundary.
