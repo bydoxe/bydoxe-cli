@@ -1150,7 +1150,37 @@
       ],
       "method": "POST",
       "path": "/spot/trade/place-order",
-      "description": "Requires CONFIRM: place a spot order"
+      "description": "Requires CONFIRM: place a spot order",
+      "validation": {
+        "positiveNumberParams": [
+          "amount",
+          "price"
+        ],
+        "enumParams": [
+          {
+            "param": "orderType",
+            "values": [
+              "MARKET",
+              "LIMIT"
+            ]
+          },
+          {
+            "param": "timeInForce",
+            "values": [
+              "GTC",
+              "IOC",
+              "FOK"
+            ]
+          },
+          {
+            "param": "tradeType",
+            "values": [
+              "BUY",
+              "SELL"
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe spot trade cancel-order",
@@ -1168,7 +1198,15 @@
       ],
       "method": "POST",
       "path": "/spot/trade/cancel-order",
-      "description": "Requires CONFIRM: cancel a spot order"
+      "description": "Requires CONFIRM: cancel a spot order",
+      "validation": {
+        "requireAnyParams": [
+          [
+            "orderId",
+            "clientOid"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe spot trade cancel-replace-order",
@@ -1190,7 +1228,43 @@
       ],
       "method": "POST",
       "path": "/spot/trade/cancel-replace-order",
-      "description": "Requires CONFIRM: cancel and replace a spot order"
+      "description": "Requires CONFIRM: cancel and replace a spot order",
+      "validation": {
+        "positiveNumberParams": [
+          "amount",
+          "price"
+        ],
+        "enumParams": [
+          {
+            "param": "orderType",
+            "values": [
+              "MARKET",
+              "LIMIT"
+            ]
+          },
+          {
+            "param": "timeInForce",
+            "values": [
+              "GTC",
+              "IOC",
+              "FOK"
+            ]
+          },
+          {
+            "param": "tradeType",
+            "values": [
+              "BUY",
+              "SELL"
+            ]
+          }
+        ],
+        "requireAnyParams": [
+          [
+            "orderId",
+            "clientOid"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe spot trade batch-cancel-replace-order",
@@ -1271,7 +1345,12 @@
       "optionalParams": [],
       "method": "POST",
       "path": "/spot/account/transfer",
-      "description": "Requires CONFIRM: transfer funds between accounts"
+      "description": "Requires CONFIRM: transfer funds between accounts",
+      "validation": {
+        "positiveNumberParams": [
+          "amount"
+        ]
+      }
     },
     {
       "command": "bydoxe spot account withdraw",
@@ -1292,7 +1371,12 @@
       ],
       "method": "POST",
       "path": "/spot/account/withdraw",
-      "description": "Requires CONFIRM: withdraw assets"
+      "description": "Requires CONFIRM: withdraw assets",
+      "validation": {
+        "positiveNumberParams": [
+          "amount"
+        ]
+      }
     },
     {
       "command": "bydoxe spot account cancel-withdraw",
@@ -1328,7 +1412,14 @@
       ],
       "method": "POST",
       "path": "/future/account/set-leverage",
-      "description": "Requires CONFIRM: change futures leverage"
+      "description": "Requires CONFIRM: change futures leverage",
+      "validation": {
+        "positiveNumberParams": [
+          "longLeverage",
+          "shortLeverage",
+          "leverage"
+        ]
+      }
     },
     {
       "command": "bydoxe future account set-margin",
@@ -1345,7 +1436,21 @@
       "optionalParams": [],
       "method": "POST",
       "path": "/future/account/set-margin",
-      "description": "Requires CONFIRM: adjust futures margin"
+      "description": "Requires CONFIRM: adjust futures margin",
+      "validation": {
+        "positiveNumberParams": [
+          "amount"
+        ],
+        "enumParams": [
+          {
+            "param": "holdSide",
+            "values": [
+              "LONG",
+              "SHORT"
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe future account set-margin-mode",
@@ -1361,7 +1466,18 @@
       "optionalParams": [],
       "method": "POST",
       "path": "/future/account/set-margin-mode",
-      "description": "Requires CONFIRM: change futures margin mode"
+      "description": "Requires CONFIRM: change futures margin mode",
+      "validation": {
+        "enumParams": [
+          {
+            "param": "marginMode",
+            "values": [
+              "CROSS",
+              "ISOLATED"
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe future order place",
@@ -1384,7 +1500,44 @@
       ],
       "method": "POST",
       "path": "/future/order/place-order",
-      "description": "Requires CONFIRM: place a futures order"
+      "description": "Requires CONFIRM: place a futures order",
+      "validation": {
+        "positiveNumberParams": [
+          "size",
+          "price"
+        ],
+        "enumParams": [
+          {
+            "param": "orderType",
+            "values": [
+              "MARKET",
+              "LIMIT"
+            ]
+          },
+          {
+            "param": "timeInForce",
+            "values": [
+              "GTC",
+              "IOC",
+              "FOK"
+            ]
+          },
+          {
+            "param": "side",
+            "values": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          {
+            "param": "holdSide",
+            "values": [
+              "LONG",
+              "SHORT"
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe future order click-backhand",
@@ -1403,7 +1556,43 @@
       ],
       "method": "POST",
       "path": "/future/order/click-backhand",
-      "description": "Requires CONFIRM: place a futures reversal order"
+      "description": "Requires CONFIRM: place a futures reversal order",
+      "validation": {
+        "positiveNumberParams": [
+          "size"
+        ],
+        "enumParams": [
+          {
+            "param": "orderType",
+            "values": [
+              "MARKET",
+              "LIMIT"
+            ]
+          },
+          {
+            "param": "timeInForce",
+            "values": [
+              "GTC",
+              "IOC",
+              "FOK"
+            ]
+          },
+          {
+            "param": "side",
+            "values": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          {
+            "param": "holdSide",
+            "values": [
+              "LONG",
+              "SHORT"
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe future order batch-place",
@@ -1438,7 +1627,19 @@
       ],
       "method": "POST",
       "path": "/future/order/modify-order",
-      "description": "Requires CONFIRM: modify a futures order"
+      "description": "Requires CONFIRM: modify a futures order",
+      "validation": {
+        "positiveNumberParams": [
+          "size",
+          "price"
+        ],
+        "requireAnyParams": [
+          [
+            "orderId",
+            "clientOid"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe future order cancel",
@@ -1456,7 +1657,15 @@
       ],
       "method": "POST",
       "path": "/future/order/cancel-order",
-      "description": "Requires CONFIRM: cancel a futures order"
+      "description": "Requires CONFIRM: cancel a futures order",
+      "validation": {
+        "requireAnyParams": [
+          [
+            "orderId",
+            "clientOid"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe future order batch-cancel",
@@ -1490,7 +1699,18 @@
       ],
       "method": "POST",
       "path": "/future/order/close-positions",
-      "description": "Requires CONFIRM: close futures positions"
+      "description": "Requires CONFIRM: close futures positions",
+      "validation": {
+        "enumParams": [
+          {
+            "param": "holdSide",
+            "values": [
+              "LONG",
+              "SHORT"
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe future order cancel-all",
@@ -1528,7 +1748,45 @@
       ],
       "method": "POST",
       "path": "/future/order/place-plan-order",
-      "description": "Requires CONFIRM: place a futures trigger order"
+      "description": "Requires CONFIRM: place a futures trigger order",
+      "validation": {
+        "positiveNumberParams": [
+          "size",
+          "price",
+          "triggerPrice"
+        ],
+        "enumParams": [
+          {
+            "param": "orderType",
+            "values": [
+              "MARKET",
+              "LIMIT"
+            ]
+          },
+          {
+            "param": "timeInForce",
+            "values": [
+              "GTC",
+              "IOC",
+              "FOK"
+            ]
+          },
+          {
+            "param": "side",
+            "values": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          {
+            "param": "holdSide",
+            "values": [
+              "LONG",
+              "SHORT"
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe future trigger modify",
@@ -1549,7 +1807,20 @@
       ],
       "method": "POST",
       "path": "/future/order/modify-plan-order",
-      "description": "Requires CONFIRM: modify a futures trigger order"
+      "description": "Requires CONFIRM: modify a futures trigger order",
+      "validation": {
+        "positiveNumberParams": [
+          "size",
+          "price",
+          "triggerPrice"
+        ],
+        "requireAnyParams": [
+          [
+            "orderId",
+            "clientOid"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe future trigger cancel",
@@ -1567,7 +1838,15 @@
       ],
       "method": "POST",
       "path": "/future/order/cancel-plan-order",
-      "description": "Requires CONFIRM: cancel futures trigger orders"
+      "description": "Requires CONFIRM: cancel futures trigger orders",
+      "validation": {
+        "requireAnyParams": [
+          [
+            "orderId",
+            "clientOid"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe future tpsl place",
@@ -1588,7 +1867,29 @@
       ],
       "method": "POST",
       "path": "/future/order/place-tpsl-order",
-      "description": "Requires CONFIRM: place a futures TP/SL order"
+      "description": "Requires CONFIRM: place a futures TP/SL order",
+      "validation": {
+        "positiveNumberParams": [
+          "size",
+          "triggerPrice"
+        ],
+        "enumParams": [
+          {
+            "param": "planType",
+            "values": [
+              "TAKE_PROFIT",
+              "STOP_LOSS"
+            ]
+          },
+          {
+            "param": "holdSide",
+            "values": [
+              "LONG",
+              "SHORT"
+            ]
+          }
+        ]
+      }
     },
     {
       "command": "bydoxe future tpsl modify",
@@ -1607,7 +1908,18 @@
       ],
       "method": "POST",
       "path": "/future/order/modify-tpsl-order",
-      "description": "Requires CONFIRM: modify a futures TP/SL order"
+      "description": "Requires CONFIRM: modify a futures TP/SL order",
+      "validation": {
+        "positiveNumberParams": [
+          "triggerPrice"
+        ],
+        "requireAnyParams": [
+          [
+            "orderId",
+            "clientOid"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe copytrading trader modify-tpsl",
@@ -1626,7 +1938,13 @@
       ],
       "method": "POST",
       "path": "/copy/mix-trader/order-modify-tpsl",
-      "description": "Requires CONFIRM: modify copy trading trader TP/SL"
+      "description": "Requires CONFIRM: modify copy trading trader TP/SL",
+      "validation": {
+        "positiveNumberParams": [
+          "stopSurplusPrice",
+          "stopLossPrice"
+        ]
+      }
     },
     {
       "command": "bydoxe copytrading trader close-positions",
@@ -1695,7 +2013,13 @@
       ],
       "method": "POST",
       "path": "/copy/mix-follower/setting-tpsl",
-      "description": "Requires CONFIRM: set follower TP/SL"
+      "description": "Requires CONFIRM: set follower TP/SL",
+      "validation": {
+        "positiveNumberParams": [
+          "stopSurplusPrice",
+          "stopLossPrice"
+        ]
+      }
     },
     {
       "command": "bydoxe copytrading follower setting-copy-trade",
@@ -1714,7 +2038,12 @@
       ],
       "method": "POST",
       "path": "/copy/mix-follower/setting-copy-trade",
-      "description": "Requires CONFIRM: change follower copy trading settings"
+      "description": "Requires CONFIRM: change follower copy trading settings",
+      "validation": {
+        "positiveNumberParams": [
+          "copyAmount"
+        ]
+      }
     },
     {
       "command": "bydoxe copytrading follower close-positions",

@@ -46,7 +46,11 @@ async function buildCatalog() {
       toRestCatalogEntry(command, 'private-rest'),
     ),
     ...writeRest.WRITE_REST_COMMANDS.map((command) =>
-      toRestCatalogEntry(command, 'write-rest'),
+      toRestCatalogEntry(
+        command,
+        'write-rest',
+        writeRest.WRITE_REST_VALIDATION_BY_PATH?.[command.path],
+      ),
     ),
     ...websocket.WEBSOCKET_COMMANDS.map(toWebSocketCatalogEntry),
   ];
@@ -69,8 +73,8 @@ async function importDistModule(relativePath) {
   return import(pathToFileURL(modulePath).href);
 }
 
-function toRestCatalogEntry(command, group) {
-  return {
+function toRestCatalogEntry(command, group, validation) {
+  return omitUndefined({
     command: toCommandString(command.command),
     group,
     transport: 'rest',
@@ -82,7 +86,8 @@ function toRestCatalogEntry(command, group) {
     method: command.method,
     path: command.path,
     description: command.description,
-  };
+    validation: normalizeValidation(validation),
+  });
 }
 
 function toWebSocketCatalogEntry(command) {
@@ -103,4 +108,20 @@ function toWebSocketCatalogEntry(command) {
 
 function toCommandString(parts) {
   return `bydoxe ${parts.join(' ')}`;
+}
+
+function normalizeValidation(validation) {
+  if (!validation) return undefined;
+
+  return omitUndefined({
+    positiveNumberParams: validation.positiveNumberParams,
+    enumParams: validation.enumParams,
+    requireAnyParams: validation.requireAnyParams,
+  });
+}
+
+function omitUndefined(value) {
+  return Object.fromEntries(
+    Object.entries(value).filter(([, entryValue]) => entryValue !== undefined),
+  );
 }

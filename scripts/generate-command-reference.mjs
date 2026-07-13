@@ -37,6 +37,8 @@ function renderReference(commandCatalog) {
     `- Schema version: \`${commandCatalog.schemaVersion}\``,
     `- Command count: \`${commandCatalog.commandCount}\``,
     '',
+    'Validation rules are enforced before request construction. Positive and enum rules apply when those fields are present; "one of" rules require at least one listed identifier.',
+    '',
     renderRestGroup(commandCatalog, 'public-rest', 'Public REST Commands'),
     renderRestGroup(commandCatalog, 'private-rest', 'Authenticated REST Commands'),
     renderRestGroup(commandCatalog, 'write-rest', 'Write REST Commands'),
@@ -46,20 +48,36 @@ function renderReference(commandCatalog) {
 
 function renderRestGroup(commandCatalog, group, title) {
   const commands = commandCatalog.commands.filter((command) => command.group === group);
+  const includeValidation = group === 'write-rest';
+  const header = includeValidation
+    ? '| Command | Method | Endpoint | Auth | Risk | Parameters | Validation |'
+    : '| Command | Method | Endpoint | Auth | Risk | Parameters |';
+  const separator = includeValidation
+    ? '| --- | --- | --- | --- | --- | --- | --- |'
+    : '| --- | --- | --- | --- | --- | --- |';
+
   return [
     `## ${title}`,
     '',
-    '| Command | Method | Endpoint | Auth | Risk | Parameters |',
-    '| --- | --- | --- | --- | --- | --- |',
+    header,
+    separator,
     ...commands.map((command) =>
-      [
+      (includeValidation ? [
         code(command.command),
         code(command.method),
         code(command.path),
         command.auth,
         command.riskLevel,
         formatParams(command),
-      ].join(' | '),
+        formatValidation(command),
+      ] : [
+        code(command.command),
+        code(command.method),
+        code(command.path),
+        command.auth,
+        command.riskLevel,
+        formatParams(command),
+      ]).join(' | '),
     ).map((row) => `| ${row} |`),
     '',
   ].join('\n');
@@ -96,6 +114,33 @@ function formatParams(command) {
   }
   if (optional.length > 0) {
     parts.push(`optional: ${optional.map(code).join(', ')}`);
+  }
+
+  return parts.length > 0 ? parts.join('<br>') : 'none';
+}
+
+function formatValidation(command) {
+  const validation = command.validation;
+  if (!validation) return 'none';
+
+  const parts = [];
+
+  if (Array.isArray(validation.positiveNumberParams)) {
+    parts.push(`positive: ${validation.positiveNumberParams.map(code).join(', ')}`);
+  }
+  if (Array.isArray(validation.enumParams)) {
+    parts.push(
+      ...validation.enumParams.map((rule) =>
+        `${code(rule.param)} in ${rule.values.map(code).join(', ')}`,
+      ),
+    );
+  }
+  if (Array.isArray(validation.requireAnyParams)) {
+    parts.push(
+      ...validation.requireAnyParams.map((paramGroup) =>
+        `one of ${paramGroup.map(code).join(', ')}`,
+      ),
+    );
   }
 
   return parts.length > 0 ? parts.join('<br>') : 'none';

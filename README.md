@@ -65,7 +65,7 @@ npm run build
 
 `docs/command-catalog.json` is generated from the CLI command registries. It is the machine-readable source for command metadata, required parameters, optional parameters, auth scope, risk level, transport, and endpoint mapping.
 
-`docs/command-reference.md` is generated from the command catalog. It is the human-readable command reference for endpoint mapping and parameter hints.
+`docs/command-reference.md` is generated from the command catalog. It is the human-readable command reference for endpoint mapping, parameter hints, and write validation rules.
 
 ## Credentials
 

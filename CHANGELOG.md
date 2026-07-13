@@ -38,3 +38,4 @@
 - Add typed validation for common write command numeric fields, enum fields, and order identifier alternatives.
 - Document and enforce a private WebSocket live safety gate policy.
 - Add second-layer opt-in public REST market data live smoke samples.
+- Expose write command validation rules in the generated command catalog and reference.

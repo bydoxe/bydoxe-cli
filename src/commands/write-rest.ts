@@ -198,12 +198,12 @@ const WRITE_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
   },
 };
 
-type EnumRule = {
+export type EnumRule = {
   param: string;
   values: string[];
 };
 
-type WriteValidationRule = {
+export type WriteValidationRule = {
   positiveNumberParams?: string[];
   enumParams?: EnumRule[];
   requireAnyParams?: string[][];
@@ -225,7 +225,7 @@ const FUTURES_ORDER_ENUMS = [
   { param: 'holdSide', values: ['LONG', 'SHORT'] },
 ];
 
-const WRITE_REST_VALIDATION_BY_PATH: Record<string, WriteValidationRule> = {
+export const WRITE_REST_VALIDATION_BY_PATH: Record<string, WriteValidationRule> = {
   '/spot/trade/place-order': {
     positiveNumberParams: ['amount', 'price'],
     enumParams: SPOT_ORDER_ENUMS,

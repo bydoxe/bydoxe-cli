@@ -9,6 +9,8 @@ This file is generated from `docs/command-catalog.json`. Run `npm run reference:
 - Schema version: `1`
 - Command count: `106`
 
+Validation rules are enforced before request construction. Positive and enum rules apply when those fields are present; "one of" rules require at least one listed identifier.
+
 ## Public REST Commands
 
 | Command | Method | Endpoint | Auth | Risk | Parameters |
@@ -86,42 +88,42 @@ This file is generated from `docs/command-catalog.json`. Run `npm run reference:
 
 ## Write REST Commands
 
-| Command | Method | Endpoint | Auth | Risk | Parameters |
-| --- | --- | --- | --- | --- | --- |
-| `bydoxe spot trade place-order` | `POST` | `/spot/trade/place-order` | private | high | required: `symbol`, `orderType`, `tradeType`, `amount`<br>optional: `price`, `clientOid` |
-| `bydoxe spot trade cancel-order` | `POST` | `/spot/trade/cancel-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid` |
-| `bydoxe spot trade cancel-replace-order` | `POST` | `/spot/trade/cancel-replace-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid`, `orderType`, `tradeType`, `price`, `amount` |
-| `bydoxe spot trade batch-cancel-replace-order` | `POST` | `/spot/trade/batch-cancel-replace-order` | private | high | optional: `symbol`, `orders` |
-| `bydoxe spot trade batch-orders` | `POST` | `/spot/trade/batch-orders` | private | high | optional: `orders` |
-| `bydoxe spot trade batch-cancel-orders` | `POST` | `/spot/trade/batch-cancel-orders` | private | high | optional: `symbol`, `orderIds`, `clientOids` |
-| `bydoxe spot trade cancel-symbol-order` | `POST` | `/spot/trade/cancel-symbol-order` | private | high | required: `symbol` |
-| `bydoxe spot account transfer` | `POST` | `/spot/account/transfer` | private | high | required: `coin`, `amount`, `fromType`, `toType` |
-| `bydoxe spot account withdraw` | `POST` | `/spot/account/withdraw` | private | high | required: `coin`, `chain`, `address`, `amount`<br>optional: `tag`, `clientOid` |
-| `bydoxe spot account cancel-withdraw` | `POST` | `/spot/account/cancel-withdraw` | private | high | optional: `orderId`, `clientOid` |
-| `bydoxe future account set-leverage` | `POST` | `/future/account/set-leverage` | private | high | required: `symbol`<br>optional: `longLeverage`, `shortLeverage`, `leverage`, `marginCoin` |
-| `bydoxe future account set-margin` | `POST` | `/future/account/set-margin` | private | high | required: `symbol`, `holdSide`, `amount` |
-| `bydoxe future account set-margin-mode` | `POST` | `/future/account/set-margin-mode` | private | high | required: `symbol`, `marginMode` |
-| `bydoxe future order place` | `POST` | `/future/order/place-order` | private | high | required: `symbol`, `side`, `orderType`, `size`<br>optional: `price`, `holdSide`, `clientOid`, `timeInForce` |
-| `bydoxe future order click-backhand` | `POST` | `/future/order/click-backhand` | private | high | required: `symbol`<br>optional: `side`, `size`, `holdSide` |
-| `bydoxe future order batch-place` | `POST` | `/future/order/batch-place-order` | private | high | optional: `orders` |
-| `bydoxe future order modify` | `POST` | `/future/order/modify-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid`, `price`, `size` |
-| `bydoxe future order cancel` | `POST` | `/future/order/cancel-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid` |
-| `bydoxe future order batch-cancel` | `POST` | `/future/order/batch-cancel-orders` | private | high | optional: `symbol`, `orderIds`, `clientOids` |
-| `bydoxe future order close-positions` | `POST` | `/future/order/close-positions` | private | high | required: `symbol`<br>optional: `holdSide` |
-| `bydoxe future order cancel-all` | `POST` | `/future/order/cancel-all-orders` | private | high | optional: `symbol` |
-| `bydoxe future trigger place` | `POST` | `/future/order/place-plan-order` | private | high | required: `symbol`, `side`, `triggerPrice`, `orderType`, `size`<br>optional: `price`, `holdSide`, `clientOid` |
-| `bydoxe future trigger modify` | `POST` | `/future/order/modify-plan-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid`, `triggerPrice`, `price`, `size` |
-| `bydoxe future trigger cancel` | `POST` | `/future/order/cancel-plan-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid` |
-| `bydoxe future tpsl place` | `POST` | `/future/order/place-tpsl-order` | private | high | required: `symbol`, `planType`, `triggerPrice`<br>optional: `holdSide`, `size`, `clientOid` |
-| `bydoxe future tpsl modify` | `POST` | `/future/order/modify-tpsl-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid`, `triggerPrice` |
-| `bydoxe copytrading trader modify-tpsl` | `POST` | `/copy/mix-trader/order-modify-tpsl` | private | high | required: `symbol`, `trackingNo`<br>optional: `stopSurplusPrice`, `stopLossPrice` |
-| `bydoxe copytrading trader close-positions` | `POST` | `/copy/mix-trader/order-close-positions` | private | high | required: `symbol`, `trackingNo` |
-| `bydoxe copytrading trader config` | `POST` | `/copy/mix-trader/config-trader-setting` | private | high | required: `symbol`<br>optional: `copyTradeMode` |
-| `bydoxe copytrading trader remove-follower` | `POST` | `/copy/mix-trader/remove-follower` | private | high | required: `followerId`<br>optional: `symbol` |
-| `bydoxe copytrading follower setting-tpsl` | `POST` | `/copy/mix-follower/setting-tpsl` | private | high | required: `symbol`, `trackingNo`<br>optional: `stopSurplusPrice`, `stopLossPrice` |
-| `bydoxe copytrading follower setting-copy-trade` | `POST` | `/copy/mix-follower/setting-copy-trade` | private | high | required: `traderId`, `symbol`<br>optional: `copyAmount`, `copyMode` |
-| `bydoxe copytrading follower close-positions` | `POST` | `/copy/mix-follower/close-positions` | private | high | required: `symbol`, `trackingNo` |
-| `bydoxe copytrading follower cancel-follow` | `POST` | `/copy/mix-follower/cancel-follow` | private | high | required: `traderId` |
+| Command | Method | Endpoint | Auth | Risk | Parameters | Validation |
+| --- | --- | --- | --- | --- | --- | --- |
+| `bydoxe spot trade place-order` | `POST` | `/spot/trade/place-order` | private | high | required: `symbol`, `orderType`, `tradeType`, `amount`<br>optional: `price`, `clientOid` | positive: `amount`, `price`<br>`orderType` in `MARKET`, `LIMIT`<br>`timeInForce` in `GTC`, `IOC`, `FOK`<br>`tradeType` in `BUY`, `SELL` |
+| `bydoxe spot trade cancel-order` | `POST` | `/spot/trade/cancel-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid` | one of `orderId`, `clientOid` |
+| `bydoxe spot trade cancel-replace-order` | `POST` | `/spot/trade/cancel-replace-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid`, `orderType`, `tradeType`, `price`, `amount` | positive: `amount`, `price`<br>`orderType` in `MARKET`, `LIMIT`<br>`timeInForce` in `GTC`, `IOC`, `FOK`<br>`tradeType` in `BUY`, `SELL`<br>one of `orderId`, `clientOid` |
+| `bydoxe spot trade batch-cancel-replace-order` | `POST` | `/spot/trade/batch-cancel-replace-order` | private | high | optional: `symbol`, `orders` | none |
+| `bydoxe spot trade batch-orders` | `POST` | `/spot/trade/batch-orders` | private | high | optional: `orders` | none |
+| `bydoxe spot trade batch-cancel-orders` | `POST` | `/spot/trade/batch-cancel-orders` | private | high | optional: `symbol`, `orderIds`, `clientOids` | none |
+| `bydoxe spot trade cancel-symbol-order` | `POST` | `/spot/trade/cancel-symbol-order` | private | high | required: `symbol` | none |
+| `bydoxe spot account transfer` | `POST` | `/spot/account/transfer` | private | high | required: `coin`, `amount`, `fromType`, `toType` | positive: `amount` |
+| `bydoxe spot account withdraw` | `POST` | `/spot/account/withdraw` | private | high | required: `coin`, `chain`, `address`, `amount`<br>optional: `tag`, `clientOid` | positive: `amount` |
+| `bydoxe spot account cancel-withdraw` | `POST` | `/spot/account/cancel-withdraw` | private | high | optional: `orderId`, `clientOid` | none |
+| `bydoxe future account set-leverage` | `POST` | `/future/account/set-leverage` | private | high | required: `symbol`<br>optional: `longLeverage`, `shortLeverage`, `leverage`, `marginCoin` | positive: `longLeverage`, `shortLeverage`, `leverage` |
+| `bydoxe future account set-margin` | `POST` | `/future/account/set-margin` | private | high | required: `symbol`, `holdSide`, `amount` | positive: `amount`<br>`holdSide` in `LONG`, `SHORT` |
+| `bydoxe future account set-margin-mode` | `POST` | `/future/account/set-margin-mode` | private | high | required: `symbol`, `marginMode` | `marginMode` in `CROSS`, `ISOLATED` |
+| `bydoxe future order place` | `POST` | `/future/order/place-order` | private | high | required: `symbol`, `side`, `orderType`, `size`<br>optional: `price`, `holdSide`, `clientOid`, `timeInForce` | positive: `size`, `price`<br>`orderType` in `MARKET`, `LIMIT`<br>`timeInForce` in `GTC`, `IOC`, `FOK`<br>`side` in `BUY`, `SELL`<br>`holdSide` in `LONG`, `SHORT` |
+| `bydoxe future order click-backhand` | `POST` | `/future/order/click-backhand` | private | high | required: `symbol`<br>optional: `side`, `size`, `holdSide` | positive: `size`<br>`orderType` in `MARKET`, `LIMIT`<br>`timeInForce` in `GTC`, `IOC`, `FOK`<br>`side` in `BUY`, `SELL`<br>`holdSide` in `LONG`, `SHORT` |
+| `bydoxe future order batch-place` | `POST` | `/future/order/batch-place-order` | private | high | optional: `orders` | none |
+| `bydoxe future order modify` | `POST` | `/future/order/modify-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid`, `price`, `size` | positive: `size`, `price`<br>one of `orderId`, `clientOid` |
+| `bydoxe future order cancel` | `POST` | `/future/order/cancel-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid` | one of `orderId`, `clientOid` |
+| `bydoxe future order batch-cancel` | `POST` | `/future/order/batch-cancel-orders` | private | high | optional: `symbol`, `orderIds`, `clientOids` | none |
+| `bydoxe future order close-positions` | `POST` | `/future/order/close-positions` | private | high | required: `symbol`<br>optional: `holdSide` | `holdSide` in `LONG`, `SHORT` |
+| `bydoxe future order cancel-all` | `POST` | `/future/order/cancel-all-orders` | private | high | optional: `symbol` | none |
+| `bydoxe future trigger place` | `POST` | `/future/order/place-plan-order` | private | high | required: `symbol`, `side`, `triggerPrice`, `orderType`, `size`<br>optional: `price`, `holdSide`, `clientOid` | positive: `size`, `price`, `triggerPrice`<br>`orderType` in `MARKET`, `LIMIT`<br>`timeInForce` in `GTC`, `IOC`, `FOK`<br>`side` in `BUY`, `SELL`<br>`holdSide` in `LONG`, `SHORT` |
+| `bydoxe future trigger modify` | `POST` | `/future/order/modify-plan-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid`, `triggerPrice`, `price`, `size` | positive: `size`, `price`, `triggerPrice`<br>one of `orderId`, `clientOid` |
+| `bydoxe future trigger cancel` | `POST` | `/future/order/cancel-plan-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid` | one of `orderId`, `clientOid` |
+| `bydoxe future tpsl place` | `POST` | `/future/order/place-tpsl-order` | private | high | required: `symbol`, `planType`, `triggerPrice`<br>optional: `holdSide`, `size`, `clientOid` | positive: `size`, `triggerPrice`<br>`planType` in `TAKE_PROFIT`, `STOP_LOSS`<br>`holdSide` in `LONG`, `SHORT` |
+| `bydoxe future tpsl modify` | `POST` | `/future/order/modify-tpsl-order` | private | high | required: `symbol`<br>optional: `orderId`, `clientOid`, `triggerPrice` | positive: `triggerPrice`<br>one of `orderId`, `clientOid` |
+| `bydoxe copytrading trader modify-tpsl` | `POST` | `/copy/mix-trader/order-modify-tpsl` | private | high | required: `symbol`, `trackingNo`<br>optional: `stopSurplusPrice`, `stopLossPrice` | positive: `stopSurplusPrice`, `stopLossPrice` |
+| `bydoxe copytrading trader close-positions` | `POST` | `/copy/mix-trader/order-close-positions` | private | high | required: `symbol`, `trackingNo` | none |
+| `bydoxe copytrading trader config` | `POST` | `/copy/mix-trader/config-trader-setting` | private | high | required: `symbol`<br>optional: `copyTradeMode` | none |
+| `bydoxe copytrading trader remove-follower` | `POST` | `/copy/mix-trader/remove-follower` | private | high | required: `followerId`<br>optional: `symbol` | none |
+| `bydoxe copytrading follower setting-tpsl` | `POST` | `/copy/mix-follower/setting-tpsl` | private | high | required: `symbol`, `trackingNo`<br>optional: `stopSurplusPrice`, `stopLossPrice` | positive: `stopSurplusPrice`, `stopLossPrice` |
+| `bydoxe copytrading follower setting-copy-trade` | `POST` | `/copy/mix-follower/setting-copy-trade` | private | high | required: `traderId`, `symbol`<br>optional: `copyAmount`, `copyMode` | positive: `copyAmount` |
+| `bydoxe copytrading follower close-positions` | `POST` | `/copy/mix-follower/close-positions` | private | high | required: `symbol`, `trackingNo` | none |
+| `bydoxe copytrading follower cancel-follow` | `POST` | `/copy/mix-follower/cancel-follow` | private | high | required: `traderId` | none |
 
 ## WebSocket Commands
 
