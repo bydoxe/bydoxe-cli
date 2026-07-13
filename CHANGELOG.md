@@ -22,3 +22,4 @@
 - Add project validation checks for domains, unfinished markers, and English-only artifacts.
 - Add validation that all registered CLI commands are documented in the README.
 - Add README dry-run smoke validation for documented CLI examples.
+- Add bounded public WebSocket live execution with `--live`, `--max-messages`, and `--timeout-ms`.

@@ -38,6 +38,9 @@ const GLOBAL_FLAGS = new Set([
   'dry-run',
   'format',
   'help',
+  'live',
+  'max-messages',
+  'timeout-ms',
   'ws-url',
 ]);
 

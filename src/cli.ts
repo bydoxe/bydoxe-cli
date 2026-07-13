@@ -28,6 +28,7 @@ import {
   redactWebSocketPreview,
   WEBSOCKET_COMMANDS,
 } from './commands/websocket.js';
+import { executePublicWebSocket } from './websocket/execute.js';
 
 async function main(argv: string[]): Promise<void> {
   const parsed = parseArgs(argv);
@@ -131,13 +132,27 @@ async function main(argv: string[]): Promise<void> {
       return;
     }
 
+    if (!parsed.flags.live) {
+      throw new CliError(
+        'Live WebSocket sessions require --live. Run with --dry-run first to review the connection and message preview.',
+      );
+    }
+
+    if (webSocketCommand.definition.scope !== 'public') {
+      throw new CliError(
+        'Live WebSocket sessions are currently supported only for public streams.',
+      );
+    }
+
     if (webSocketCommand.definition.requiresConfirm) {
       assertWebSocketConfirmed(parsed.flags);
     }
 
-    throw new CliError(
-      'Live WebSocket sessions are not implemented yet. Run with --dry-run to review the connection and message preview.',
+    printOutput(
+      await executePublicWebSocket(preview, getWebSocketLiveOptions(parsed.flags)),
+      format,
     );
+    return;
   }
 
   throw new CliError(`Unknown command: ${parsed.command.join(' ')}`);
@@ -147,6 +162,31 @@ function getFormat(flags: Record<string, string | boolean>): OutputFormat {
   if (flags.format === 'json') return 'json';
   if (flags.format === undefined || flags.format === 'human') return 'human';
   throw new CliError(`Unsupported output format: ${String(flags.format)}`);
+}
+
+function getWebSocketLiveOptions(
+  flags: Record<string, string | boolean>,
+): { maxMessages: number; timeoutMs: number } {
+  return {
+    maxMessages: getPositiveIntegerFlag(flags, 'max-messages', 5),
+    timeoutMs: getPositiveIntegerFlag(flags, 'timeout-ms', 15000),
+  };
+}
+
+function getPositiveIntegerFlag(
+  flags: Record<string, string | boolean>,
+  name: string,
+  defaultValue: number,
+): number {
+  const value = flags[name];
+  if (value === undefined) return defaultValue;
+
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    throw new CliError(`--${name} must be a positive integer.`);
+  }
+
+  return parsed;
 }
 
 function printHelp(): void {
@@ -192,6 +232,9 @@ Options:
   --confirm CONFIRM                 Required to execute write commands
   --format <format>                 Output format: human or json
   --dry-run                         Print the request without sending it
+  --live                            Execute a supported WebSocket live session
+  --max-messages <number>           Maximum WebSocket messages before closing
+  --timeout-ms <number>             WebSocket live timeout in milliseconds
   --ws-url <url>                    Override the selected WebSocket URL
   --help                            Show this help message
 

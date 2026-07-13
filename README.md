@@ -19,6 +19,7 @@ Implemented:
 - Authenticated REST read command routing
 - Authenticated REST write command routing
 - WebSocket message preview routing
+- Public WebSocket live execution
 - Dry-run request preview support
 - Public REST execution through Node.js fetch
 - Private REST request signing with redacted dry-run previews
@@ -196,7 +197,7 @@ bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry
 
 ## WebSocket Commands
 
-WebSocket commands currently build connection and message previews. Live WebSocket sessions are not implemented yet.
+WebSocket commands build connection and message previews with `--dry-run`. Public WebSocket commands also support bounded live sessions with `--live`. Private WebSocket live sessions are not implemented yet.
 
 | Command | Purpose |
 | --- | --- |
@@ -216,6 +217,13 @@ bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCU
 bydoxe websocket private login --dry-run --format json
 bydoxe websocket private subscribe --instType USDT-FUTURES --channel orders --instId BTCUSDT --dry-run --format json
 bydoxe websocket private spot trade --instId BTCUSDT --side buy --orderType limit --size 0.01 --price 60000 --dry-run --format json
+```
+
+Public live examples:
+
+```text
+bydoxe websocket public ping --live --timeout-ms 5000 --format json
+bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCUSDT --live --max-messages 5 --timeout-ms 15000 --format json
 ```
 
 Private WebSocket login previews redact credential-bearing fields in dry-run output. Private spot trade messages require exact `--confirm CONFIRM` before any future live execution path.
