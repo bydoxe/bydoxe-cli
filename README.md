@@ -114,6 +114,8 @@ Commands with required parameter metadata fail before building a request when re
 
 Write commands validate common positive numeric fields, enum-like fields, and order identifier alternatives before building a request.
 
+Nested batch body validation is planned separately. See [docs/write-body-validation-plan.md](docs/write-body-validation-plan.md) for the target scope.
+
 Dry-run output includes command metadata for auth scope, risk level, parameter mode, required parameters, and optional parameters.
 
 `bydoxe --help` lists required and optional parameter hints from the same command registry metadata.

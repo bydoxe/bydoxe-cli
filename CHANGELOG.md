@@ -42,3 +42,4 @@
 - Link the generated command reference from the README as the full CLI command surface.
 - Document the proposed read-only private WebSocket live boundary.
 - Add orderbook and candle samples to the optional public REST market live smoke.
+- Document the planned nested validation scope for batch write bodies.
