@@ -1,0 +1,1842 @@
+{
+  "schemaVersion": 1,
+  "packageName": "@bydoxe/bydoxe-cli",
+  "packageVersion": "0.1.0",
+  "commandCount": 106,
+  "commands": [
+    {
+      "command": "bydoxe public time",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "none",
+      "requiredParams": [],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/public/time",
+      "description": "Build or execute a server time request"
+    },
+    {
+      "command": "bydoxe spot market coins",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "coin"
+      ],
+      "method": "GET",
+      "path": "/spot/market/coins",
+      "description": "Build or execute a spot coin metadata request"
+    },
+    {
+      "command": "bydoxe spot market symbols",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "GET",
+      "path": "/spot/market/symbols",
+      "description": "Build or execute a spot market symbols request"
+    },
+    {
+      "command": "bydoxe spot market tickers",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "GET",
+      "path": "/spot/market/tickers",
+      "description": "Build or execute a spot market tickers request"
+    },
+    {
+      "command": "bydoxe spot market orderbook",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "limit"
+      ],
+      "method": "GET",
+      "path": "/spot/market/orderbook",
+      "description": "Build or execute a spot order book request"
+    },
+    {
+      "command": "bydoxe spot market candles",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "granularity"
+      ],
+      "optionalParams": [
+        "startTime",
+        "endTime",
+        "limit"
+      ],
+      "method": "GET",
+      "path": "/spot/market/candles",
+      "description": "Build or execute a spot candles request"
+    },
+    {
+      "command": "bydoxe spot market history-candles",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "granularity"
+      ],
+      "optionalParams": [
+        "startTime",
+        "endTime",
+        "limit"
+      ],
+      "method": "GET",
+      "path": "/spot/market/history-candles",
+      "description": "Build or execute a spot historical candles request"
+    },
+    {
+      "command": "bydoxe spot market fills",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "limit"
+      ],
+      "method": "GET",
+      "path": "/spot/market/fills",
+      "description": "Build or execute a spot recent trades request"
+    },
+    {
+      "command": "bydoxe spot market fills-history",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "limit",
+        "fromId",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/spot/market/fills-history",
+      "description": "Build or execute a spot historical trades request"
+    },
+    {
+      "command": "bydoxe future market ticker",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "GET",
+      "path": "/future/market/24h-ticker",
+      "description": "Build or execute a futures 24h ticker request"
+    },
+    {
+      "command": "bydoxe future market mark-price",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "GET",
+      "path": "/future/market/mark-price",
+      "description": "Build or execute a futures mark price request"
+    },
+    {
+      "command": "bydoxe future market book-ticker",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "GET",
+      "path": "/future/market/book-ticker",
+      "description": "Build or execute a futures best bid and ask request"
+    },
+    {
+      "command": "bydoxe future market fills",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "limit"
+      ],
+      "method": "GET",
+      "path": "/future/market/fills",
+      "description": "Build or execute a futures recent trades request"
+    },
+    {
+      "command": "bydoxe future market fills-history",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "limit",
+        "idLessThan",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/market/fills-history",
+      "description": "Build or execute a futures historical trades request"
+    },
+    {
+      "command": "bydoxe future market depth",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "limit"
+      ],
+      "method": "GET",
+      "path": "/future/market/depth",
+      "description": "Build or execute a futures order book depth request"
+    },
+    {
+      "command": "bydoxe future market candles",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "interval"
+      ],
+      "optionalParams": [
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/market/candles",
+      "description": "Build or execute a futures candles request"
+    },
+    {
+      "command": "bydoxe future market history-fund-rate",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/market/history-fund-rate",
+      "description": "Build or execute a futures historical funding rate request"
+    },
+    {
+      "command": "bydoxe future market history-candles",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "interval"
+      ],
+      "optionalParams": [
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/market/history-candles",
+      "description": "Build or execute a futures historical candles request"
+    },
+    {
+      "command": "bydoxe future market history-index-candles",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "interval"
+      ],
+      "optionalParams": [
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/market/history-index-candles",
+      "description": "Build or execute a futures historical index candles request"
+    },
+    {
+      "command": "bydoxe future market history-mark-candles",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "interval"
+      ],
+      "optionalParams": [
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/market/history-mark-candles",
+      "description": "Build or execute a futures historical mark candles request"
+    },
+    {
+      "command": "bydoxe future market funding-info",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/future/market/funding-info",
+      "description": "Build or execute a futures funding configuration request"
+    },
+    {
+      "command": "bydoxe future market open-interest",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/future/market/open-interest",
+      "description": "Build or execute a futures open interest request"
+    },
+    {
+      "command": "bydoxe future market taker-buy-sell",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "period"
+      ],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/future/market/taker-buy-sell",
+      "description": "Build or execute a futures taker buy and sell volume request"
+    },
+    {
+      "command": "bydoxe future market account-long-short",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "period"
+      ],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/future/market/account-long-short",
+      "description": "Build or execute a futures account long and short ratio request"
+    },
+    {
+      "command": "bydoxe future market top-trader-position-long-short",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "period"
+      ],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/future/market/top-trader-position-long-short",
+      "description": "Build or execute a futures top trader position long and short ratio request"
+    },
+    {
+      "command": "bydoxe future market top-trader-account-long-short",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol",
+        "period"
+      ],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/future/market/top-trader-account-long-short",
+      "description": "Build or execute a futures top trader account long and short ratio request"
+    },
+    {
+      "command": "bydoxe future market query-position-tier",
+      "group": "public-rest",
+      "transport": "rest",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/future/market/query-position-tier",
+      "description": "Build or execute a futures position tier request"
+    },
+    {
+      "command": "bydoxe common trade-fee",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "tradeType"
+      ],
+      "method": "GET",
+      "path": "/common/trade-fee",
+      "description": "Build or execute an authenticated trade fee request"
+    },
+    {
+      "command": "bydoxe account funding-assets",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "coin"
+      ],
+      "method": "GET",
+      "path": "/account/funding-assets",
+      "description": "Build or execute a funding assets request"
+    },
+    {
+      "command": "bydoxe account all-balance",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/account/all-account-balance",
+      "description": "Build or execute an all-account balance request"
+    },
+    {
+      "command": "bydoxe spot trade unfilled-orders",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "orderId",
+        "clientOid",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/spot/trade/unfilled-orders",
+      "description": "Build or execute a spot unfilled orders request"
+    },
+    {
+      "command": "bydoxe spot trade history-orders",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "orderId",
+        "clientOid",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/spot/trade/history-orders",
+      "description": "Build or execute a spot order history request"
+    },
+    {
+      "command": "bydoxe spot trade fills",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "orderId",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/spot/trade/fills",
+      "description": "Build or execute a spot order fills request"
+    },
+    {
+      "command": "bydoxe spot trade order-info",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "body",
+      "requiredParams": [
+        "orderId"
+      ],
+      "optionalParams": [],
+      "method": "POST",
+      "path": "/spot/trade/order-info",
+      "description": "Build or execute a spot order information request"
+    },
+    {
+      "command": "bydoxe spot account assets",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "coin",
+        "assetType"
+      ],
+      "method": "GET",
+      "path": "/spot/account/assets",
+      "description": "Build or execute a spot account assets request"
+    },
+    {
+      "command": "bydoxe spot account transfer-coin-info",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "coin"
+      ],
+      "method": "GET",
+      "path": "/spot/account/transfer-coin-info",
+      "description": "Build or execute a spot transfer coin info request"
+    },
+    {
+      "command": "bydoxe spot account withdrawal-records",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "coin",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/spot/account/withdrawal-records",
+      "description": "Build or execute a spot withdrawal records request"
+    },
+    {
+      "command": "bydoxe spot account deposit-records",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "coin",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/spot/account/deposit-records",
+      "description": "Build or execute a spot deposit records request"
+    },
+    {
+      "command": "bydoxe spot account transfer-records",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "coin",
+        "fromType",
+        "toType",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/spot/account/transfer-records",
+      "description": "Build or execute a spot transfer records request"
+    },
+    {
+      "command": "bydoxe spot account deposit-address",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "coin"
+      ],
+      "optionalParams": [
+        "chain"
+      ],
+      "method": "GET",
+      "path": "/spot/account/deposit-address",
+      "description": "Build or execute a spot deposit address request"
+    },
+    {
+      "command": "bydoxe future position single",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [],
+      "method": "GET",
+      "path": "/future/position/single-position",
+      "description": "Build or execute a futures single-position request"
+    },
+    {
+      "command": "bydoxe future position all",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "GET",
+      "path": "/future/position/all-position",
+      "description": "Build or execute a futures all-position request"
+    },
+    {
+      "command": "bydoxe future position history",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/position/history-position",
+      "description": "Build or execute a futures position history request"
+    },
+    {
+      "command": "bydoxe future account info",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "GET",
+      "path": "/future/account",
+      "description": "Build or execute a futures account request"
+    },
+    {
+      "command": "bydoxe future account max-open",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "posSide",
+        "orderType",
+        "openPrice",
+        "leverage"
+      ],
+      "method": "GET",
+      "path": "/future/account/max-open",
+      "description": "Build or execute a futures max open request"
+    },
+    {
+      "command": "bydoxe future account liq-price",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "posSide",
+        "orderType",
+        "openAmount",
+        "openPrice"
+      ],
+      "method": "GET",
+      "path": "/future/account/liq-price",
+      "description": "Build or execute a futures liquidation price estimate request"
+    },
+    {
+      "command": "bydoxe future account open-count",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "posSide",
+        "orderType",
+        "openPrice",
+        "openAmount"
+      ],
+      "method": "GET",
+      "path": "/future/account/open-count",
+      "description": "Build or execute a futures open count estimate request"
+    },
+    {
+      "command": "bydoxe future order detail",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "orderId",
+        "clientOid"
+      ],
+      "method": "GET",
+      "path": "/future/order/detail",
+      "description": "Build or execute a futures order detail request"
+    },
+    {
+      "command": "bydoxe future order fills",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "orderId",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/order/fills",
+      "description": "Build or execute a futures order fills request"
+    },
+    {
+      "command": "bydoxe future order fill-history",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "orderId",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/order/fill-history",
+      "description": "Build or execute a futures fill history request"
+    },
+    {
+      "command": "bydoxe future order orders-pending",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/order/orders-pending",
+      "description": "Build or execute a futures pending orders request"
+    },
+    {
+      "command": "bydoxe future order orders-history",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "limit",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/future/order/orders-history",
+      "description": "Build or execute a futures order history request"
+    },
+    {
+      "command": "bydoxe future trigger orders-pending",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "limit"
+      ],
+      "optionalParams": [
+        "symbol",
+        "idLessThan",
+        "startTime",
+        "endTime",
+        "orderId"
+      ],
+      "method": "GET",
+      "path": "/future/order/orders-plan-pending",
+      "description": "Build or execute a futures pending trigger orders request"
+    },
+    {
+      "command": "bydoxe future trigger orders-history",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "limit"
+      ],
+      "optionalParams": [
+        "symbol",
+        "idLessThan",
+        "startTime",
+        "endTime",
+        "orderId",
+        "clientOid"
+      ],
+      "method": "GET",
+      "path": "/future/order/orders-plan-history",
+      "description": "Build or execute a futures trigger order history request"
+    },
+    {
+      "command": "bydoxe copytrading trader current-orders",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "trackingNo",
+        "pageNo",
+        "pageSize"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-trader/order-current-track",
+      "description": "Build or execute a copy trading trader current orders request"
+    },
+    {
+      "command": "bydoxe copytrading trader history-orders",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "trackingNo",
+        "pageNo",
+        "pageSize"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-trader/order-history-track",
+      "description": "Build or execute a copy trading trader order history request"
+    },
+    {
+      "command": "bydoxe copytrading trader total-detail",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "trackingNo"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-trader/order-total-detail",
+      "description": "Build or execute a copy trading trader total detail request"
+    },
+    {
+      "command": "bydoxe copytrading trader profit-summary",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "pageNo",
+        "pageSize",
+        "startTime",
+        "endTime"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-trader/profit-history-summarys",
+      "description": "Build or execute a copy trading trader profit summary request"
+    },
+    {
+      "command": "bydoxe copytrading trader profit-history",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "trackingNo",
+        "pageNo",
+        "pageSize"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-trader/profit-history-details",
+      "description": "Build or execute a copy trading trader profit history request"
+    },
+    {
+      "command": "bydoxe copytrading trader profit-details",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "trackingNo"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-trader/profit-details",
+      "description": "Build or execute a copy trading trader profit details request"
+    },
+    {
+      "command": "bydoxe copytrading trader followers",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "pageNo",
+        "pageSize"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-trader/query-followers",
+      "description": "Build or execute a copy trading trader followers request"
+    },
+    {
+      "command": "bydoxe copytrading follower current-orders",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "traderId",
+        "trackingNo",
+        "pageNo",
+        "pageSize"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-follower/query-current-orders",
+      "description": "Build or execute a copy trading follower current orders request"
+    },
+    {
+      "command": "bydoxe copytrading follower history-orders",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "traderId",
+        "trackingNo",
+        "pageNo",
+        "pageSize"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-follower/query-history-orders",
+      "description": "Build or execute a copy trading follower order history request"
+    },
+    {
+      "command": "bydoxe copytrading follower settings",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [
+        "traderId"
+      ],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-follower/query-copy-trade-settings",
+      "description": "Build or execute a copy trading follower settings request"
+    },
+    {
+      "command": "bydoxe copytrading follower traders",
+      "group": "private-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "low",
+      "parameterMode": "query",
+      "requiredParams": [],
+      "optionalParams": [
+        "pageNo",
+        "pageSize"
+      ],
+      "method": "GET",
+      "path": "/copy/mix-follower/query-my-traders",
+      "description": "Build or execute a copy trading follower traders request"
+    },
+    {
+      "command": "bydoxe spot trade place-order",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "orderType",
+        "tradeType",
+        "amount"
+      ],
+      "optionalParams": [
+        "price",
+        "clientOid"
+      ],
+      "method": "POST",
+      "path": "/spot/trade/place-order",
+      "description": "Requires CONFIRM: place a spot order"
+    },
+    {
+      "command": "bydoxe spot trade cancel-order",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "orderId",
+        "clientOid"
+      ],
+      "method": "POST",
+      "path": "/spot/trade/cancel-order",
+      "description": "Requires CONFIRM: cancel a spot order"
+    },
+    {
+      "command": "bydoxe spot trade cancel-replace-order",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "orderId",
+        "clientOid",
+        "orderType",
+        "tradeType",
+        "price",
+        "amount"
+      ],
+      "method": "POST",
+      "path": "/spot/trade/cancel-replace-order",
+      "description": "Requires CONFIRM: cancel and replace a spot order"
+    },
+    {
+      "command": "bydoxe spot trade batch-cancel-replace-order",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "orders"
+      ],
+      "method": "POST",
+      "path": "/spot/trade/batch-cancel-replace-order",
+      "description": "Requires CONFIRM: batch cancel and replace spot orders"
+    },
+    {
+      "command": "bydoxe spot trade batch-orders",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [],
+      "optionalParams": [
+        "orders"
+      ],
+      "method": "POST",
+      "path": "/spot/trade/batch-orders",
+      "description": "Requires CONFIRM: place batch spot orders"
+    },
+    {
+      "command": "bydoxe spot trade batch-cancel-orders",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "orderIds",
+        "clientOids"
+      ],
+      "method": "POST",
+      "path": "/spot/trade/batch-cancel-orders",
+      "description": "Requires CONFIRM: cancel batch spot orders"
+    },
+    {
+      "command": "bydoxe spot trade cancel-symbol-order",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [],
+      "method": "POST",
+      "path": "/spot/trade/cancel-symbol-order",
+      "description": "Requires CONFIRM: cancel all spot orders for a symbol"
+    },
+    {
+      "command": "bydoxe spot account transfer",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "coin",
+        "amount",
+        "fromType",
+        "toType"
+      ],
+      "optionalParams": [],
+      "method": "POST",
+      "path": "/spot/account/transfer",
+      "description": "Requires CONFIRM: transfer funds between accounts"
+    },
+    {
+      "command": "bydoxe spot account withdraw",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "coin",
+        "chain",
+        "address",
+        "amount"
+      ],
+      "optionalParams": [
+        "tag",
+        "clientOid"
+      ],
+      "method": "POST",
+      "path": "/spot/account/withdraw",
+      "description": "Requires CONFIRM: withdraw assets"
+    },
+    {
+      "command": "bydoxe spot account cancel-withdraw",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [],
+      "optionalParams": [
+        "orderId",
+        "clientOid"
+      ],
+      "method": "POST",
+      "path": "/spot/account/cancel-withdraw",
+      "description": "Requires CONFIRM: cancel a withdrawal"
+    },
+    {
+      "command": "bydoxe future account set-leverage",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "longLeverage",
+        "shortLeverage",
+        "leverage",
+        "marginCoin"
+      ],
+      "method": "POST",
+      "path": "/future/account/set-leverage",
+      "description": "Requires CONFIRM: change futures leverage"
+    },
+    {
+      "command": "bydoxe future account set-margin",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "holdSide",
+        "amount"
+      ],
+      "optionalParams": [],
+      "method": "POST",
+      "path": "/future/account/set-margin",
+      "description": "Requires CONFIRM: adjust futures margin"
+    },
+    {
+      "command": "bydoxe future account set-margin-mode",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "marginMode"
+      ],
+      "optionalParams": [],
+      "method": "POST",
+      "path": "/future/account/set-margin-mode",
+      "description": "Requires CONFIRM: change futures margin mode"
+    },
+    {
+      "command": "bydoxe future order place",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "side",
+        "orderType",
+        "size"
+      ],
+      "optionalParams": [
+        "price",
+        "holdSide",
+        "clientOid",
+        "timeInForce"
+      ],
+      "method": "POST",
+      "path": "/future/order/place-order",
+      "description": "Requires CONFIRM: place a futures order"
+    },
+    {
+      "command": "bydoxe future order click-backhand",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "side",
+        "size",
+        "holdSide"
+      ],
+      "method": "POST",
+      "path": "/future/order/click-backhand",
+      "description": "Requires CONFIRM: place a futures reversal order"
+    },
+    {
+      "command": "bydoxe future order batch-place",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [],
+      "optionalParams": [
+        "orders"
+      ],
+      "method": "POST",
+      "path": "/future/order/batch-place-order",
+      "description": "Requires CONFIRM: place batch futures orders"
+    },
+    {
+      "command": "bydoxe future order modify",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "orderId",
+        "clientOid",
+        "price",
+        "size"
+      ],
+      "method": "POST",
+      "path": "/future/order/modify-order",
+      "description": "Requires CONFIRM: modify a futures order"
+    },
+    {
+      "command": "bydoxe future order cancel",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "orderId",
+        "clientOid"
+      ],
+      "method": "POST",
+      "path": "/future/order/cancel-order",
+      "description": "Requires CONFIRM: cancel a futures order"
+    },
+    {
+      "command": "bydoxe future order batch-cancel",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol",
+        "orderIds",
+        "clientOids"
+      ],
+      "method": "POST",
+      "path": "/future/order/batch-cancel-orders",
+      "description": "Requires CONFIRM: cancel batch futures orders"
+    },
+    {
+      "command": "bydoxe future order close-positions",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "holdSide"
+      ],
+      "method": "POST",
+      "path": "/future/order/close-positions",
+      "description": "Requires CONFIRM: close futures positions"
+    },
+    {
+      "command": "bydoxe future order cancel-all",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "POST",
+      "path": "/future/order/cancel-all-orders",
+      "description": "Requires CONFIRM: cancel all futures orders"
+    },
+    {
+      "command": "bydoxe future trigger place",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "side",
+        "triggerPrice",
+        "orderType",
+        "size"
+      ],
+      "optionalParams": [
+        "price",
+        "holdSide",
+        "clientOid"
+      ],
+      "method": "POST",
+      "path": "/future/order/place-plan-order",
+      "description": "Requires CONFIRM: place a futures trigger order"
+    },
+    {
+      "command": "bydoxe future trigger modify",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "orderId",
+        "clientOid",
+        "triggerPrice",
+        "price",
+        "size"
+      ],
+      "method": "POST",
+      "path": "/future/order/modify-plan-order",
+      "description": "Requires CONFIRM: modify a futures trigger order"
+    },
+    {
+      "command": "bydoxe future trigger cancel",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "orderId",
+        "clientOid"
+      ],
+      "method": "POST",
+      "path": "/future/order/cancel-plan-order",
+      "description": "Requires CONFIRM: cancel futures trigger orders"
+    },
+    {
+      "command": "bydoxe future tpsl place",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "planType",
+        "triggerPrice"
+      ],
+      "optionalParams": [
+        "holdSide",
+        "size",
+        "clientOid"
+      ],
+      "method": "POST",
+      "path": "/future/order/place-tpsl-order",
+      "description": "Requires CONFIRM: place a futures TP/SL order"
+    },
+    {
+      "command": "bydoxe future tpsl modify",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "orderId",
+        "clientOid",
+        "triggerPrice"
+      ],
+      "method": "POST",
+      "path": "/future/order/modify-tpsl-order",
+      "description": "Requires CONFIRM: modify a futures TP/SL order"
+    },
+    {
+      "command": "bydoxe copytrading trader modify-tpsl",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "trackingNo"
+      ],
+      "optionalParams": [
+        "stopSurplusPrice",
+        "stopLossPrice"
+      ],
+      "method": "POST",
+      "path": "/copy/mix-trader/order-modify-tpsl",
+      "description": "Requires CONFIRM: modify copy trading trader TP/SL"
+    },
+    {
+      "command": "bydoxe copytrading trader close-positions",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "trackingNo"
+      ],
+      "optionalParams": [],
+      "method": "POST",
+      "path": "/copy/mix-trader/order-close-positions",
+      "description": "Requires CONFIRM: close copy trading trader positions"
+    },
+    {
+      "command": "bydoxe copytrading trader config",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol"
+      ],
+      "optionalParams": [
+        "copyTradeMode"
+      ],
+      "method": "POST",
+      "path": "/copy/mix-trader/config-trader-setting",
+      "description": "Requires CONFIRM: change copy trading trader settings"
+    },
+    {
+      "command": "bydoxe copytrading trader remove-follower",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "followerId"
+      ],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "POST",
+      "path": "/copy/mix-trader/remove-follower",
+      "description": "Requires CONFIRM: remove a copy trading follower"
+    },
+    {
+      "command": "bydoxe copytrading follower setting-tpsl",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "trackingNo"
+      ],
+      "optionalParams": [
+        "stopSurplusPrice",
+        "stopLossPrice"
+      ],
+      "method": "POST",
+      "path": "/copy/mix-follower/setting-tpsl",
+      "description": "Requires CONFIRM: set follower TP/SL"
+    },
+    {
+      "command": "bydoxe copytrading follower setting-copy-trade",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "traderId",
+        "symbol"
+      ],
+      "optionalParams": [
+        "copyAmount",
+        "copyMode"
+      ],
+      "method": "POST",
+      "path": "/copy/mix-follower/setting-copy-trade",
+      "description": "Requires CONFIRM: change follower copy trading settings"
+    },
+    {
+      "command": "bydoxe copytrading follower close-positions",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "symbol",
+        "trackingNo"
+      ],
+      "optionalParams": [],
+      "method": "POST",
+      "path": "/copy/mix-follower/close-positions",
+      "description": "Requires CONFIRM: close follower copy trading positions"
+    },
+    {
+      "command": "bydoxe copytrading follower cancel-follow",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "traderId"
+      ],
+      "optionalParams": [],
+      "method": "POST",
+      "path": "/copy/mix-follower/cancel-follow",
+      "description": "Requires CONFIRM: cancel following a trader"
+    },
+    {
+      "command": "bydoxe websocket public ping",
+      "group": "websocket",
+      "transport": "websocket",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "message",
+      "requiredParams": [],
+      "optionalParams": [],
+      "scope": "public",
+      "requiresConfirm": false,
+      "description": "Build a public WebSocket ping message preview"
+    },
+    {
+      "command": "bydoxe websocket public subscribe",
+      "group": "websocket",
+      "transport": "websocket",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "message",
+      "requiredParams": [],
+      "optionalParams": [],
+      "scope": "public",
+      "requiresConfirm": false,
+      "description": "Build a public WebSocket subscribe message preview"
+    },
+    {
+      "command": "bydoxe websocket public unsubscribe",
+      "group": "websocket",
+      "transport": "websocket",
+      "auth": "public",
+      "riskLevel": "low",
+      "parameterMode": "message",
+      "requiredParams": [],
+      "optionalParams": [],
+      "scope": "public",
+      "requiresConfirm": false,
+      "description": "Build a public WebSocket unsubscribe message preview"
+    },
+    {
+      "command": "bydoxe websocket private login",
+      "group": "websocket",
+      "transport": "websocket",
+      "auth": "private",
+      "riskLevel": "medium",
+      "parameterMode": "message",
+      "requiredParams": [],
+      "optionalParams": [],
+      "scope": "private",
+      "requiresConfirm": false,
+      "description": "Build a signed private WebSocket login message preview"
+    },
+    {
+      "command": "bydoxe websocket private subscribe",
+      "group": "websocket",
+      "transport": "websocket",
+      "auth": "private",
+      "riskLevel": "medium",
+      "parameterMode": "message",
+      "requiredParams": [],
+      "optionalParams": [],
+      "scope": "private",
+      "requiresConfirm": false,
+      "description": "Build a private WebSocket subscribe message preview"
+    },
+    {
+      "command": "bydoxe websocket private unsubscribe",
+      "group": "websocket",
+      "transport": "websocket",
+      "auth": "private",
+      "riskLevel": "medium",
+      "parameterMode": "message",
+      "requiredParams": [],
+      "optionalParams": [],
+      "scope": "private",
+      "requiresConfirm": false,
+      "description": "Build a private WebSocket unsubscribe message preview"
+    },
+    {
+      "command": "bydoxe websocket private spot trade",
+      "group": "websocket",
+      "transport": "websocket",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "message",
+      "requiredParams": [],
+      "optionalParams": [],
+      "scope": "private",
+      "requiresConfirm": true,
+      "description": "Requires CONFIRM: build a private WebSocket spot trade message preview"
+    }
+  ]
+}

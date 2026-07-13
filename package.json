@@ -9,19 +9,22 @@
   },
   "files": [
     "dist",
+    "docs",
     "README.md",
     "DISCLAIMER.md",
     "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "catalog:generate": "npm run build && node scripts/generate-command-catalog.mjs",
+    "catalog:check": "npm run build && node scripts/generate-command-catalog.mjs --check",
     "prepack": "npm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "npm run build && node --test test/*.test.mjs",
     "smoke:readme": "npm run build && node scripts/smoke-readme-examples.mjs",
     "smoke:public-rest-live": "npm run build && node scripts/smoke-public-rest-live.mjs",
     "smoke:websocket-live": "npm run build && node scripts/smoke-websocket-public-live.mjs",
-    "validate": "npm run typecheck && npm test && npm run smoke:readme && npm run smoke:public-rest-live && npm run smoke:websocket-live && node scripts/validate-project.mjs"
+    "validate": "npm run typecheck && npm test && npm run catalog:check && npm run smoke:readme && npm run smoke:public-rest-live && npm run smoke:websocket-live && node scripts/validate-project.mjs"
   },
   "engines": {
     "node": ">=20"

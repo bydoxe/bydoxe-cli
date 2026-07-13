@@ -51,13 +51,17 @@ node dist/cli.js --help
 npm run validate
 npm run typecheck
 npm test
+npm run catalog:generate
+npm run catalog:check
 npm run smoke:readme
 npm run smoke:public-rest-live
 npm run smoke:websocket-live
 npm run build
 ```
 
-`npm run validate` runs type checking, unit tests, README dry-run smoke examples, optional public REST and WebSocket live smoke gates, README command coverage checks, command metadata checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts. The public REST live smoke is skipped unless `BYDOXE_RUN_LIVE_REST_TESTS=1` is set. The public WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_WS_TESTS=1` is set.
+`npm run validate` runs type checking, unit tests, command catalog freshness checks, README dry-run smoke examples, optional public REST and WebSocket live smoke gates, README command coverage checks, command metadata checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts. The public REST live smoke is skipped unless `BYDOXE_RUN_LIVE_REST_TESTS=1` is set. The public WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_WS_TESTS=1` is set.
+
+`docs/command-catalog.json` is generated from the CLI command registries. It is the machine-readable source for command metadata, required parameters, optional parameters, auth scope, risk level, transport, and endpoint mapping.
 
 ## Credentials
 
