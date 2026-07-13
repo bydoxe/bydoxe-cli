@@ -14,3 +14,5 @@
 - Add request URL and mocked execution tests.
 - Add authenticated REST read command routing with signed requests.
 - Add redacted dry-run previews for authenticated requests.
+- Add authenticated REST write command routing with required `CONFIRM` execution gate.
+- Add JSON body support for write command previews and execution.

@@ -17,9 +17,11 @@ Implemented:
 - REST request builder
 - Public REST command routing
 - Authenticated REST read command routing
+- Authenticated REST write command routing
 - Dry-run request preview support
 - Public REST execution through Node.js fetch
 - Private REST request signing with redacted dry-run previews
+- `--confirm CONFIRM` gate for write command execution
 - Unit tests using Node.js built-in test runner
 
 ## Default Domains
@@ -71,6 +73,7 @@ bydoxe future market ticker --symbol BTCUSDT --dry-run
 bydoxe future market mark-price --symbol BTCUSDT --dry-run
 bydoxe account funding-assets --coin USDT --dry-run --format json
 bydoxe future position all --dry-run --format json
+bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --dry-run --format json
 ```
 
 The dry-run mode prints the request that would be sent without making a network call.
@@ -119,3 +122,43 @@ Authenticated read commands require local credentials and never require chat-bas
 | `bydoxe future order fill-history` | `GET /future/order/fill-history` |
 | `bydoxe future order orders-pending` | `GET /future/order/orders-pending` |
 | `bydoxe future order orders-history` | `GET /future/order/orders-history` |
+
+## Write Commands
+
+Write commands require local credentials and exact `--confirm CONFIRM` for live execution. Always review `--dry-run` output first.
+
+| Command | Endpoint |
+| --- | --- |
+| `bydoxe spot trade place-order` | `POST /spot/trade/place-order` |
+| `bydoxe spot trade cancel-order` | `POST /spot/trade/cancel-order` |
+| `bydoxe spot trade cancel-replace-order` | `POST /spot/trade/cancel-replace-order` |
+| `bydoxe spot trade batch-cancel-replace-order` | `POST /spot/trade/batch-cancel-replace-order` |
+| `bydoxe spot trade batch-orders` | `POST /spot/trade/batch-orders` |
+| `bydoxe spot trade batch-cancel-orders` | `POST /spot/trade/batch-cancel-orders` |
+| `bydoxe spot trade cancel-symbol-order` | `POST /spot/trade/cancel-symbol-order` |
+| `bydoxe spot account transfer` | `POST /spot/account/transfer` |
+| `bydoxe spot account withdraw` | `POST /spot/account/withdraw` |
+| `bydoxe spot account cancel-withdraw` | `POST /spot/account/cancel-withdraw` |
+| `bydoxe future account set-leverage` | `POST /future/account/set-leverage` |
+| `bydoxe future account set-margin` | `POST /future/account/set-margin` |
+| `bydoxe future account set-margin-mode` | `POST /future/account/set-margin-mode` |
+| `bydoxe future order place` | `POST /future/order/place-order` |
+| `bydoxe future order click-backhand` | `POST /future/order/click-backhand` |
+| `bydoxe future order batch-place` | `POST /future/order/batch-place-order` |
+| `bydoxe future order modify` | `POST /future/order/modify-order` |
+| `bydoxe future order cancel` | `POST /future/order/cancel-order` |
+| `bydoxe future order batch-cancel` | `POST /future/order/batch-cancel-orders` |
+| `bydoxe future order close-positions` | `POST /future/order/close-positions` |
+| `bydoxe future order cancel-all` | `POST /future/order/cancel-all-orders` |
+| `bydoxe future trigger place` | `POST /future/order/place-plan-order` |
+| `bydoxe future trigger modify` | `POST /future/order/modify-plan-order` |
+| `bydoxe future trigger cancel` | `POST /future/order/cancel-plan-order` |
+| `bydoxe future tpsl place` | `POST /future/order/place-tpsl-order` |
+| `bydoxe future tpsl modify` | `POST /future/order/modify-tpsl-order` |
+
+Write request bodies can be built from flags or passed as JSON:
+
+```sh
+bydoxe future account set-leverage --symbol BTCUSDT --longLeverage 5 --shortLeverage 5 --dry-run --format json
+bydoxe future account set-leverage --body '{"symbol":"BTCUSDT","longLeverage":5,"shortLeverage":5}' --dry-run --format json
+```

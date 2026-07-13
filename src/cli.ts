@@ -17,6 +17,11 @@ import {
   PRIVATE_REST_COMMANDS,
   redactPrivateRequest,
 } from './commands/private-rest.js';
+import {
+  assertWriteConfirmed,
+  findWriteRestCommand,
+  WRITE_REST_COMMANDS,
+} from './commands/write-rest.js';
 
 async function main(argv: string[]): Promise<void> {
   const parsed = parseArgs(argv);
@@ -82,6 +87,35 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  const writeRestCommand = findWriteRestCommand(parsed);
+  if (writeRestCommand) {
+    const request = buildRequest(config, {
+      method: writeRestCommand.definition.method,
+      path: writeRestCommand.definition.path,
+      body: writeRestCommand.body,
+      privateRequest: true,
+    });
+
+    if (dryRun) {
+      printOutput(
+        {
+          dryRun: true,
+          command: commandToString(parsed.command),
+          requiresConfirm: true,
+          confirmToken: 'CONFIRM',
+          risk: writeRestCommand.definition.risk,
+          request: redactPrivateRequest(request),
+        },
+        format,
+      );
+      return;
+    }
+
+    assertWriteConfirmed(parsed.flags);
+    printOutput(await executeRequest(request), format);
+    return;
+  }
+
   throw new CliError(`Unknown command: ${parsed.command.join(' ')}`);
 }
 
@@ -101,6 +135,10 @@ function printHelp(): void {
     (command) =>
       `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
   ).join('\n');
+  const writeCommands = WRITE_REST_COMMANDS.map(
+    (command) =>
+      `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
+  ).join('\n');
 
   console.log(`BYDOXE CLI
 
@@ -114,8 +152,13 @@ ${publicCommands}
 Authenticated REST:
 ${privateCommands}
 
+Write REST:
+${writeCommands}
+
 Options:
   --base-url <url>                  Override the REST base URL
+  --body <json>                     JSON request body for write commands
+  --confirm CONFIRM                 Required to execute write commands
   --format <format>                 Output format: human or json
   --dry-run                         Print the request without sending it
   --help                            Show this help message
