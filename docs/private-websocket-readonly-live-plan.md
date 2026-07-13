@@ -6,6 +6,8 @@ This document defines the implementation boundary for any later private WebSocke
 
 Private WebSocket live execution remains disabled. The CLI may build dry-run previews for private login, private subscriptions, private unsubscriptions, and private spot trade messages, but it must not open a private WebSocket session from those commands yet.
 
+The codebase contains an internal mock-tested read-only executor shape for future enablement. It is not wired into the CLI live path while the private live safety gate remains closed.
+
 Default private domain:
 
 ```text
@@ -100,6 +102,13 @@ Unit tests:
 - `--max-messages` closes the session.
 - `--timeout-ms` closes the session.
 - Any `op: "trade"` message is rejected by the read-only executor.
+
+Current mock-tested coverage:
+
+- Login is sent before subscription.
+- Subscription waits for login acknowledgement.
+- Credential-bearing login result fields are redacted.
+- Trade messages are rejected by the read-only executor.
 
 Optional live smoke:
 

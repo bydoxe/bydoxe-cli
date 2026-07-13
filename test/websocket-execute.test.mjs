@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { executePublicWebSocket } from '../dist/websocket/execute.js';
+import {
+  executePrivateReadOnlyWebSocket,
+  executePublicWebSocket,
+} from '../dist/websocket/execute.js';
 
 test('public WebSocket live execution sends preview message and closes at max messages', async () => {
   const sockets = [];
@@ -149,6 +152,145 @@ test('private WebSocket live execution is rejected', async () => {
   );
 });
 
+test('private read-only WebSocket sends login before subscription after acknowledgement', async () => {
+  const sockets = [];
+  const resultPromise = executePrivateReadOnlyWebSocket(
+    privateLoginPreview(),
+    privateSubscribePreview(),
+    {
+      maxMessages: 2,
+      timeoutMs: 1000,
+    },
+    (url) => {
+      const socket = new MockWebSocket(url);
+      sockets.push(socket);
+      return socket;
+    },
+  );
+
+  const socket = sockets[0];
+  socket.emitOpen();
+  assert.deepEqual(JSON.parse(socket.sent[0]), privateLoginPreview().message);
+
+  socket.emitMessage('{"event":"login","code":"0"}');
+  assert.deepEqual(JSON.parse(socket.sent[1]), privateSubscribePreview().message);
+
+  socket.emitMessage('{"data":{"channel":"orders"}}');
+
+  const result = await resultPromise;
+  assert.deepEqual(result.sent.login, {
+    op: 'login',
+    args: {
+      apiKey: '<redacted>',
+      passphrase: '<redacted>',
+      timestamp: '1659076670000',
+      sign: '<redacted>',
+    },
+  });
+  assert.deepEqual(result.sent.message, privateSubscribePreview().message);
+  assert.deepEqual(result.closed, {
+    code: 1000,
+    reason: 'max messages reached',
+  });
+});
+
+test('private read-only WebSocket does not subscribe before login acknowledgement', async () => {
+  const sockets = [];
+  const resultPromise = executePrivateReadOnlyWebSocket(
+    privateLoginPreview(),
+    privateSubscribePreview(),
+    {
+      maxMessages: 5,
+      timeoutMs: 1000,
+    },
+    (url) => {
+      const socket = new MockWebSocket(url);
+      sockets.push(socket);
+      return socket;
+    },
+  );
+
+  const socket = sockets[0];
+  socket.emitOpen();
+  socket.emitMessage('{"event":"notice","code":"0"}');
+  socket.emitClose(1000, 'closed before login acknowledgement');
+
+  const result = await resultPromise;
+  assert.equal(socket.sent.length, 1);
+  assert.deepEqual(result.closed, {
+    code: 1000,
+    reason: 'closed before login acknowledgement',
+  });
+});
+
+test('private read-only WebSocket rejects trade messages', async () => {
+  await assert.rejects(
+    () =>
+      executePrivateReadOnlyWebSocket(
+        privateLoginPreview(),
+        {
+          dryRun: true,
+          command: 'bydoxe websocket private spot trade',
+          connection: {
+            url: 'wss://example.test/v1/ws/private',
+            scope: 'private',
+          },
+          message: {
+            op: 'trade',
+            args: [],
+          },
+        },
+        {
+          maxMessages: 1,
+          timeoutMs: 1000,
+        },
+        () => new MockWebSocket('wss://example.test/v1/ws/private'),
+      ),
+    /only supports subscribe and unsubscribe/,
+  );
+});
+
+function privateLoginPreview() {
+  return {
+    dryRun: true,
+    command: 'bydoxe websocket private login',
+    connection: {
+      url: 'wss://example.test/v1/ws/private',
+      scope: 'private',
+    },
+    message: {
+      op: 'login',
+      args: {
+        apiKey: 'api-key',
+        passphrase: 'passphrase',
+        timestamp: '1659076670000',
+        sign: 'signature',
+      },
+    },
+  };
+}
+
+function privateSubscribePreview() {
+  return {
+    dryRun: true,
+    command: 'bydoxe websocket private subscribe',
+    connection: {
+      url: 'wss://example.test/v1/ws/private',
+      scope: 'private',
+    },
+    message: {
+      op: 'subscribe',
+      args: [
+        {
+          instType: 'USDT-FUTURES',
+          channel: 'orders',
+          instId: 'BTCUSDT',
+        },
+      ],
+    },
+  };
+}
+
 class MockWebSocket {
   constructor(url) {
     this.url = url;
@@ -177,6 +319,10 @@ class MockWebSocket {
 
   emitMessage(data) {
     this.emit('message', { data });
+  }
+
+  emitClose(code, reason) {
+    this.emit('close', { code, reason });
   }
 
   emit(type, event) {
