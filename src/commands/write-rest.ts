@@ -82,7 +82,7 @@ const WRITE_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
   },
   '/spot/account/cancel-withdraw': {
     ...WRITE_BODY_METADATA,
-    optionalParams: ['orderId', 'clientOid'],
+    optionalParams: ['withdrawId', 'orderId', 'clientOid'],
   },
   '/future/account/set-leverage': {
     ...WRITE_BODY_METADATA,
@@ -212,6 +212,7 @@ export type ArrayItemValidationRule = {
 };
 
 export type WriteValidationRule = {
+  nonEmptyStringParams?: string[];
   positiveNumberParams?: string[];
   enumParams?: EnumRule[];
   requireAnyParams?: string[][];
@@ -272,27 +273,41 @@ export const WRITE_REST_VALIDATION_BY_PATH: Record<string, WriteValidationRule> 
   '/spot/trade/batch-cancel-orders': {
     requireAnyNonEmptyArrayParams: [['orderIds', 'clientOids']],
   },
+  '/spot/trade/cancel-symbol-order': {
+    nonEmptyStringParams: ['symbol'],
+  },
   '/spot/account/transfer': {
+    nonEmptyStringParams: ['coin', 'fromType', 'toType'],
     positiveNumberParams: ['amount'],
   },
   '/spot/account/withdraw': {
+    nonEmptyStringParams: ['coin', 'chain', 'address', 'tag', 'clientOid'],
     positiveNumberParams: ['amount'],
   },
+  '/spot/account/cancel-withdraw': {
+    nonEmptyStringParams: ['withdrawId', 'orderId', 'clientOid'],
+    requireAnyParams: [['withdrawId', 'orderId', 'clientOid']],
+  },
   '/future/account/set-leverage': {
+    nonEmptyStringParams: ['symbol', 'marginCoin'],
     positiveNumberParams: ['longLeverage', 'shortLeverage', 'leverage'],
   },
   '/future/account/set-margin': {
+    nonEmptyStringParams: ['symbol'],
     positiveNumberParams: ['amount'],
     enumParams: [{ param: 'holdSide', values: ['LONG', 'SHORT'] }],
   },
   '/future/account/set-margin-mode': {
+    nonEmptyStringParams: ['symbol'],
     enumParams: [{ param: 'marginMode', values: ['CROSS', 'ISOLATED'] }],
   },
   '/future/order/place-order': {
+    nonEmptyStringParams: ['symbol', 'clientOid'],
     positiveNumberParams: ['size', 'price'],
     enumParams: FUTURES_ORDER_ENUMS,
   },
   '/future/order/click-backhand': {
+    nonEmptyStringParams: ['symbol'],
     positiveNumberParams: ['size'],
     enumParams: FUTURES_ORDER_ENUMS,
   },
@@ -307,30 +322,40 @@ export const WRITE_REST_VALIDATION_BY_PATH: Record<string, WriteValidationRule> 
     ],
   },
   '/future/order/modify-order': {
+    nonEmptyStringParams: ['symbol', 'orderId', 'clientOid'],
     positiveNumberParams: ['size', 'price'],
     requireAnyParams: [['orderId', 'clientOid']],
   },
   '/future/order/cancel-order': {
+    nonEmptyStringParams: ['symbol', 'orderId', 'clientOid'],
     requireAnyParams: [['orderId', 'clientOid']],
   },
   '/future/order/batch-cancel-orders': {
     requireAnyNonEmptyArrayParams: [['orderIds', 'clientOids']],
   },
   '/future/order/close-positions': {
+    nonEmptyStringParams: ['symbol'],
     enumParams: [{ param: 'holdSide', values: ['LONG', 'SHORT'] }],
   },
+  '/future/order/cancel-all-orders': {
+    nonEmptyStringParams: ['symbol'],
+  },
   '/future/order/place-plan-order': {
+    nonEmptyStringParams: ['symbol', 'clientOid'],
     positiveNumberParams: ['size', 'price', 'triggerPrice'],
     enumParams: FUTURES_ORDER_ENUMS,
   },
   '/future/order/modify-plan-order': {
+    nonEmptyStringParams: ['symbol', 'orderId', 'clientOid'],
     positiveNumberParams: ['size', 'price', 'triggerPrice'],
     requireAnyParams: [['orderId', 'clientOid']],
   },
   '/future/order/cancel-plan-order': {
+    nonEmptyStringParams: ['symbol', 'orderId', 'clientOid'],
     requireAnyParams: [['orderId', 'clientOid']],
   },
   '/future/order/place-tpsl-order': {
+    nonEmptyStringParams: ['symbol', 'clientOid'],
     positiveNumberParams: ['size', 'triggerPrice'],
     enumParams: [
       { param: 'planType', values: ['TAKE_PROFIT', 'STOP_LOSS'] },
@@ -338,17 +363,36 @@ export const WRITE_REST_VALIDATION_BY_PATH: Record<string, WriteValidationRule> 
     ],
   },
   '/future/order/modify-tpsl-order': {
+    nonEmptyStringParams: ['symbol', 'orderId', 'clientOid'],
     positiveNumberParams: ['triggerPrice'],
     requireAnyParams: [['orderId', 'clientOid']],
   },
   '/copy/mix-trader/order-modify-tpsl': {
+    nonEmptyStringParams: ['symbol', 'trackingNo'],
     positiveNumberParams: ['stopSurplusPrice', 'stopLossPrice'],
   },
+  '/copy/mix-trader/order-close-positions': {
+    nonEmptyStringParams: ['symbol', 'trackingNo'],
+  },
+  '/copy/mix-trader/config-trader-setting': {
+    nonEmptyStringParams: ['symbol', 'copyTradeMode'],
+  },
+  '/copy/mix-trader/remove-follower': {
+    nonEmptyStringParams: ['followerId', 'symbol'],
+  },
   '/copy/mix-follower/setting-tpsl': {
+    nonEmptyStringParams: ['symbol', 'trackingNo'],
     positiveNumberParams: ['stopSurplusPrice', 'stopLossPrice'],
   },
   '/copy/mix-follower/setting-copy-trade': {
+    nonEmptyStringParams: ['traderId', 'symbol', 'copyMode'],
     positiveNumberParams: ['copyAmount'],
+  },
+  '/copy/mix-follower/close-positions': {
+    nonEmptyStringParams: ['symbol', 'trackingNo'],
+  },
+  '/copy/mix-follower/cancel-follow': {
+    nonEmptyStringParams: ['traderId'],
   },
 };
 
@@ -664,6 +708,7 @@ function assertWriteBodyMatchesRules(
   const problems = [
     ...findMissingAlternativeParamProblems(rule, body),
     ...findMissingArrayAlternativeParamProblems(rule, body),
+    ...findNonEmptyStringProblems(rule, body),
     ...findPositiveNumberProblems(rule, body),
     ...findEnumProblems(rule, body),
     ...findArrayItemProblems(rule, body),
@@ -683,6 +728,15 @@ function findMissingAlternativeParamProblems(
   return (rule.requireAnyParams ?? [])
     .filter((paramGroup) => !paramGroup.some((param) => hasUsableValue(body[param])))
     .map((paramGroup) => `one of ${paramGroup.join(', ')} is required`);
+}
+
+function findNonEmptyStringProblems(
+  rule: WriteValidationRule,
+  body: Record<string, unknown>,
+): string[] {
+  return (rule.nonEmptyStringParams ?? [])
+    .filter((param) => hasUsableValue(body[param]) && !isNonEmptyString(body[param]))
+    .map((param) => `${param} must be a non-empty string`);
 }
 
 function findMissingArrayAlternativeParamProblems(
@@ -808,6 +862,10 @@ function findArrayItemEnumProblems(
 
 function hasUsableValue(value: unknown): boolean {
   return value !== undefined && value !== null && value !== '';
+}
+
+function isNonEmptyString(value: unknown): boolean {
+  return typeof value === 'string' && value.trim().length > 0;
 }
 
 function hasNonEmptyUsableArray(value: unknown): boolean {

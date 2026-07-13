@@ -114,6 +114,7 @@ function normalizeValidation(validation) {
   if (!validation) return undefined;
 
   return omitUndefined({
+    nonEmptyStringParams: validation.nonEmptyStringParams,
     positiveNumberParams: validation.positiveNumberParams,
     enumParams: validation.enumParams,
     requireAnyParams: validation.requireAnyParams,

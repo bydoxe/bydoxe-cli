@@ -256,6 +256,61 @@ test('batch cancel commands require a non-empty identifier array', () => {
   assert.equal(match.definition.path, '/future/order/batch-cancel-orders');
 });
 
+test('write command rejects invalid non-empty string parameters', () => {
+  assert.throws(
+    () => findWriteRestCommand(parseArgs([
+      'copytrading',
+      'follower',
+      'cancel-follow',
+      '--body',
+      '{"traderId":123}',
+      '--dry-run',
+    ])),
+    /traderId must be a non-empty string/,
+  );
+
+  assert.throws(
+    () => findWriteRestCommand(parseArgs([
+      'copytrading',
+      'trader',
+      'close-positions',
+      '--body',
+      '{"symbol":"BTCUSDT","trackingNo":99}',
+      '--dry-run',
+    ])),
+    /trackingNo must be a non-empty string/,
+  );
+});
+
+test('cancel withdraw command accepts supported withdrawal identifiers', () => {
+  assert.throws(
+    () => findWriteRestCommand(parseArgs([
+      'spot',
+      'account',
+      'cancel-withdraw',
+      '--body',
+      '{}',
+      '--dry-run',
+    ])),
+    /one of withdrawId, orderId, clientOid is required/,
+  );
+
+  const match = findWriteRestCommand(parseArgs([
+    'spot',
+    'account',
+    'cancel-withdraw',
+    '--body',
+    '{"withdrawId":"withdrawal-id"}',
+    '--dry-run',
+  ]));
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/spot/account/cancel-withdraw');
+  assert.deepEqual(match.body, {
+    withdrawId: 'withdrawal-id',
+  });
+});
+
 test('futures tpsl command validates plan type and trigger price', () => {
   const parsed = parseArgs([
     'future',

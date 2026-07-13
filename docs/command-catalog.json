@@ -1420,7 +1420,12 @@
       "optionalParams": [],
       "method": "POST",
       "path": "/spot/trade/cancel-symbol-order",
-      "description": "Requires CONFIRM: cancel all spot orders for a symbol"
+      "description": "Requires CONFIRM: cancel all spot orders for a symbol",
+      "validation": {
+        "nonEmptyStringParams": [
+          "symbol"
+        ]
+      }
     },
     {
       "command": "bydoxe spot account transfer",
@@ -1440,6 +1445,11 @@
       "path": "/spot/account/transfer",
       "description": "Requires CONFIRM: transfer funds between accounts",
       "validation": {
+        "nonEmptyStringParams": [
+          "coin",
+          "fromType",
+          "toType"
+        ],
         "positiveNumberParams": [
           "amount"
         ]
@@ -1466,6 +1476,13 @@
       "path": "/spot/account/withdraw",
       "description": "Requires CONFIRM: withdraw assets",
       "validation": {
+        "nonEmptyStringParams": [
+          "coin",
+          "chain",
+          "address",
+          "tag",
+          "clientOid"
+        ],
         "positiveNumberParams": [
           "amount"
         ]
@@ -1480,12 +1497,27 @@
       "parameterMode": "body",
       "requiredParams": [],
       "optionalParams": [
+        "withdrawId",
         "orderId",
         "clientOid"
       ],
       "method": "POST",
       "path": "/spot/account/cancel-withdraw",
-      "description": "Requires CONFIRM: cancel a withdrawal"
+      "description": "Requires CONFIRM: cancel a withdrawal",
+      "validation": {
+        "nonEmptyStringParams": [
+          "withdrawId",
+          "orderId",
+          "clientOid"
+        ],
+        "requireAnyParams": [
+          [
+            "withdrawId",
+            "orderId",
+            "clientOid"
+          ]
+        ]
+      }
     },
     {
       "command": "bydoxe future account set-leverage",
@@ -1507,6 +1539,10 @@
       "path": "/future/account/set-leverage",
       "description": "Requires CONFIRM: change futures leverage",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "marginCoin"
+        ],
         "positiveNumberParams": [
           "longLeverage",
           "shortLeverage",
@@ -1531,6 +1567,9 @@
       "path": "/future/account/set-margin",
       "description": "Requires CONFIRM: adjust futures margin",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol"
+        ],
         "positiveNumberParams": [
           "amount"
         ],
@@ -1561,6 +1600,9 @@
       "path": "/future/account/set-margin-mode",
       "description": "Requires CONFIRM: change futures margin mode",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol"
+        ],
         "enumParams": [
           {
             "param": "marginMode",
@@ -1595,6 +1637,10 @@
       "path": "/future/order/place-order",
       "description": "Requires CONFIRM: place a futures order",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "clientOid"
+        ],
         "positiveNumberParams": [
           "size",
           "price"
@@ -1651,6 +1697,9 @@
       "path": "/future/order/click-backhand",
       "description": "Requires CONFIRM: place a futures reversal order",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol"
+        ],
         "positiveNumberParams": [
           "size"
         ],
@@ -1770,6 +1819,11 @@
       "path": "/future/order/modify-order",
       "description": "Requires CONFIRM: modify a futures order",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "orderId",
+          "clientOid"
+        ],
         "positiveNumberParams": [
           "size",
           "price"
@@ -1800,6 +1854,11 @@
       "path": "/future/order/cancel-order",
       "description": "Requires CONFIRM: cancel a futures order",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "orderId",
+          "clientOid"
+        ],
         "requireAnyParams": [
           [
             "orderId",
@@ -1850,6 +1909,9 @@
       "path": "/future/order/close-positions",
       "description": "Requires CONFIRM: close futures positions",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol"
+        ],
         "enumParams": [
           {
             "param": "holdSide",
@@ -1874,7 +1936,12 @@
       ],
       "method": "POST",
       "path": "/future/order/cancel-all-orders",
-      "description": "Requires CONFIRM: cancel all futures orders"
+      "description": "Requires CONFIRM: cancel all futures orders",
+      "validation": {
+        "nonEmptyStringParams": [
+          "symbol"
+        ]
+      }
     },
     {
       "command": "bydoxe future trigger place",
@@ -1899,6 +1966,10 @@
       "path": "/future/order/place-plan-order",
       "description": "Requires CONFIRM: place a futures trigger order",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "clientOid"
+        ],
         "positiveNumberParams": [
           "size",
           "price",
@@ -1958,6 +2029,11 @@
       "path": "/future/order/modify-plan-order",
       "description": "Requires CONFIRM: modify a futures trigger order",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "orderId",
+          "clientOid"
+        ],
         "positiveNumberParams": [
           "size",
           "price",
@@ -1989,6 +2065,11 @@
       "path": "/future/order/cancel-plan-order",
       "description": "Requires CONFIRM: cancel futures trigger orders",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "orderId",
+          "clientOid"
+        ],
         "requireAnyParams": [
           [
             "orderId",
@@ -2018,6 +2099,10 @@
       "path": "/future/order/place-tpsl-order",
       "description": "Requires CONFIRM: place a futures TP/SL order",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "clientOid"
+        ],
         "positiveNumberParams": [
           "size",
           "triggerPrice"
@@ -2059,6 +2144,11 @@
       "path": "/future/order/modify-tpsl-order",
       "description": "Requires CONFIRM: modify a futures TP/SL order",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "orderId",
+          "clientOid"
+        ],
         "positiveNumberParams": [
           "triggerPrice"
         ],
@@ -2089,6 +2179,10 @@
       "path": "/copy/mix-trader/order-modify-tpsl",
       "description": "Requires CONFIRM: modify copy trading trader TP/SL",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "trackingNo"
+        ],
         "positiveNumberParams": [
           "stopSurplusPrice",
           "stopLossPrice"
@@ -2109,7 +2203,13 @@
       "optionalParams": [],
       "method": "POST",
       "path": "/copy/mix-trader/order-close-positions",
-      "description": "Requires CONFIRM: close copy trading trader positions"
+      "description": "Requires CONFIRM: close copy trading trader positions",
+      "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "trackingNo"
+        ]
+      }
     },
     {
       "command": "bydoxe copytrading trader config",
@@ -2126,7 +2226,13 @@
       ],
       "method": "POST",
       "path": "/copy/mix-trader/config-trader-setting",
-      "description": "Requires CONFIRM: change copy trading trader settings"
+      "description": "Requires CONFIRM: change copy trading trader settings",
+      "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "copyTradeMode"
+        ]
+      }
     },
     {
       "command": "bydoxe copytrading trader remove-follower",
@@ -2143,7 +2249,13 @@
       ],
       "method": "POST",
       "path": "/copy/mix-trader/remove-follower",
-      "description": "Requires CONFIRM: remove a copy trading follower"
+      "description": "Requires CONFIRM: remove a copy trading follower",
+      "validation": {
+        "nonEmptyStringParams": [
+          "followerId",
+          "symbol"
+        ]
+      }
     },
     {
       "command": "bydoxe copytrading follower setting-tpsl",
@@ -2164,6 +2276,10 @@
       "path": "/copy/mix-follower/setting-tpsl",
       "description": "Requires CONFIRM: set follower TP/SL",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "trackingNo"
+        ],
         "positiveNumberParams": [
           "stopSurplusPrice",
           "stopLossPrice"
@@ -2189,6 +2305,11 @@
       "path": "/copy/mix-follower/setting-copy-trade",
       "description": "Requires CONFIRM: change follower copy trading settings",
       "validation": {
+        "nonEmptyStringParams": [
+          "traderId",
+          "symbol",
+          "copyMode"
+        ],
         "positiveNumberParams": [
           "copyAmount"
         ]
@@ -2208,7 +2329,13 @@
       "optionalParams": [],
       "method": "POST",
       "path": "/copy/mix-follower/close-positions",
-      "description": "Requires CONFIRM: close follower copy trading positions"
+      "description": "Requires CONFIRM: close follower copy trading positions",
+      "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "trackingNo"
+        ]
+      }
     },
     {
       "command": "bydoxe copytrading follower cancel-follow",
@@ -2223,7 +2350,12 @@
       "optionalParams": [],
       "method": "POST",
       "path": "/copy/mix-follower/cancel-follow",
-      "description": "Requires CONFIRM: cancel following a trader"
+      "description": "Requires CONFIRM: cancel following a trader",
+      "validation": {
+        "nonEmptyStringParams": [
+          "traderId"
+        ]
+      }
     },
     {
       "command": "bydoxe websocket public ping",

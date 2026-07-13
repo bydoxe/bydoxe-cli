@@ -125,6 +125,9 @@ function formatValidation(command) {
 
   const parts = [];
 
+  if (Array.isArray(validation.nonEmptyStringParams)) {
+    parts.push(`non-empty string: ${validation.nonEmptyStringParams.map(code).join(', ')}`);
+  }
   if (Array.isArray(validation.positiveNumberParams)) {
     parts.push(`positive: ${validation.positiveNumberParams.map(code).join(', ')}`);
   }
