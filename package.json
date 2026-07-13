@@ -20,13 +20,15 @@
     "catalog:check": "npm run build && node scripts/generate-command-catalog.mjs --check",
     "reference:generate": "npm run catalog:generate && node scripts/generate-command-reference.mjs",
     "reference:check": "node scripts/generate-command-reference.mjs --check",
+    "summary:generate": "npm run catalog:generate && node scripts/generate-command-summary.mjs",
+    "summary:check": "node scripts/generate-command-summary.mjs --check",
     "prepack": "npm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "npm run build && node --test test/*.test.mjs",
     "smoke:readme": "npm run build && node scripts/smoke-readme-examples.mjs",
     "smoke:public-rest-live": "npm run build && node scripts/smoke-public-rest-live.mjs",
     "smoke:websocket-live": "npm run build && node scripts/smoke-websocket-public-live.mjs",
-    "validate": "npm run typecheck && npm test && npm run catalog:check && npm run reference:check && npm run smoke:readme && npm run smoke:public-rest-live && npm run smoke:websocket-live && node scripts/validate-project.mjs"
+    "validate": "npm run typecheck && npm test && npm run catalog:check && npm run reference:check && npm run summary:check && npm run smoke:readme && npm run smoke:public-rest-live && npm run smoke:websocket-live && node scripts/validate-project.mjs"
   },
   "engines": {
     "node": ">=20"

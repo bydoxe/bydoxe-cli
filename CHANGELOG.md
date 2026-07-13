@@ -43,3 +43,4 @@
 - Document the proposed read-only private WebSocket live boundary.
 - Add orderbook and candle samples to the optional public REST market live smoke.
 - Document the planned nested validation scope for batch write bodies.
+- Add a generated command summary for README and agent workflow routing.
