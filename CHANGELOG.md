@@ -25,3 +25,4 @@
 - Add bounded public WebSocket live execution with `--live`, `--max-messages`, and `--timeout-ms`.
 - Add optional public WebSocket live smoke validation behind `BYDOXE_RUN_LIVE_WS_TESTS=1`.
 - Add command registry metadata for auth, risk level, parameter mode, and future parameter validation.
+- Add expanded public REST market data commands for spot metadata, spot trades, futures depth, futures candles, futures funding, and futures open interest.

@@ -4,6 +4,7 @@ import {
   commandToString,
   findPublicRestCommand,
   parseArgs,
+  PUBLIC_REST_COMMANDS,
 } from '../dist/commands/public-rest.js';
 import { loadConfig } from '../dist/config/load-config.js';
 import { executeRequest } from '../dist/http/execute.js';
@@ -90,6 +91,72 @@ test('future market ticker maps to the 24h ticker endpoint', () => {
 
   assert.ok(match);
   assert.equal(match.definition.path, '/future/market/24h-ticker');
+});
+
+test('spot market history-candles command maps to historical candles endpoint', () => {
+  const parsed = parseArgs([
+    'spot',
+    'market',
+    'history-candles',
+    '--symbol',
+    'BTCUSDT',
+    '--granularity',
+    '1m',
+    '--limit',
+    '100',
+  ]);
+  const match = findPublicRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/spot/market/history-candles');
+  assert.deepEqual(match.definition.requiredParams, ['symbol', 'granularity']);
+  assert.deepEqual(match.query, {
+    symbol: 'BTCUSDT',
+    granularity: '1m',
+    limit: '100',
+  });
+});
+
+test('future market depth command includes metadata for symbol and limit', () => {
+  const parsed = parseArgs([
+    'future',
+    'market',
+    'depth',
+    '--symbol',
+    'BTCUSDT',
+    '--limit',
+    '500',
+  ]);
+  const match = findPublicRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/future/market/depth');
+  assert.deepEqual(match.definition.requiredParams, ['symbol']);
+  assert.deepEqual(match.definition.optionalParams, ['limit']);
+  assert.deepEqual(match.query, {
+    symbol: 'BTCUSDT',
+    limit: '500',
+  });
+});
+
+test('public REST registry includes expanded market data commands', () => {
+  const commands = new Set(
+    PUBLIC_REST_COMMANDS.map((command) => command.command.join(' ')),
+  );
+
+  for (const command of [
+    'spot market coins',
+    'spot market history-candles',
+    'spot market fills',
+    'spot market fills-history',
+    'future market book-ticker',
+    'future market depth',
+    'future market candles',
+    'future market funding-info',
+    'future market open-interest',
+  ]) {
+    assert.ok(commands.has(command), `Missing public REST command: ${command}`);
+  }
 });
 
 test('executeRequest uses a mocked fetch implementation', async () => {

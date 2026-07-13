@@ -74,11 +74,14 @@ Do not paste API secrets into AI chat sessions. Configure them locally in your s
 
 ```sh
 bydoxe public time --dry-run
+bydoxe spot market coins --coin BTC --dry-run --format json
 bydoxe spot market tickers --symbol BTCUSDT --dry-run --format json
 bydoxe spot market orderbook --symbol BTCUSDT --limit 20 --dry-run
 bydoxe spot market candles --symbol BTCUSDT --granularity 1m --limit 100 --dry-run
+bydoxe spot market fills --symbol BTCUSDT --limit 50 --dry-run --format json
 bydoxe future market ticker --symbol BTCUSDT --dry-run
 bydoxe future market mark-price --symbol BTCUSDT --dry-run
+bydoxe future market depth --symbol BTCUSDT --limit 500 --dry-run --format json
 bydoxe account funding-assets --coin USDT --dry-run --format json
 bydoxe future position all --dry-run --format json
 bydoxe copytrading trader followers --pageNo 1 --pageSize 20 --dry-run --format json
@@ -96,12 +99,21 @@ The dry-run mode prints the request that would be sent without making a network 
 | Command | Endpoint |
 | --- | --- |
 | `bydoxe public time` | `GET /public/time` |
+| `bydoxe spot market coins` | `GET /spot/market/coins` |
 | `bydoxe spot market symbols` | `GET /spot/market/symbols` |
 | `bydoxe spot market tickers` | `GET /spot/market/tickers` |
 | `bydoxe spot market orderbook` | `GET /spot/market/orderbook` |
 | `bydoxe spot market candles` | `GET /spot/market/candles` |
+| `bydoxe spot market history-candles` | `GET /spot/market/history-candles` |
+| `bydoxe spot market fills` | `GET /spot/market/fills` |
+| `bydoxe spot market fills-history` | `GET /spot/market/fills-history` |
 | `bydoxe future market ticker` | `GET /future/market/24h-ticker` |
 | `bydoxe future market mark-price` | `GET /future/market/mark-price` |
+| `bydoxe future market book-ticker` | `GET /future/market/book-ticker` |
+| `bydoxe future market depth` | `GET /future/market/depth` |
+| `bydoxe future market candles` | `GET /future/market/candles` |
+| `bydoxe future market funding-info` | `GET /future/market/funding-info` |
+| `bydoxe future market open-interest` | `GET /future/market/open-interest` |
 
 Command flags that are not global options are forwarded as query parameters. For example, `--symbol BTCUSDT --limit 100` becomes `?symbol=BTCUSDT&limit=100`.
 

@@ -38,6 +38,77 @@ const PUBLIC_QUERY_METADATA = {
   parameterMode: 'query',
 } satisfies CommandMetadata;
 
+const PUBLIC_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
+  '/public/time': {
+    ...PUBLIC_QUERY_METADATA,
+    parameterMode: 'none',
+  },
+  '/spot/market/coins': {
+    ...PUBLIC_QUERY_METADATA,
+    optionalParams: ['coin'],
+  },
+  '/spot/market/symbols': {
+    ...PUBLIC_QUERY_METADATA,
+    optionalParams: ['symbol'],
+  },
+  '/spot/market/tickers': {
+    ...PUBLIC_QUERY_METADATA,
+    optionalParams: ['symbol'],
+  },
+  '/spot/market/orderbook': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['limit'],
+  },
+  '/spot/market/candles': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'granularity'],
+    optionalParams: ['startTime', 'endTime', 'limit'],
+  },
+  '/spot/market/history-candles': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'granularity'],
+    optionalParams: ['startTime', 'endTime', 'limit'],
+  },
+  '/spot/market/fills': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['limit'],
+  },
+  '/spot/market/fills-history': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['limit', 'fromId', 'startTime', 'endTime'],
+  },
+  '/future/market/24h-ticker': {
+    ...PUBLIC_QUERY_METADATA,
+    optionalParams: ['symbol'],
+  },
+  '/future/market/mark-price': {
+    ...PUBLIC_QUERY_METADATA,
+    optionalParams: ['symbol'],
+  },
+  '/future/market/book-ticker': {
+    ...PUBLIC_QUERY_METADATA,
+    optionalParams: ['symbol'],
+  },
+  '/future/market/depth': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol'],
+    optionalParams: ['limit'],
+  },
+  '/future/market/candles': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol', 'interval'],
+    optionalParams: ['limit', 'startTime', 'endTime'],
+  },
+  '/future/market/funding-info': PUBLIC_QUERY_METADATA,
+  '/future/market/open-interest': {
+    ...PUBLIC_QUERY_METADATA,
+    requiredParams: ['symbol'],
+  },
+};
+
 export const PUBLIC_REST_COMMANDS: PublicRestCommand[] = withCommandMetadata(
   [
     {
@@ -45,6 +116,12 @@ export const PUBLIC_REST_COMMANDS: PublicRestCommand[] = withCommandMetadata(
       method: 'GET',
       path: '/public/time',
       description: 'Build or execute a server time request',
+    },
+    {
+      command: ['spot', 'market', 'coins'],
+      method: 'GET',
+      path: '/spot/market/coins',
+      description: 'Build or execute a spot coin metadata request',
     },
     {
       command: ['spot', 'market', 'symbols'],
@@ -71,6 +148,24 @@ export const PUBLIC_REST_COMMANDS: PublicRestCommand[] = withCommandMetadata(
       description: 'Build or execute a spot candles request',
     },
     {
+      command: ['spot', 'market', 'history-candles'],
+      method: 'GET',
+      path: '/spot/market/history-candles',
+      description: 'Build or execute a spot historical candles request',
+    },
+    {
+      command: ['spot', 'market', 'fills'],
+      method: 'GET',
+      path: '/spot/market/fills',
+      description: 'Build or execute a spot recent trades request',
+    },
+    {
+      command: ['spot', 'market', 'fills-history'],
+      method: 'GET',
+      path: '/spot/market/fills-history',
+      description: 'Build or execute a spot historical trades request',
+    },
+    {
       command: ['future', 'market', 'ticker'],
       method: 'GET',
       path: '/future/market/24h-ticker',
@@ -82,11 +177,38 @@ export const PUBLIC_REST_COMMANDS: PublicRestCommand[] = withCommandMetadata(
       path: '/future/market/mark-price',
       description: 'Build or execute a futures mark price request',
     },
+    {
+      command: ['future', 'market', 'book-ticker'],
+      method: 'GET',
+      path: '/future/market/book-ticker',
+      description: 'Build or execute a futures best bid and ask request',
+    },
+    {
+      command: ['future', 'market', 'depth'],
+      method: 'GET',
+      path: '/future/market/depth',
+      description: 'Build or execute a futures order book depth request',
+    },
+    {
+      command: ['future', 'market', 'candles'],
+      method: 'GET',
+      path: '/future/market/candles',
+      description: 'Build or execute a futures candles request',
+    },
+    {
+      command: ['future', 'market', 'funding-info'],
+      method: 'GET',
+      path: '/future/market/funding-info',
+      description: 'Build or execute a futures funding configuration request',
+    },
+    {
+      command: ['future', 'market', 'open-interest'],
+      method: 'GET',
+      path: '/future/market/open-interest',
+      description: 'Build or execute a futures open interest request',
+    },
   ],
-  (command) =>
-    command.path === '/public/time'
-      ? { ...PUBLIC_QUERY_METADATA, parameterMode: 'none' }
-      : PUBLIC_QUERY_METADATA,
+  (command) => PUBLIC_REST_METADATA_BY_PATH[command.path] ?? PUBLIC_QUERY_METADATA,
 );
 
 export function parseArgs(argv: string[]): ParsedArgs {
