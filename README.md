@@ -310,13 +310,17 @@ BYDOXE_RUN_LIVE_WS_TESTS=1 npm run smoke:websocket-live
 
 Private WebSocket login previews redact credential-bearing fields in dry-run output. Private spot trade messages require exact `--confirm CONFIRM` before any future live execution path.
 
-Private WebSocket live execution will remain disabled until these gates are implemented:
+Private read-only WebSocket live execution is limited to private subscribe and unsubscribe commands and requires all of these gates:
 
 - Authenticated login handshake verification.
-- Bounded read-only private stream smoke tests.
-- Separate trade-send implementation with exact `CONFIRM`.
-- Explicit opt-in environment gate for live private sessions.
+- Explicit `BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1` opt-in.
+- Explicit `--max-messages` and `--timeout-ms` bounds.
+- Local credentials configured through environment variables.
 
-See [docs/private-websocket-readonly-live-plan.md](docs/private-websocket-readonly-live-plan.md) for the proposed read-only private WebSocket live boundary. Private spot trade live execution is not part of that boundary.
+Example:
 
-The codebase includes a mock-tested internal read-only private WebSocket executor for future enablement, but the CLI still blocks private WebSocket live execution.
+```sh
+BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1 bydoxe websocket private subscribe --instType USDT-FUTURES --channel orders --instId BTCUSDT --live --max-messages 2 --timeout-ms 10000 --format json
+```
+
+See [docs/private-websocket-readonly-live-plan.md](docs/private-websocket-readonly-live-plan.md) for the read-only private WebSocket live boundary. Private spot trade live execution is not part of that boundary.

@@ -45,6 +45,8 @@ export const PRIVATE_WEBSOCKET_LIVE_GATES = [
   'separate trade-send implementation with exact CONFIRM',
   'explicit opt-in environment gate for live private sessions',
 ];
+export const PRIVATE_WEBSOCKET_READ_ONLY_LIVE_ENV =
+  'BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE';
 
 const GLOBAL_FLAGS = new Set([
   'body',
@@ -152,6 +154,31 @@ export function assertPrivateWebSocketLiveBlocked(command: string[]): never {
   throw new CliError(
     `Private WebSocket live execution is intentionally disabled for bydoxe ${command.join(' ')}. Required gates before implementation: ${PRIVATE_WEBSOCKET_LIVE_GATES.join('; ')}.`,
   );
+}
+
+export function assertPrivateWebSocketReadOnlyLiveAllowed(
+  command: string[],
+  flags: Record<string, string | boolean>,
+  env: NodeJS.ProcessEnv = process.env,
+): void {
+  const action = command[2];
+  if (action !== 'subscribe' && action !== 'unsubscribe') {
+    throw new CliError(
+      'Private WebSocket read-only live execution only supports private subscribe and unsubscribe commands.',
+    );
+  }
+
+  if (env[PRIVATE_WEBSOCKET_READ_ONLY_LIVE_ENV] !== '1') {
+    throw new CliError(
+      `Private WebSocket read-only live execution requires ${PRIVATE_WEBSOCKET_READ_ONLY_LIVE_ENV}=1. Run with --dry-run first and use short --max-messages and --timeout-ms limits.`,
+    );
+  }
+
+  if (flags['max-messages'] === undefined || flags['timeout-ms'] === undefined) {
+    throw new CliError(
+      'Private WebSocket read-only live execution requires explicit --max-messages and --timeout-ms limits.',
+    );
+  }
 }
 
 export function redactWebSocketPreview(

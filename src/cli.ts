@@ -25,12 +25,16 @@ import {
 } from './commands/write-rest.js';
 import {
   assertPrivateWebSocketLiveBlocked,
+  assertPrivateWebSocketReadOnlyLiveAllowed,
   assertWebSocketConfirmed,
   findWebSocketCommand,
   redactWebSocketPreview,
   WEBSOCKET_COMMANDS,
 } from './commands/websocket.js';
-import { executePublicWebSocket } from './websocket/execute.js';
+import {
+  executePrivateReadOnlyWebSocket,
+  executePublicWebSocket,
+} from './websocket/execute.js';
 
 async function main(argv: string[]): Promise<void> {
   const parsed = parseArgs(argv);
@@ -145,7 +149,31 @@ async function main(argv: string[]): Promise<void> {
     }
 
     if (webSocketCommand.definition.scope !== 'public') {
-      assertPrivateWebSocketLiveBlocked(webSocketCommand.definition.command);
+      assertPrivateWebSocketReadOnlyLiveAllowed(
+        webSocketCommand.definition.command,
+        parsed.flags,
+      );
+      const loginCommand = findWebSocketCommand(
+        {
+          command: ['websocket', 'private', 'login'],
+          flags: parsed.flags,
+        },
+        config,
+      );
+
+      if (!loginCommand) {
+        assertPrivateWebSocketLiveBlocked(webSocketCommand.definition.command);
+      }
+
+      printOutput(
+        await executePrivateReadOnlyWebSocket(
+          loginCommand.preview,
+          webSocketCommand.preview,
+          getWebSocketLiveOptions(parsed.flags),
+        ),
+        format,
+      );
+      return;
     }
 
     if (webSocketCommand.definition.requiresConfirm) {
@@ -237,6 +265,7 @@ Environment:
   BYDOXE_REST_BASE_URL
   BYDOXE_PUBLIC_WS_URL
   BYDOXE_PRIVATE_WS_URL
+  BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE
 `);
 }
 

@@ -46,3 +46,4 @@
 - Add a generated command summary for README and agent workflow routing.
 - Add a mock-tested internal private WebSocket read-only executor while keeping CLI live execution blocked.
 - Add nested validation for supported batch write request bodies.
+- Wire private WebSocket read-only live execution behind an explicit opt-in gate.

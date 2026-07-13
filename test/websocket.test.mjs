@@ -3,9 +3,11 @@ import test from 'node:test';
 import { parseArgs } from '../dist/commands/public-rest.js';
 import {
   assertPrivateWebSocketLiveBlocked,
+  assertPrivateWebSocketReadOnlyLiveAllowed,
   assertWebSocketConfirmed,
   findWebSocketCommand,
   redactWebSocketPreview,
+  PRIVATE_WEBSOCKET_READ_ONLY_LIVE_ENV,
 } from '../dist/commands/websocket.js';
 import { loadConfig } from '../dist/config/load-config.js';
 
@@ -135,5 +137,57 @@ test('private WebSocket live execution exposes the safety gate policy', () => {
   assert.throws(
     () => assertPrivateWebSocketLiveBlocked(['websocket', 'private', 'subscribe']),
     /Private WebSocket live execution is intentionally disabled.*authenticated login handshake verification.*exact CONFIRM.*opt-in environment gate/,
+  );
+});
+
+test('private WebSocket read-only live execution requires opt-in and explicit bounds', () => {
+  assert.throws(
+    () => assertPrivateWebSocketReadOnlyLiveAllowed(
+      ['websocket', 'private', 'subscribe'],
+      {
+        'max-messages': '2',
+        'timeout-ms': '1000',
+      },
+      {},
+    ),
+    new RegExp(`${PRIVATE_WEBSOCKET_READ_ONLY_LIVE_ENV}=1`),
+  );
+
+  assert.throws(
+    () => assertPrivateWebSocketReadOnlyLiveAllowed(
+      ['websocket', 'private', 'subscribe'],
+      {},
+      {
+        [PRIVATE_WEBSOCKET_READ_ONLY_LIVE_ENV]: '1',
+      },
+    ),
+    /requires explicit --max-messages and --timeout-ms/,
+  );
+
+  assert.doesNotThrow(() => assertPrivateWebSocketReadOnlyLiveAllowed(
+    ['websocket', 'private', 'subscribe'],
+    {
+      'max-messages': '2',
+      'timeout-ms': '1000',
+    },
+    {
+      [PRIVATE_WEBSOCKET_READ_ONLY_LIVE_ENV]: '1',
+    },
+  ));
+});
+
+test('private WebSocket read-only live execution rejects trade commands', () => {
+  assert.throws(
+    () => assertPrivateWebSocketReadOnlyLiveAllowed(
+      ['websocket', 'private', 'spot', 'trade'],
+      {
+        'max-messages': '2',
+        'timeout-ms': '1000',
+      },
+      {
+        [PRIVATE_WEBSOCKET_READ_ONLY_LIVE_ENV]: '1',
+      },
+    ),
+    /only supports private subscribe and unsubscribe/,
   );
 });
