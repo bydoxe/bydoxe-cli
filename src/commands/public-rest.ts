@@ -1,12 +1,16 @@
 import type { HttpMethod } from '../auth/signature.js';
 import type { BuiltRequest } from '../http/request.js';
+import {
+  type CommandMetadata,
+  withCommandMetadata,
+} from './metadata.js';
 
 export interface ParsedArgs {
   command: string[];
   flags: Record<string, string | boolean>;
 }
 
-export interface PublicRestCommand {
+export interface PublicRestCommand extends CommandMetadata {
   command: string[];
   method: HttpMethod;
   path: string;
@@ -26,50 +30,64 @@ export interface DryRunPreview {
 
 const GLOBAL_FLAGS = new Set(['base-url', 'dry-run', 'format', 'help']);
 
-export const PUBLIC_REST_COMMANDS: PublicRestCommand[] = [
-  {
-    command: ['public', 'time'],
-    method: 'GET',
-    path: '/public/time',
-    description: 'Build or execute a server time request',
-  },
-  {
-    command: ['spot', 'market', 'symbols'],
-    method: 'GET',
-    path: '/spot/market/symbols',
-    description: 'Build or execute a spot market symbols request',
-  },
-  {
-    command: ['spot', 'market', 'tickers'],
-    method: 'GET',
-    path: '/spot/market/tickers',
-    description: 'Build or execute a spot market tickers request',
-  },
-  {
-    command: ['spot', 'market', 'orderbook'],
-    method: 'GET',
-    path: '/spot/market/orderbook',
-    description: 'Build or execute a spot order book request',
-  },
-  {
-    command: ['spot', 'market', 'candles'],
-    method: 'GET',
-    path: '/spot/market/candles',
-    description: 'Build or execute a spot candles request',
-  },
-  {
-    command: ['future', 'market', 'ticker'],
-    method: 'GET',
-    path: '/future/market/24h-ticker',
-    description: 'Build or execute a futures 24h ticker request',
-  },
-  {
-    command: ['future', 'market', 'mark-price'],
-    method: 'GET',
-    path: '/future/market/mark-price',
-    description: 'Build or execute a futures mark price request',
-  },
-];
+const PUBLIC_QUERY_METADATA = {
+  auth: 'public',
+  riskLevel: 'low',
+  requiredParams: [],
+  optionalParams: [],
+  parameterMode: 'query',
+} satisfies CommandMetadata;
+
+export const PUBLIC_REST_COMMANDS: PublicRestCommand[] = withCommandMetadata(
+  [
+    {
+      command: ['public', 'time'],
+      method: 'GET',
+      path: '/public/time',
+      description: 'Build or execute a server time request',
+    },
+    {
+      command: ['spot', 'market', 'symbols'],
+      method: 'GET',
+      path: '/spot/market/symbols',
+      description: 'Build or execute a spot market symbols request',
+    },
+    {
+      command: ['spot', 'market', 'tickers'],
+      method: 'GET',
+      path: '/spot/market/tickers',
+      description: 'Build or execute a spot market tickers request',
+    },
+    {
+      command: ['spot', 'market', 'orderbook'],
+      method: 'GET',
+      path: '/spot/market/orderbook',
+      description: 'Build or execute a spot order book request',
+    },
+    {
+      command: ['spot', 'market', 'candles'],
+      method: 'GET',
+      path: '/spot/market/candles',
+      description: 'Build or execute a spot candles request',
+    },
+    {
+      command: ['future', 'market', 'ticker'],
+      method: 'GET',
+      path: '/future/market/24h-ticker',
+      description: 'Build or execute a futures 24h ticker request',
+    },
+    {
+      command: ['future', 'market', 'mark-price'],
+      method: 'GET',
+      path: '/future/market/mark-price',
+      description: 'Build or execute a futures mark price request',
+    },
+  ],
+  (command) =>
+    command.path === '/public/time'
+      ? { ...PUBLIC_QUERY_METADATA, parameterMode: 'none' }
+      : PUBLIC_QUERY_METADATA,
+);
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const command: string[] = [];

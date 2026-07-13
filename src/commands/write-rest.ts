@@ -1,8 +1,12 @@
 import { CliError } from '../errors/cli-error.js';
 import type { HttpMethod } from '../auth/signature.js';
+import {
+  type CommandMetadata,
+  withCommandMetadata,
+} from './metadata.js';
 import type { ParsedArgs } from './public-rest.js';
 
-export interface WriteRestCommand {
+export interface WriteRestCommand extends CommandMetadata {
   command: string[];
   method: HttpMethod;
   path: string;
@@ -26,7 +30,15 @@ const GLOBAL_FLAGS = new Set([
 
 export const REQUIRED_CONFIRMATION = 'CONFIRM';
 
-export const WRITE_REST_COMMANDS: WriteRestCommand[] = [
+const WRITE_BODY_METADATA = {
+  auth: 'private',
+  riskLevel: 'high',
+  requiredParams: [],
+  optionalParams: [],
+  parameterMode: 'body',
+} satisfies CommandMetadata;
+
+export const WRITE_REST_COMMANDS: WriteRestCommand[] = withCommandMetadata([
   {
     command: ['spot', 'trade', 'place-order'],
     method: 'POST',
@@ -265,7 +277,7 @@ export const WRITE_REST_COMMANDS: WriteRestCommand[] = [
     description: 'Requires CONFIRM: cancel following a trader',
     risk: 'Stops following a copy trading trader.',
   },
-];
+], WRITE_BODY_METADATA);
 
 export function findWriteRestCommand(
   parsed: ParsedArgs,

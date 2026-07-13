@@ -1,12 +1,16 @@
 import { signWebSocketLogin } from '../auth/signature.js';
 import type { BydoxeConfig } from '../config/load-config.js';
 import { CliError } from '../errors/cli-error.js';
+import {
+  type CommandMetadata,
+  withCommandMetadata,
+} from './metadata.js';
 import type { ParsedArgs } from './public-rest.js';
 import { REQUIRED_CONFIRMATION } from './write-rest.js';
 
 export type WebSocketScope = 'public' | 'private';
 
-export interface WebSocketCommand {
+export interface WebSocketCommand extends CommandMetadata {
   command: string[];
   scope: WebSocketScope;
   description: string;
@@ -46,7 +50,7 @@ const GLOBAL_FLAGS = new Set([
 
 const ARG_FLAGS = new Set(['instType', 'instId', 'channel']);
 
-export const WEBSOCKET_COMMANDS: WebSocketCommand[] = [
+export const WEBSOCKET_COMMANDS: WebSocketCommand[] = withCommandMetadata([
   {
     command: ['websocket', 'public', 'ping'],
     scope: 'public',
@@ -84,7 +88,13 @@ export const WEBSOCKET_COMMANDS: WebSocketCommand[] = [
     requiresConfirm: true,
     risk: 'Builds a spot trade payload that can place or cancel orders when sent to BYDOXE.',
   },
-];
+], (command) => ({
+  auth: command.scope,
+  riskLevel: command.requiresConfirm ? 'high' : command.scope === 'private' ? 'medium' : 'low',
+  requiredParams: [],
+  optionalParams: [],
+  parameterMode: 'message',
+} satisfies CommandMetadata));
 
 export function findWebSocketCommand(
   parsed: ParsedArgs,

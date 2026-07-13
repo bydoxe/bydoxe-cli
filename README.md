@@ -20,6 +20,7 @@ Implemented:
 - Authenticated REST write command routing
 - WebSocket message preview routing
 - Public WebSocket live execution
+- Command registry metadata for auth, risk, and parameter mode
 - Dry-run request preview support
 - Public REST execution through Node.js fetch
 - Private REST request signing with redacted dry-run previews
@@ -55,7 +56,7 @@ npm run smoke:websocket-live
 npm run build
 ```
 
-`npm run validate` runs type checking, unit tests, README dry-run smoke examples, the optional public WebSocket live smoke gate, README command coverage checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts. The public WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_WS_TESTS=1` is set.
+`npm run validate` runs type checking, unit tests, README dry-run smoke examples, the optional public WebSocket live smoke gate, README command coverage checks, command metadata checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts. The public WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_WS_TESTS=1` is set.
 
 ## Credentials
 

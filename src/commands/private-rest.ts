@@ -1,8 +1,12 @@
 import type { HttpMethod } from '../auth/signature.js';
 import type { BuiltRequest } from '../http/request.js';
+import {
+  type CommandMetadata,
+  withCommandMetadata,
+} from './metadata.js';
 import type { ParsedArgs } from './public-rest.js';
 
-export interface PrivateRestCommand {
+export interface PrivateRestCommand extends CommandMetadata {
   command: string[];
   method: HttpMethod;
   path: string;
@@ -21,7 +25,15 @@ const REDACTED_HEADERS = new Set([
   'ACCESS-PASSPHRASE',
 ]);
 
-export const PRIVATE_REST_COMMANDS: PrivateRestCommand[] = [
+const PRIVATE_QUERY_METADATA = {
+  auth: 'private',
+  riskLevel: 'low',
+  requiredParams: [],
+  optionalParams: [],
+  parameterMode: 'query',
+} satisfies CommandMetadata;
+
+export const PRIVATE_REST_COMMANDS: PrivateRestCommand[] = withCommandMetadata([
   {
     command: ['common', 'trade-fee'],
     method: 'GET',
@@ -232,7 +244,7 @@ export const PRIVATE_REST_COMMANDS: PrivateRestCommand[] = [
     path: '/copy/mix-follower/query-my-traders',
     description: 'Build or execute a copy trading follower traders request',
   },
-];
+], PRIVATE_QUERY_METADATA);
 
 export function findPrivateRestCommand(
   parsed: ParsedArgs,

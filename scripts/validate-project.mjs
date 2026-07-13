@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 
 const root = process.cwd();
 const expectedDomains = [
@@ -34,6 +35,7 @@ const problems = [
   ...await findPatternProblems(files, unfinishedMarkerPattern, 'unfinished marker'),
   ...await findMissingDomainProblems(files),
   ...await findCommandDocumentationProblems(),
+  ...await findCommandMetadataProblems(),
 ];
 
 if (problems.length > 0) {
@@ -104,6 +106,50 @@ async function findCommandDocumentationProblems() {
     ...duplicateCommands.map((command) => `Duplicate CLI command: ${command}`),
     ...missingCommands.map((command) => `README is missing CLI command: ${command}`),
   ];
+}
+
+async function findCommandMetadataProblems() {
+  const registryModules = await Promise.all([
+    importDistModule('commands/public-rest.js'),
+    importDistModule('commands/private-rest.js'),
+    importDistModule('commands/write-rest.js'),
+    importDistModule('commands/websocket.js'),
+  ]);
+  const commandGroups = [
+    registryModules[0].PUBLIC_REST_COMMANDS,
+    registryModules[1].PRIVATE_REST_COMMANDS,
+    registryModules[2].WRITE_REST_COMMANDS,
+    registryModules[3].WEBSOCKET_COMMANDS,
+  ];
+  const commands = commandGroups.flat();
+  const problems = [];
+
+  for (const command of commands) {
+    const name = `bydoxe ${command.command.join(' ')}`;
+
+    if (!['public', 'private'].includes(command.auth)) {
+      problems.push(`${name} has invalid auth metadata.`);
+    }
+    if (!['low', 'medium', 'high'].includes(command.riskLevel)) {
+      problems.push(`${name} has invalid riskLevel metadata.`);
+    }
+    if (!['none', 'query', 'body', 'message'].includes(command.parameterMode)) {
+      problems.push(`${name} has invalid parameterMode metadata.`);
+    }
+    if (!Array.isArray(command.requiredParams)) {
+      problems.push(`${name} is missing requiredParams metadata.`);
+    }
+    if (!Array.isArray(command.optionalParams)) {
+      problems.push(`${name} is missing optionalParams metadata.`);
+    }
+  }
+
+  return problems;
+}
+
+async function importDistModule(relativePath) {
+  const modulePath = path.join(root, 'dist', relativePath);
+  return import(pathToFileURL(modulePath).href);
 }
 
 async function collectRegistryCommands(projectRoot) {
