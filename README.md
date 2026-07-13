@@ -317,7 +317,7 @@ Optional private read-only live smoke:
 BYDOXE_RUN_LIVE_PRIVATE_WS_TESTS=1 BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1 npm run smoke:websocket-private-live
 ```
 
-Set `BYDOXE_PRIVATE_WS_LIVE_INST_TYPE`, `BYDOXE_PRIVATE_WS_LIVE_CHANNEL`, `BYDOXE_PRIVATE_WS_LIVE_INST_ID`, `BYDOXE_PRIVATE_WS_LIVE_MAX_MESSAGES`, or `BYDOXE_PRIVATE_WS_LIVE_TIMEOUT_MS` to override the default private read-only WebSocket sample.
+The private smoke uses the live private WebSocket URL `wss://open-api.bydoxe.com/v1/ws/private` by default. Set `BYDOXE_PRIVATE_WS_LIVE_URL`, `BYDOXE_PRIVATE_WS_LIVE_INST_TYPE`, `BYDOXE_PRIVATE_WS_LIVE_CHANNEL`, `BYDOXE_PRIVATE_WS_LIVE_INST_ID`, `BYDOXE_PRIVATE_WS_LIVE_MAX_MESSAGES`, or `BYDOXE_PRIVATE_WS_LIVE_TIMEOUT_MS` to override the default private read-only WebSocket sample.
 
 Private WebSocket login previews redact credential-bearing fields in dry-run output. Private spot trade messages require exact `--confirm CONFIRM` before any future live execution path.
 

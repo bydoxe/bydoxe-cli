@@ -130,7 +130,9 @@ Optional private live smoke:
 BYDOXE_RUN_LIVE_PRIVATE_WS_TESTS=1 BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1 npm run smoke:websocket-private-live
 ```
 
-The smoke script validates the bounded private read-only result shape and credential redaction. It is included in `npm run validate` but skipped unless the private live smoke gate is explicitly enabled.
+The smoke script uses the live private WebSocket URL `wss://open-api.bydoxe.com/v1/ws/private` by default. Set `BYDOXE_PRIVATE_WS_LIVE_URL` only when an approved live endpoint override is required.
+
+The smoke script validates the bounded private read-only result shape, live URL, and credential redaction. It is included in `npm run validate` but skipped unless the private live smoke gate is explicitly enabled.
 
 ## Agent Handling
 

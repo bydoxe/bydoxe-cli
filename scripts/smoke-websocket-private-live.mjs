@@ -4,6 +4,7 @@ import process from 'node:process';
 
 const runEnv = 'BYDOXE_RUN_LIVE_PRIVATE_WS_TESTS';
 const gateEnv = 'BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE';
+const defaultPrivateLiveUrl = 'wss://open-api.bydoxe.com/v1/ws/private';
 const requiredCredentialEnv = [
   'BYDOXE_ACCESS_KEY',
   'BYDOXE_SECRET_KEY',
@@ -31,6 +32,7 @@ const channel = process.env.BYDOXE_PRIVATE_WS_LIVE_CHANNEL ?? 'orders';
 const instId = process.env.BYDOXE_PRIVATE_WS_LIVE_INST_ID ?? 'BTCUSDT';
 const maxMessages = process.env.BYDOXE_PRIVATE_WS_LIVE_MAX_MESSAGES ?? '2';
 const timeoutMs = process.env.BYDOXE_PRIVATE_WS_LIVE_TIMEOUT_MS ?? '10000';
+const liveUrl = process.env.BYDOXE_PRIVATE_WS_LIVE_URL ?? defaultPrivateLiveUrl;
 
 const args = [
   'websocket',
@@ -47,6 +49,8 @@ const args = [
   maxMessages,
   '--timeout-ms',
   timeoutMs,
+  '--ws-url',
+  liveUrl,
   '--format',
   'json',
 ];
@@ -58,7 +62,7 @@ try {
     stdio: ['ignore', 'pipe', 'pipe'],
   });
   const result = JSON.parse(output);
-  const problems = validateResult(result);
+  const problems = validateResult(result, liveUrl);
 
   if (problems.length > 0) {
     console.error('Private WebSocket live smoke validation failed:');
@@ -91,7 +95,7 @@ function validatePreflight() {
   return problems;
 }
 
-function validateResult(result) {
+function validateResult(result, expectedLiveUrl) {
   const problems = [];
 
   if (result?.live !== true) {
@@ -99,6 +103,9 @@ function validateResult(result) {
   }
   if (result?.connection?.scope !== 'private') {
     problems.push('Expected a private WebSocket connection scope.');
+  }
+  if (result?.connection?.url !== expectedLiveUrl) {
+    problems.push(`Expected private WebSocket live URL ${expectedLiveUrl}.`);
   }
   if (result?.sent?.login?.op !== 'login') {
     problems.push('Expected a redacted login message in the sent payload.');

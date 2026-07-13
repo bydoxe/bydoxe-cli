@@ -56,6 +56,8 @@ Private read-only WebSocket smoke:
 BYDOXE_RUN_LIVE_PRIVATE_WS_TESTS=1 BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1 npm run smoke:websocket-private-live
 ```
 
+The private read-only WebSocket smoke uses `wss://open-api.bydoxe.com/v1/ws/private` by default and validates that live URL in the command result.
+
 Do not run write commands against live accounts as part of automated release validation.
 
 ## Documentation Review
