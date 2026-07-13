@@ -198,6 +198,113 @@ const WRITE_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
   },
 };
 
+type EnumRule = {
+  param: string;
+  values: string[];
+};
+
+type WriteValidationRule = {
+  positiveNumberParams?: string[];
+  enumParams?: EnumRule[];
+  requireAnyParams?: string[][];
+};
+
+const COMMON_ORDER_ENUMS = [
+  { param: 'orderType', values: ['MARKET', 'LIMIT'] },
+  { param: 'timeInForce', values: ['GTC', 'IOC', 'FOK'] },
+];
+
+const SPOT_ORDER_ENUMS = [
+  ...COMMON_ORDER_ENUMS,
+  { param: 'tradeType', values: ['BUY', 'SELL'] },
+];
+
+const FUTURES_ORDER_ENUMS = [
+  ...COMMON_ORDER_ENUMS,
+  { param: 'side', values: ['BUY', 'SELL'] },
+  { param: 'holdSide', values: ['LONG', 'SHORT'] },
+];
+
+const WRITE_REST_VALIDATION_BY_PATH: Record<string, WriteValidationRule> = {
+  '/spot/trade/place-order': {
+    positiveNumberParams: ['amount', 'price'],
+    enumParams: SPOT_ORDER_ENUMS,
+  },
+  '/spot/trade/cancel-order': {
+    requireAnyParams: [['orderId', 'clientOid']],
+  },
+  '/spot/trade/cancel-replace-order': {
+    positiveNumberParams: ['amount', 'price'],
+    enumParams: SPOT_ORDER_ENUMS,
+    requireAnyParams: [['orderId', 'clientOid']],
+  },
+  '/spot/account/transfer': {
+    positiveNumberParams: ['amount'],
+  },
+  '/spot/account/withdraw': {
+    positiveNumberParams: ['amount'],
+  },
+  '/future/account/set-leverage': {
+    positiveNumberParams: ['longLeverage', 'shortLeverage', 'leverage'],
+  },
+  '/future/account/set-margin': {
+    positiveNumberParams: ['amount'],
+    enumParams: [{ param: 'holdSide', values: ['LONG', 'SHORT'] }],
+  },
+  '/future/account/set-margin-mode': {
+    enumParams: [{ param: 'marginMode', values: ['CROSS', 'ISOLATED'] }],
+  },
+  '/future/order/place-order': {
+    positiveNumberParams: ['size', 'price'],
+    enumParams: FUTURES_ORDER_ENUMS,
+  },
+  '/future/order/click-backhand': {
+    positiveNumberParams: ['size'],
+    enumParams: FUTURES_ORDER_ENUMS,
+  },
+  '/future/order/modify-order': {
+    positiveNumberParams: ['size', 'price'],
+    requireAnyParams: [['orderId', 'clientOid']],
+  },
+  '/future/order/cancel-order': {
+    requireAnyParams: [['orderId', 'clientOid']],
+  },
+  '/future/order/close-positions': {
+    enumParams: [{ param: 'holdSide', values: ['LONG', 'SHORT'] }],
+  },
+  '/future/order/place-plan-order': {
+    positiveNumberParams: ['size', 'price', 'triggerPrice'],
+    enumParams: FUTURES_ORDER_ENUMS,
+  },
+  '/future/order/modify-plan-order': {
+    positiveNumberParams: ['size', 'price', 'triggerPrice'],
+    requireAnyParams: [['orderId', 'clientOid']],
+  },
+  '/future/order/cancel-plan-order': {
+    requireAnyParams: [['orderId', 'clientOid']],
+  },
+  '/future/order/place-tpsl-order': {
+    positiveNumberParams: ['size', 'triggerPrice'],
+    enumParams: [
+      { param: 'planType', values: ['TAKE_PROFIT', 'STOP_LOSS'] },
+      { param: 'holdSide', values: ['LONG', 'SHORT'] },
+    ],
+  },
+  '/future/order/modify-tpsl-order': {
+    positiveNumberParams: ['triggerPrice'],
+    requireAnyParams: [['orderId', 'clientOid']],
+  },
+  '/copy/mix-trader/order-modify-tpsl': {
+    positiveNumberParams: ['stopSurplusPrice', 'stopLossPrice'],
+  },
+  '/copy/mix-follower/setting-tpsl': {
+    positiveNumberParams: ['stopSurplusPrice', 'stopLossPrice'],
+  },
+  '/copy/mix-follower/setting-copy-trade': {
+    positiveNumberParams: ['copyAmount'],
+  },
+};
+
 export const WRITE_REST_COMMANDS: WriteRestCommand[] = withCommandMetadata([
   {
     command: ['spot', 'trade', 'place-order'],
@@ -454,6 +561,11 @@ export function findWriteRestCommand(
     getBodyParamValues(body),
     `bydoxe ${parsed.command.join(' ')}`,
   );
+  assertWriteBodyMatchesRules(
+    definition,
+    getBodyParamValues(body),
+    `bydoxe ${parsed.command.join(' ')}`,
+  );
 
   return {
     definition,
@@ -492,6 +604,66 @@ function getBody(flags: Record<string, string | boolean>): unknown {
 function getBodyParamValues(body: unknown): Record<string, unknown> {
   if (!body || typeof body !== 'object' || Array.isArray(body)) return {};
   return body as Record<string, unknown>;
+}
+
+function assertWriteBodyMatchesRules(
+  definition: WriteRestCommand,
+  body: Record<string, unknown>,
+  commandName: string,
+): void {
+  const rule = WRITE_REST_VALIDATION_BY_PATH[definition.path];
+  if (!rule) return;
+
+  const problems = [
+    ...findMissingAlternativeParamProblems(rule, body),
+    ...findPositiveNumberProblems(rule, body),
+    ...findEnumProblems(rule, body),
+  ];
+
+  if (problems.length > 0) {
+    throw new CliError(
+      `Invalid parameter${problems.length === 1 ? '' : 's'} for ${commandName}: ${problems.join('; ')}.`,
+    );
+  }
+}
+
+function findMissingAlternativeParamProblems(
+  rule: WriteValidationRule,
+  body: Record<string, unknown>,
+): string[] {
+  return (rule.requireAnyParams ?? [])
+    .filter((paramGroup) => !paramGroup.some((param) => hasUsableValue(body[param])))
+    .map((paramGroup) => `one of ${paramGroup.join(', ')} is required`);
+}
+
+function findPositiveNumberProblems(
+  rule: WriteValidationRule,
+  body: Record<string, unknown>,
+): string[] {
+  return (rule.positiveNumberParams ?? [])
+    .filter((param) => hasUsableValue(body[param]) && !isPositiveNumber(body[param]))
+    .map((param) => `${param} must be a positive number`);
+}
+
+function findEnumProblems(
+  rule: WriteValidationRule,
+  body: Record<string, unknown>,
+): string[] {
+  return (rule.enumParams ?? [])
+    .filter(({ param, values }) =>
+      hasUsableValue(body[param]) &&
+      !values.includes(String(body[param]).toUpperCase()),
+    )
+    .map(({ param, values }) => `${param} must be one of ${values.join(', ')}`);
+}
+
+function hasUsableValue(value: unknown): boolean {
+  return value !== undefined && value !== null && value !== '';
+}
+
+function isPositiveNumber(value: unknown): boolean {
+  const numericValue = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(numericValue) && numericValue > 0;
 }
 
 function matches(command: string[], expected: string[]): boolean {

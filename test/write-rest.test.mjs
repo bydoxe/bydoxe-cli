@@ -95,6 +95,86 @@ test('write command rejects missing required body parameters', () => {
   );
 });
 
+test('write command rejects invalid numeric and enum body parameters', () => {
+  const parsed = parseArgs([
+    'spot',
+    'trade',
+    'place-order',
+    '--body',
+    '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"HOLD","amount":"0"}',
+    '--dry-run',
+  ]);
+
+  assert.throws(
+    () => findWriteRestCommand(parsed),
+    /Invalid parameters for bydoxe spot trade place-order: amount must be a positive number; tradeType must be one of BUY, SELL/,
+  );
+});
+
+test('write command accepts lowercase enum body parameters', () => {
+  const parsed = parseArgs([
+    'future',
+    'order',
+    'place',
+    '--body',
+    '{"symbol":"BTCUSDT","side":"buy","orderType":"limit","size":"0.01","holdSide":"long"}',
+    '--dry-run',
+  ]);
+  const match = findWriteRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/future/order/place-order');
+  assert.deepEqual(match.body, {
+    symbol: 'BTCUSDT',
+    side: 'buy',
+    orderType: 'limit',
+    size: '0.01',
+    holdSide: 'long',
+  });
+});
+
+test('write cancel and modify commands require an order identifier when supported', () => {
+  assert.throws(
+    () => findWriteRestCommand(parseArgs([
+      'spot',
+      'trade',
+      'cancel-order',
+      '--symbol',
+      'BTCUSDT',
+      '--dry-run',
+    ])),
+    /Invalid parameter for bydoxe spot trade cancel-order: one of orderId, clientOid is required/,
+  );
+
+  assert.throws(
+    () => findWriteRestCommand(parseArgs([
+      'future',
+      'trigger',
+      'modify',
+      '--body',
+      '{"symbol":"BTCUSDT","triggerPrice":"62000"}',
+      '--dry-run',
+    ])),
+    /Invalid parameter for bydoxe future trigger modify: one of orderId, clientOid is required/,
+  );
+});
+
+test('futures tpsl command validates plan type and trigger price', () => {
+  const parsed = parseArgs([
+    'future',
+    'tpsl',
+    'place',
+    '--body',
+    '{"symbol":"BTCUSDT","planType":"TRAILING","triggerPrice":"-1"}',
+    '--dry-run',
+  ]);
+
+  assert.throws(
+    () => findWriteRestCommand(parsed),
+    /Invalid parameters for bydoxe future tpsl place: triggerPrice must be a positive number; planType must be one of TAKE_PROFIT, STOP_LOSS/,
+  );
+});
+
 test('write command execution requires exact confirmation token', () => {
   assert.throws(() => assertWriteConfirmed({}), /--confirm CONFIRM/);
   assert.throws(
