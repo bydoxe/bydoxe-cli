@@ -20,3 +20,4 @@
 - Add copy trading write command routing for TP/SL, settings, close-position, follower removal, and cancel-follow actions.
 - Add WebSocket message previews for public channels, private login, private subscriptions, and private spot trade payloads.
 - Add project validation checks for domains, unfinished markers, and English-only artifacts.
+- Add validation that all registered CLI commands are documented in the README.

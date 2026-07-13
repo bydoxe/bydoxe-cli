@@ -52,7 +52,7 @@ npm test
 npm run build
 ```
 
-`npm run validate` runs type checking, unit tests, domain checks, unfinished-marker checks, and English-only content checks for project artifacts.
+`npm run validate` runs type checking, unit tests, README command coverage checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts.
 
 ## Credentials
 

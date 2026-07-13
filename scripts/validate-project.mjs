@@ -8,6 +8,12 @@ const expectedDomains = [
   'wss://open-api.bydoxe.com/v1/ws/public',
   'wss://open-api.bydoxe.com/v1/ws/private',
 ];
+const commandSourceFiles = [
+  'src/commands/public-rest.ts',
+  'src/commands/private-rest.ts',
+  'src/commands/write-rest.ts',
+  'src/commands/websocket.ts',
+];
 const unfinishedMarkerPattern = new RegExp(
   `\\b(${['TO' + 'DO', 'FIX' + 'ME', 'T' + 'BD'].join('|')})\\b`,
   'u',
@@ -27,6 +33,7 @@ const problems = [
   ...await findPatternProblems(files, /\p{Script=Hangul}/u, 'Hangul text'),
   ...await findPatternProblems(files, unfinishedMarkerPattern, 'unfinished marker'),
   ...await findMissingDomainProblems(files),
+  ...await findCommandDocumentationProblems(),
 ];
 
 if (problems.length > 0) {
@@ -83,4 +90,61 @@ async function findMissingDomainProblems(filesToScan) {
   return expectedDomains
     .filter((domain) => !combinedText.includes(domain))
     .map((domain) => `Expected domain is missing: ${domain}`);
+}
+
+async function findCommandDocumentationProblems() {
+  const readmeText = await readFile(path.join(root, 'README.md'), 'utf8');
+  const commands = await collectRegistryCommands(root);
+  const duplicateCommands = findDuplicates(commands);
+  const missingCommands = unique(commands).filter(
+    (command) => !readmeText.includes(`\`${command}\``),
+  );
+
+  return [
+    ...duplicateCommands.map((command) => `Duplicate CLI command: ${command}`),
+    ...missingCommands.map((command) => `README is missing CLI command: ${command}`),
+  ];
+}
+
+async function collectRegistryCommands(projectRoot) {
+  const commands = [];
+
+  for (const relativeFile of commandSourceFiles) {
+    const sourceText = await readFile(path.join(projectRoot, relativeFile), 'utf8');
+    commands.push(...extractCommands(sourceText));
+  }
+
+  return commands.map((command) => `bydoxe ${command}`);
+}
+
+function extractCommands(sourceText) {
+  const commands = [];
+  const commandPattern = /command:\s*\[([^\]]+)\]/g;
+
+  for (const match of sourceText.matchAll(commandPattern)) {
+    const parts = [...match[1].matchAll(/'([^']+)'/g)].map((part) => part[1]);
+    if (parts.length > 0) {
+      commands.push(parts.join(' '));
+    }
+  }
+
+  return commands;
+}
+
+function findDuplicates(values) {
+  const seen = new Set();
+  const duplicates = new Set();
+
+  for (const value of values) {
+    if (seen.has(value)) {
+      duplicates.add(value);
+    }
+    seen.add(value);
+  }
+
+  return [...duplicates];
+}
+
+function unique(values) {
+  return [...new Set(values)];
 }
