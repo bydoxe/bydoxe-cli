@@ -46,10 +46,13 @@ node dist/cli.js --help
 ## Development
 
 ```sh
+npm run validate
 npm run typecheck
 npm test
 npm run build
 ```
+
+`npm run validate` runs type checking, unit tests, domain checks, unfinished-marker checks, and English-only content checks for project artifacts.
 
 ## Credentials
 
