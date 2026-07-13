@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { parseArgs } from '../dist/commands/public-rest.js';
 import {
+  assertPrivateWebSocketLiveBlocked,
   assertWebSocketConfirmed,
   findWebSocketCommand,
   redactWebSocketPreview,
@@ -128,4 +129,11 @@ test('private WebSocket spot trade execution requires exact confirmation token',
     /--confirm CONFIRM/,
   );
   assert.doesNotThrow(() => assertWebSocketConfirmed({ confirm: 'CONFIRM' }));
+});
+
+test('private WebSocket live execution exposes the safety gate policy', () => {
+  assert.throws(
+    () => assertPrivateWebSocketLiveBlocked(['websocket', 'private', 'subscribe']),
+    /Private WebSocket live execution is intentionally disabled.*authenticated login handshake verification.*exact CONFIRM.*opt-in environment gate/,
+  );
 });

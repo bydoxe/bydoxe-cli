@@ -39,6 +39,13 @@ export interface WebSocketCommandMatch {
   preview: WebSocketPreview;
 }
 
+export const PRIVATE_WEBSOCKET_LIVE_GATES = [
+  'authenticated login handshake verification',
+  'bounded read-only private stream smoke tests',
+  'separate trade-send implementation with exact CONFIRM',
+  'explicit opt-in environment gate for live private sessions',
+];
+
 const GLOBAL_FLAGS = new Set([
   'body',
   'confirm',
@@ -139,6 +146,12 @@ export function assertWebSocketConfirmed(
       `WebSocket trade commands require --confirm ${REQUIRED_CONFIRMATION}. Run with --dry-run first and review the message preview.`,
     );
   }
+}
+
+export function assertPrivateWebSocketLiveBlocked(command: string[]): never {
+  throw new CliError(
+    `Private WebSocket live execution is intentionally disabled for bydoxe ${command.join(' ')}. Required gates before implementation: ${PRIVATE_WEBSOCKET_LIVE_GATES.join('; ')}.`,
+  );
 }
 
 export function redactWebSocketPreview(

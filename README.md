@@ -253,7 +253,7 @@ bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry
 
 ## WebSocket Commands
 
-WebSocket commands build connection and message previews with `--dry-run`. Public WebSocket commands also support bounded live sessions with `--live`. Private WebSocket live sessions are not implemented yet.
+WebSocket commands build connection and message previews with `--dry-run`. Public WebSocket commands also support bounded live sessions with `--live`. Private WebSocket live sessions are intentionally disabled behind a safety gate.
 
 | Command | Purpose |
 | --- | --- |
@@ -289,3 +289,10 @@ BYDOXE_RUN_LIVE_WS_TESTS=1 npm run smoke:websocket-live
 ```
 
 Private WebSocket login previews redact credential-bearing fields in dry-run output. Private spot trade messages require exact `--confirm CONFIRM` before any future live execution path.
+
+Private WebSocket live execution will remain disabled until these gates are implemented:
+
+- Authenticated login handshake verification.
+- Bounded read-only private stream smoke tests.
+- Separate trade-send implementation with exact `CONFIRM`.
+- Explicit opt-in environment gate for live private sessions.

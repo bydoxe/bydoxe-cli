@@ -36,3 +36,4 @@
 - Add a generated command catalog for registry-backed command metadata synchronization.
 - Add a generated human-readable command reference from the command catalog.
 - Add typed validation for common write command numeric fields, enum fields, and order identifier alternatives.
+- Document and enforce a private WebSocket live safety gate policy.

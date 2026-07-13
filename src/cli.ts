@@ -24,6 +24,7 @@ import {
   WRITE_REST_COMMANDS,
 } from './commands/write-rest.js';
 import {
+  assertPrivateWebSocketLiveBlocked,
   assertWebSocketConfirmed,
   findWebSocketCommand,
   redactWebSocketPreview,
@@ -144,9 +145,7 @@ async function main(argv: string[]): Promise<void> {
     }
 
     if (webSocketCommand.definition.scope !== 'public') {
-      throw new CliError(
-        'Live WebSocket sessions are currently supported only for public streams.',
-      );
+      assertPrivateWebSocketLiveBlocked(webSocketCommand.definition.command);
     }
 
     if (webSocketCommand.definition.requiresConfirm) {
