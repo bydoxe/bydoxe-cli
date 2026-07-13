@@ -130,7 +130,7 @@ Public REST market samples are a second opt-in layer:
 BYDOXE_RUN_LIVE_REST_TESTS=1 BYDOXE_RUN_LIVE_REST_MARKET_TESTS=1 npm run smoke:public-rest-live
 ```
 
-Set `BYDOXE_REST_LIVE_SYMBOL` to override the default market sample symbol.
+Market samples include spot tickers, spot orderbook, spot candles, futures ticker, and futures candles. Set `BYDOXE_REST_LIVE_SYMBOL` to override the default market sample symbol. Set `BYDOXE_REST_LIVE_CANDLE_INTERVAL` to override the default candle interval.
 
 ## Public REST Commands
 

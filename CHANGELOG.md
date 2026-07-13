@@ -41,3 +41,4 @@
 - Expose write command validation rules in the generated command catalog and reference.
 - Link the generated command reference from the README as the full CLI command surface.
 - Document the proposed read-only private WebSocket live boundary.
+- Add orderbook and candle samples to the optional public REST market live smoke.

@@ -10,6 +10,7 @@ if (process.env.BYDOXE_RUN_LIVE_REST_TESTS !== '1') {
 const root = process.cwd();
 const cliPath = path.join(root, 'dist', 'cli.js');
 const symbol = process.env.BYDOXE_REST_LIVE_SYMBOL ?? 'BTCUSDT';
+const candleInterval = process.env.BYDOXE_REST_LIVE_CANDLE_INTERVAL ?? '1m';
 const samples = [
   {
     name: 'public time',
@@ -70,6 +71,36 @@ function getMarketSamples(sampleSymbol) {
       ],
     },
     {
+      name: `spot market orderbook ${sampleSymbol}`,
+      args: [
+        'spot',
+        'market',
+        'orderbook',
+        '--symbol',
+        sampleSymbol,
+        '--limit',
+        '20',
+        '--format',
+        'json',
+      ],
+    },
+    {
+      name: `spot market candles ${sampleSymbol} ${candleInterval}`,
+      args: [
+        'spot',
+        'market',
+        'candles',
+        '--symbol',
+        sampleSymbol,
+        '--granularity',
+        candleInterval,
+        '--limit',
+        '10',
+        '--format',
+        'json',
+      ],
+    },
+    {
       name: `future market ticker ${sampleSymbol}`,
       args: [
         'future',
@@ -77,6 +108,22 @@ function getMarketSamples(sampleSymbol) {
         'ticker',
         '--symbol',
         sampleSymbol,
+        '--format',
+        'json',
+      ],
+    },
+    {
+      name: `future market candles ${sampleSymbol} ${candleInterval}`,
+      args: [
+        'future',
+        'market',
+        'candles',
+        '--symbol',
+        sampleSymbol,
+        '--interval',
+        candleInterval,
+        '--limit',
+        '10',
         '--format',
         'json',
       ],
