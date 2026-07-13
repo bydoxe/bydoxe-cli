@@ -34,3 +34,4 @@
 - Add optional public REST live smoke validation behind `BYDOXE_RUN_LIVE_REST_TESTS=1`.
 - Add remaining read-only REST commands for spot order info and futures trigger order queries.
 - Add a generated command catalog for registry-backed command metadata synchronization.
+- Add a generated human-readable command reference from the command catalog.
