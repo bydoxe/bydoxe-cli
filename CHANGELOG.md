@@ -18,3 +18,4 @@
 - Add JSON body support for write command previews and execution.
 - Add copy trading trader and follower REST read command routing.
 - Add copy trading write command routing for TP/SL, settings, close-position, follower removal, and cancel-follow actions.
+- Add WebSocket message previews for public channels, private login, private subscriptions, and private spot trade payloads.

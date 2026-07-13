@@ -18,6 +18,7 @@ Implemented:
 - Public REST command routing
 - Authenticated REST read command routing
 - Authenticated REST write command routing
+- WebSocket message preview routing
 - Dry-run request preview support
 - Public REST execution through Node.js fetch
 - Private REST request signing with redacted dry-run previews
@@ -77,6 +78,8 @@ bydoxe copytrading trader followers --pageNo 1 --pageSize 20 --dry-run --format 
 bydoxe copytrading follower settings --traderId trader-1 --dry-run --format json
 bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --dry-run --format json
 bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry-run --format json
+bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCUSDT --dry-run --format json
+bydoxe websocket private login --dry-run --format json
 ```
 
 The dry-run mode prints the request that would be sent without making a network call.
@@ -186,3 +189,29 @@ bydoxe future account set-leverage --body '{"symbol":"BTCUSDT","longLeverage":5,
 bydoxe copytrading trader config --body '{"symbol":"BTCUSDT","copyTradeMode":"fixed"}' --dry-run --format json
 bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry-run --format json
 ```
+
+## WebSocket Commands
+
+WebSocket commands currently build connection and message previews. Live WebSocket sessions are not implemented yet.
+
+| Command | Purpose |
+| --- | --- |
+| `bydoxe websocket public ping` | Preview a public WebSocket ping message |
+| `bydoxe websocket public subscribe` | Preview a public channel subscription |
+| `bydoxe websocket public unsubscribe` | Preview a public channel unsubscription |
+| `bydoxe websocket private login` | Preview a signed private login payload |
+| `bydoxe websocket private subscribe` | Preview a private channel subscription |
+| `bydoxe websocket private unsubscribe` | Preview a private channel unsubscription |
+| `bydoxe websocket private spot trade` | Preview a private spot trade payload |
+
+Examples:
+
+```sh
+bydoxe websocket public ping --dry-run --format json
+bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCUSDT --dry-run --format json
+bydoxe websocket private login --dry-run --format json
+bydoxe websocket private subscribe --instType USDT-FUTURES --channel orders --instId BTCUSDT --dry-run --format json
+bydoxe websocket private spot trade --instId BTCUSDT --side buy --orderType limit --size 0.01 --price 60000 --dry-run --format json
+```
+
+Private WebSocket login previews redact credential-bearing fields in dry-run output. Private spot trade messages require exact `--confirm CONFIRM` before any future live execution path.

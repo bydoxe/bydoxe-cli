@@ -22,6 +22,12 @@ import {
   findWriteRestCommand,
   WRITE_REST_COMMANDS,
 } from './commands/write-rest.js';
+import {
+  assertWebSocketConfirmed,
+  findWebSocketCommand,
+  redactWebSocketPreview,
+  WEBSOCKET_COMMANDS,
+} from './commands/websocket.js';
 
 async function main(argv: string[]): Promise<void> {
   const parsed = parseArgs(argv);
@@ -116,6 +122,24 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  const webSocketCommand = findWebSocketCommand(parsed, config);
+  if (webSocketCommand) {
+    const preview = redactWebSocketPreview(webSocketCommand.preview);
+
+    if (dryRun) {
+      printOutput(preview, format);
+      return;
+    }
+
+    if (webSocketCommand.definition.requiresConfirm) {
+      assertWebSocketConfirmed(parsed.flags);
+    }
+
+    throw new CliError(
+      'Live WebSocket sessions are not implemented yet. Run with --dry-run to review the connection and message preview.',
+    );
+  }
+
   throw new CliError(`Unknown command: ${parsed.command.join(' ')}`);
 }
 
@@ -139,6 +163,10 @@ function printHelp(): void {
     (command) =>
       `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
   ).join('\n');
+  const webSocketCommands = WEBSOCKET_COMMANDS.map(
+    (command) =>
+      `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
+  ).join('\n');
 
   console.log(`BYDOXE CLI
 
@@ -155,12 +183,16 @@ ${privateCommands}
 Write REST:
 ${writeCommands}
 
+WebSocket:
+${webSocketCommands}
+
 Options:
   --base-url <url>                  Override the REST base URL
   --body <json>                     JSON request body for write commands
   --confirm CONFIRM                 Required to execute write commands
   --format <format>                 Output format: human or json
   --dry-run                         Print the request without sending it
+  --ws-url <url>                    Override the selected WebSocket URL
   --help                            Show this help message
 
 Environment:
@@ -168,6 +200,8 @@ Environment:
   BYDOXE_SECRET_KEY
   BYDOXE_PASSPHRASE
   BYDOXE_REST_BASE_URL
+  BYDOXE_PUBLIC_WS_URL
+  BYDOXE_PRIVATE_WS_URL
 `);
 }
 
