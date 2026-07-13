@@ -52,11 +52,12 @@ npm run validate
 npm run typecheck
 npm test
 npm run smoke:readme
+npm run smoke:public-rest-live
 npm run smoke:websocket-live
 npm run build
 ```
 
-`npm run validate` runs type checking, unit tests, README dry-run smoke examples, the optional public WebSocket live smoke gate, README command coverage checks, command metadata checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts. The public WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_WS_TESTS=1` is set.
+`npm run validate` runs type checking, unit tests, README dry-run smoke examples, optional public REST and WebSocket live smoke gates, README command coverage checks, command metadata checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts. The public REST live smoke is skipped unless `BYDOXE_RUN_LIVE_REST_TESTS=1` is set. The public WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_WS_TESTS=1` is set.
 
 ## Credentials
 
@@ -100,6 +101,12 @@ Commands with required parameter metadata fail before building a request when re
 Dry-run output includes command metadata for auth scope, risk level, parameter mode, required parameters, and optional parameters.
 
 `bydoxe --help` lists required and optional parameter hints from the same command registry metadata.
+
+The optional public REST live smoke runs a bounded `public time` request only when explicitly enabled:
+
+```sh
+BYDOXE_RUN_LIVE_REST_TESTS=1 npm run smoke:public-rest-live
+```
 
 ## Public REST Commands
 

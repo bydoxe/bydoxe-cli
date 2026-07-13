@@ -31,3 +31,4 @@
 - Add command metadata to REST and WebSocket dry-run previews.
 - Add required and optional parameter hints to CLI help output.
 - Add remaining futures public market REST commands.
+- Add optional public REST live smoke validation behind `BYDOXE_RUN_LIVE_REST_TESTS=1`.
