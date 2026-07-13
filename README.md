@@ -60,10 +60,11 @@ npm run summary:check
 npm run smoke:readme
 npm run smoke:public-rest-live
 npm run smoke:websocket-live
+npm run smoke:websocket-private-live
 npm run build
 ```
 
-`npm run validate` runs type checking, unit tests, command catalog, generated reference, generated summary freshness checks, README dry-run smoke examples, optional public REST and WebSocket live smoke gates, README command coverage checks, command metadata checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts. The public REST live smoke is skipped unless `BYDOXE_RUN_LIVE_REST_TESTS=1` is set. The public WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_WS_TESTS=1` is set.
+`npm run validate` runs type checking, unit tests, command catalog, generated reference, generated summary freshness checks, README dry-run smoke examples, optional public REST and WebSocket live smoke gates, README command coverage checks, command metadata checks, domain checks, unfinished-marker checks, and English-only content checks for project artifacts. The public REST live smoke is skipped unless `BYDOXE_RUN_LIVE_REST_TESTS=1` is set. The public WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_WS_TESTS=1` is set. The private read-only WebSocket live smoke is skipped unless `BYDOXE_RUN_LIVE_PRIVATE_WS_TESTS=1` is set.
 
 `docs/command-catalog.json` is generated from the CLI command registries. It is the machine-readable source for command metadata, required parameters, optional parameters, auth scope, risk level, transport, and endpoint mapping.
 
@@ -307,6 +308,14 @@ Optional live smoke:
 ```sh
 BYDOXE_RUN_LIVE_WS_TESTS=1 npm run smoke:websocket-live
 ```
+
+Optional private read-only live smoke:
+
+```sh
+BYDOXE_RUN_LIVE_PRIVATE_WS_TESTS=1 BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1 npm run smoke:websocket-private-live
+```
+
+Set `BYDOXE_PRIVATE_WS_LIVE_INST_TYPE`, `BYDOXE_PRIVATE_WS_LIVE_CHANNEL`, `BYDOXE_PRIVATE_WS_LIVE_INST_ID`, `BYDOXE_PRIVATE_WS_LIVE_MAX_MESSAGES`, or `BYDOXE_PRIVATE_WS_LIVE_TIMEOUT_MS` to override the default private read-only WebSocket sample.
 
 Private WebSocket login previews redact credential-bearing fields in dry-run output. Private spot trade messages require exact `--confirm CONFIRM` before any future live execution path.
 

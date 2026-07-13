@@ -113,7 +113,8 @@ Optional live smoke:
 
 - Disabled by default.
 - Requires credentials.
-- Requires explicit environment opt-in.
+- Requires `BYDOXE_RUN_LIVE_PRIVATE_WS_TESTS=1`.
+- Requires explicit `BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1` environment opt-in.
 - Uses a read-only private channel only.
 - Uses short runtime limits.
 
@@ -122,6 +123,14 @@ Optional live smoke:
 ```sh
 BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1 bydoxe websocket private subscribe --instType USDT-FUTURES --channel orders --instId BTCUSDT --live --max-messages 2 --timeout-ms 10000 --format json
 ```
+
+Optional private live smoke:
+
+```sh
+BYDOXE_RUN_LIVE_PRIVATE_WS_TESTS=1 BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1 npm run smoke:websocket-private-live
+```
+
+The smoke script validates the bounded private read-only result shape and credential redaction. It is included in `npm run validate` but skipped unless the private live smoke gate is explicitly enabled.
 
 ## Agent Handling
 

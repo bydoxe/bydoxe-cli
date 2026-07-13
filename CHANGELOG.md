@@ -49,3 +49,4 @@
 - Wire private WebSocket read-only live execution behind an explicit opt-in gate.
 - Align public WebSocket live smoke validation with the current live result shape.
 - Add non-empty string validation for remaining write command identifiers.
+- Add optional private read-only WebSocket live smoke validation behind explicit credential gates.

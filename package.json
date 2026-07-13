@@ -28,7 +28,8 @@
     "smoke:readme": "npm run build && node scripts/smoke-readme-examples.mjs",
     "smoke:public-rest-live": "npm run build && node scripts/smoke-public-rest-live.mjs",
     "smoke:websocket-live": "npm run build && node scripts/smoke-websocket-public-live.mjs",
-    "validate": "npm run typecheck && npm test && npm run catalog:check && npm run reference:check && npm run summary:check && npm run smoke:readme && npm run smoke:public-rest-live && npm run smoke:websocket-live && node scripts/validate-project.mjs"
+    "smoke:websocket-private-live": "npm run build && node scripts/smoke-websocket-private-live.mjs",
+    "validate": "npm run typecheck && npm test && npm run catalog:check && npm run reference:check && npm run summary:check && npm run smoke:readme && npm run smoke:public-rest-live && npm run smoke:websocket-live && npm run smoke:websocket-private-live && node scripts/validate-project.mjs"
   },
   "engines": {
     "node": ">=20"
