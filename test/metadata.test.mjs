@@ -58,6 +58,12 @@ test('private read commands expose parameter hints for common lookups', () => {
   const followerSettings = PRIVATE_REST_COMMANDS.find(
     (command) => command.command.join(' ') === 'copytrading follower settings',
   );
+  const spotOrderInfo = PRIVATE_REST_COMMANDS.find(
+    (command) => command.command.join(' ') === 'spot trade order-info',
+  );
+  const pendingTriggers = PRIVATE_REST_COMMANDS.find(
+    (command) => command.command.join(' ') === 'future trigger orders-pending',
+  );
 
   assert.ok(fundingAssets);
   assert.deepEqual(fundingAssets.optionalParams, ['coin']);
@@ -65,6 +71,11 @@ test('private read commands expose parameter hints for common lookups', () => {
   assert.deepEqual(singlePosition.requiredParams, ['symbol']);
   assert.ok(followerSettings);
   assert.deepEqual(followerSettings.requiredParams, ['traderId']);
+  assert.ok(spotOrderInfo);
+  assert.equal(spotOrderInfo.parameterMode, 'body');
+  assert.deepEqual(spotOrderInfo.requiredParams, ['orderId']);
+  assert.ok(pendingTriggers);
+  assert.deepEqual(pendingTriggers.requiredParams, ['limit']);
 });
 
 test('write commands expose body parameter hints for risky actions', () => {

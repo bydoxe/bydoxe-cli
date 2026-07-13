@@ -50,6 +50,30 @@ test('write dry-run output includes high-risk metadata', () => {
   });
 });
 
+test('private read-like POST dry-run output includes low-risk body metadata', () => {
+  const preview = runCliJson([
+    'spot',
+    'trade',
+    'order-info',
+    '--orderId',
+    '123456789',
+    '--dry-run',
+    '--format',
+    'json',
+  ]);
+
+  assert.equal(preview.dryRun, true);
+  assert.deepEqual(preview.metadata, {
+    auth: 'private',
+    riskLevel: 'low',
+    requiredParams: ['orderId'],
+    optionalParams: [],
+    parameterMode: 'body',
+  });
+  assert.equal(preview.request.method, 'POST');
+  assert.equal(preview.request.body, '{"orderId":"123456789"}');
+});
+
 test('help output includes parameter metadata hints', () => {
   const output = execFileSync(process.execPath, [...cliArgs, '--help'], {
     cwd: process.cwd(),

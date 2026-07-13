@@ -79,6 +79,7 @@ async function main(argv: string[]): Promise<void> {
       method: privateRestCommand.definition.method,
       path: privateRestCommand.definition.path,
       query: privateRestCommand.query,
+      body: privateRestCommand.body,
       privateRequest: true,
     });
 

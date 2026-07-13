@@ -85,7 +85,9 @@ bydoxe future market mark-price --symbol BTCUSDT --dry-run
 bydoxe future market depth --symbol BTCUSDT --limit 500 --dry-run --format json
 bydoxe future market taker-buy-sell --symbol BTCUSDT --period 1h --dry-run --format json
 bydoxe account funding-assets --coin USDT --dry-run --format json
+bydoxe spot trade order-info --orderId 123456789 --dry-run --format json
 bydoxe future position all --dry-run --format json
+bydoxe future trigger orders-history --limit 100 --symbol BTCUSDT --dry-run --format json
 bydoxe copytrading trader followers --pageNo 1 --pageSize 20 --dry-run --format json
 bydoxe copytrading follower settings --traderId trader-1 --dry-run --format json
 bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --dry-run --format json
@@ -154,6 +156,7 @@ Authenticated read commands require local credentials and never require chat-bas
 | `bydoxe spot trade unfilled-orders` | `GET /spot/trade/unfilled-orders` |
 | `bydoxe spot trade history-orders` | `GET /spot/trade/history-orders` |
 | `bydoxe spot trade fills` | `GET /spot/trade/fills` |
+| `bydoxe spot trade order-info` | `POST /spot/trade/order-info` |
 | `bydoxe spot account assets` | `GET /spot/account/assets` |
 | `bydoxe spot account transfer-coin-info` | `GET /spot/account/transfer-coin-info` |
 | `bydoxe spot account withdrawal-records` | `GET /spot/account/withdrawal-records` |
@@ -172,6 +175,8 @@ Authenticated read commands require local credentials and never require chat-bas
 | `bydoxe future order fill-history` | `GET /future/order/fill-history` |
 | `bydoxe future order orders-pending` | `GET /future/order/orders-pending` |
 | `bydoxe future order orders-history` | `GET /future/order/orders-history` |
+| `bydoxe future trigger orders-pending` | `GET /future/order/orders-plan-pending` |
+| `bydoxe future trigger orders-history` | `GET /future/order/orders-plan-history` |
 | `bydoxe copytrading trader current-orders` | `GET /copy/mix-trader/order-current-track` |
 | `bydoxe copytrading trader history-orders` | `GET /copy/mix-trader/order-history-track` |
 | `bydoxe copytrading trader total-detail` | `GET /copy/mix-trader/order-total-detail` |
@@ -183,6 +188,8 @@ Authenticated read commands require local credentials and never require chat-bas
 | `bydoxe copytrading follower history-orders` | `GET /copy/mix-follower/query-history-orders` |
 | `bydoxe copytrading follower settings` | `GET /copy/mix-follower/query-copy-trade-settings` |
 | `bydoxe copytrading follower traders` | `GET /copy/mix-follower/query-my-traders` |
+
+Authenticated read request parameters can be built from flags. Read-only POST commands, such as `spot trade order-info`, also accept `--body` JSON.
 
 ## Write Commands
 

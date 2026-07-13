@@ -90,6 +90,65 @@ test('future order history command forwards query parameters', () => {
   });
 });
 
+test('spot order-info command builds a signed read-only POST body', () => {
+  const parsed = parseArgs([
+    'spot',
+    'trade',
+    'order-info',
+    '--orderId',
+    '123456789',
+  ]);
+  const match = findPrivateRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/spot/trade/order-info');
+  assert.equal(match.definition.method, 'POST');
+  assert.deepEqual(match.body, { orderId: '123456789' });
+
+  const request = buildRequest(
+    config,
+    {
+      method: match.definition.method,
+      path: match.definition.path,
+      body: match.body,
+      privateRequest: true,
+    },
+    () => 1659076670000,
+  );
+
+  assert.equal(request.url, 'https://example.test/api/v1/spot/trade/order-info');
+  assert.equal(request.body, '{"orderId":"123456789"}');
+  assert.ok(request.headers['ACCESS-SIGN']);
+});
+
+test('future trigger plan read commands require limit and forward query parameters', () => {
+  const parsed = parseArgs([
+    'future',
+    'trigger',
+    'orders-history',
+    '--symbol',
+    'BTCUSDT',
+    '--limit',
+    '100',
+    '--clientOid',
+    'client-1',
+  ]);
+  const match = findPrivateRestCommand(parsed);
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/future/order/orders-plan-history');
+  assert.deepEqual(match.query, {
+    symbol: 'BTCUSDT',
+    limit: '100',
+    clientOid: 'client-1',
+  });
+
+  assert.throws(
+    () => findPrivateRestCommand(parseArgs(['future', 'trigger', 'orders-pending'])),
+    /Missing required parameter for bydoxe future trigger orders-pending: limit/,
+  );
+});
+
 test('copy trading trader followers command forwards query parameters', () => {
   const parsed = parseArgs([
     'copytrading',
@@ -136,5 +195,14 @@ test('private read command rejects missing required parameters', () => {
   assert.throws(
     () => findPrivateRestCommand(parsed),
     /Missing required parameter for bydoxe future position single: symbol/,
+  );
+});
+
+test('private read-like body command rejects missing required parameters', () => {
+  const parsed = parseArgs(['spot', 'trade', 'order-info', '--dry-run']);
+
+  assert.throws(
+    () => findPrivateRestCommand(parsed),
+    /Missing required parameter for bydoxe spot trade order-info: orderId/,
   );
 });

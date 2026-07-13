@@ -32,3 +32,4 @@
 - Add required and optional parameter hints to CLI help output.
 - Add remaining futures public market REST commands.
 - Add optional public REST live smoke validation behind `BYDOXE_RUN_LIVE_REST_TESTS=1`.
+- Add remaining read-only REST commands for spot order info and futures trigger order queries.

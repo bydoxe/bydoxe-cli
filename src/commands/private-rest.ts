@@ -1,3 +1,4 @@
+import { CliError } from '../errors/cli-error.js';
 import type { HttpMethod } from '../auth/signature.js';
 import type { BuiltRequest } from '../http/request.js';
 import {
@@ -16,10 +17,11 @@ export interface PrivateRestCommand extends CommandMetadata {
 
 export interface PrivateRestCommandMatch {
   definition: PrivateRestCommand;
-  query: Record<string, string | number | boolean | undefined>;
+  query?: Record<string, string | number | boolean | undefined>;
+  body?: unknown;
 }
 
-const GLOBAL_FLAGS = new Set(['base-url', 'dry-run', 'format', 'help']);
+const GLOBAL_FLAGS = new Set(['base-url', 'body', 'dry-run', 'format', 'help']);
 const REDACTED_HEADERS = new Set([
   'ACCESS-KEY',
   'ACCESS-SIGN',
@@ -32,6 +34,14 @@ const PRIVATE_QUERY_METADATA = {
   requiredParams: [],
   optionalParams: [],
   parameterMode: 'query',
+} satisfies CommandMetadata;
+
+const PRIVATE_BODY_METADATA = {
+  auth: 'private',
+  riskLevel: 'low',
+  requiredParams: [],
+  optionalParams: [],
+  parameterMode: 'body',
 } satisfies CommandMetadata;
 
 const PRIVATE_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
@@ -55,6 +65,10 @@ const PRIVATE_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
   '/spot/trade/fills': {
     ...PRIVATE_QUERY_METADATA,
     optionalParams: ['symbol', 'orderId', 'limit', 'startTime', 'endTime'],
+  },
+  '/spot/trade/order-info': {
+    ...PRIVATE_BODY_METADATA,
+    requiredParams: ['orderId'],
   },
   '/spot/account/assets': {
     ...PRIVATE_QUERY_METADATA,
@@ -131,6 +145,16 @@ const PRIVATE_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
   '/future/order/orders-history': {
     ...PRIVATE_QUERY_METADATA,
     optionalParams: ['symbol', 'limit', 'startTime', 'endTime'],
+  },
+  '/future/order/orders-plan-pending': {
+    ...PRIVATE_QUERY_METADATA,
+    requiredParams: ['limit'],
+    optionalParams: ['symbol', 'idLessThan', 'startTime', 'endTime', 'orderId'],
+  },
+  '/future/order/orders-plan-history': {
+    ...PRIVATE_QUERY_METADATA,
+    requiredParams: ['limit'],
+    optionalParams: ['symbol', 'idLessThan', 'startTime', 'endTime', 'orderId', 'clientOid'],
   },
   '/copy/mix-trader/order-current-track': {
     ...PRIVATE_QUERY_METADATA,
@@ -215,6 +239,12 @@ export const PRIVATE_REST_COMMANDS: PrivateRestCommand[] = withCommandMetadata([
     method: 'GET',
     path: '/spot/trade/fills',
     description: 'Build or execute a spot order fills request',
+  },
+  {
+    command: ['spot', 'trade', 'order-info'],
+    method: 'POST',
+    path: '/spot/trade/order-info',
+    description: 'Build or execute a spot order information request',
   },
   {
     command: ['spot', 'account', 'assets'],
@@ -325,6 +355,18 @@ export const PRIVATE_REST_COMMANDS: PrivateRestCommand[] = withCommandMetadata([
     description: 'Build or execute a futures order history request',
   },
   {
+    command: ['future', 'trigger', 'orders-pending'],
+    method: 'GET',
+    path: '/future/order/orders-plan-pending',
+    description: 'Build or execute a futures pending trigger orders request',
+  },
+  {
+    command: ['future', 'trigger', 'orders-history'],
+    method: 'GET',
+    path: '/future/order/orders-plan-history',
+    description: 'Build or execute a futures trigger order history request',
+  },
+  {
     command: ['copytrading', 'trader', 'current-orders'],
     method: 'GET',
     path: '/copy/mix-trader/order-current-track',
@@ -401,8 +443,26 @@ export function findPrivateRestCommand(
 
   if (!definition) return undefined;
 
+  if (definition.parameterMode === 'body') {
+    const body = getBody(parsed.flags);
+    assertRequiredParamsPresent(
+      definition,
+      getParamValues(body),
+      `bydoxe ${parsed.command.join(' ')}`,
+    );
+
+    return {
+      definition,
+      body,
+    };
+  }
+
   const query = getQueryFlags(parsed.flags);
-  assertRequiredParamsPresent(definition, query, `bydoxe ${parsed.command.join(' ')}`);
+  assertRequiredParamsPresent(
+    definition,
+    query,
+    `bydoxe ${parsed.command.join(' ')}`,
+  );
 
   return {
     definition,
@@ -428,6 +488,31 @@ function getQueryFlags(
   return Object.fromEntries(
     Object.entries(flags).filter(([name]) => !GLOBAL_FLAGS.has(name)),
   );
+}
+
+function getBody(flags: Record<string, string | boolean>): unknown {
+  if (typeof flags.body === 'string') {
+    try {
+      return JSON.parse(flags.body);
+    } catch (error) {
+      throw new CliError(
+        `Invalid JSON passed to --body: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+    }
+  }
+
+  const body = Object.fromEntries(
+    Object.entries(flags).filter(([name]) => !GLOBAL_FLAGS.has(name)),
+  );
+
+  return Object.keys(body).length > 0 ? body : undefined;
+}
+
+function getParamValues(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return value as Record<string, unknown>;
 }
 
 function matches(command: string[], expected: string[]): boolean {
