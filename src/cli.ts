@@ -195,22 +195,10 @@ function getPositiveIntegerFlag(
 
 function printHelp(): void {
   const commandColumnWidth = 38;
-  const publicCommands = PUBLIC_REST_COMMANDS.map(
-    (command) =>
-      `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
-  ).join('\n');
-  const privateCommands = PRIVATE_REST_COMMANDS.map(
-    (command) =>
-      `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
-  ).join('\n');
-  const writeCommands = WRITE_REST_COMMANDS.map(
-    (command) =>
-      `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
-  ).join('\n');
-  const webSocketCommands = WEBSOCKET_COMMANDS.map(
-    (command) =>
-      `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}`,
-  ).join('\n');
+  const publicCommands = formatHelpCommands(PUBLIC_REST_COMMANDS, commandColumnWidth);
+  const privateCommands = formatHelpCommands(PRIVATE_REST_COMMANDS, commandColumnWidth);
+  const writeCommands = formatHelpCommands(WRITE_REST_COMMANDS, commandColumnWidth);
+  const webSocketCommands = formatHelpCommands(WEBSOCKET_COMMANDS, commandColumnWidth);
 
   console.log(`BYDOXE CLI
 
@@ -250,6 +238,39 @@ Environment:
   BYDOXE_PUBLIC_WS_URL
   BYDOXE_PRIVATE_WS_URL
 `);
+}
+
+function formatHelpCommands(
+  commands: Array<{
+    command: string[];
+    description: string;
+    requiredParams: string[];
+    optionalParams: string[];
+  }>,
+  commandColumnWidth: number,
+): string {
+  return commands
+    .map(
+      (command) =>
+        `  ${command.command.join(' ').padEnd(commandColumnWidth)}${command.description}${formatParameterHint(command)}`,
+    )
+    .join('\n');
+}
+
+function formatParameterHint(command: {
+  requiredParams: string[];
+  optionalParams: string[];
+}): string {
+  const hints = [];
+
+  if (command.requiredParams.length > 0) {
+    hints.push(`required: ${command.requiredParams.join(', ')}`);
+  }
+  if (command.optionalParams.length > 0) {
+    hints.push(`optional: ${command.optionalParams.join(', ')}`);
+  }
+
+  return hints.length > 0 ? ` (${hints.join('; ')})` : '';
 }
 
 main(process.argv.slice(2)).catch((error: unknown) => {

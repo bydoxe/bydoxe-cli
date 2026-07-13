@@ -50,6 +50,23 @@ test('write dry-run output includes high-risk metadata', () => {
   });
 });
 
+test('help output includes parameter metadata hints', () => {
+  const output = execFileSync(process.execPath, [...cliArgs, '--help'], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  assert.match(
+    output,
+    /future market depth\s+Build or execute a futures order book depth request \(required: symbol; optional: limit\)/,
+  );
+  assert.match(
+    output,
+    /spot trade place-order\s+Requires CONFIRM: place a spot order \(required: symbol, orderType, tradeType, amount; optional: price, clientOid\)/,
+  );
+});
+
 function runCliJson(args) {
   const output = execFileSync(process.execPath, [...cliArgs, ...args], {
     cwd: process.cwd(),

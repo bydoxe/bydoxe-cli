@@ -98,6 +98,8 @@ Commands with required parameter metadata fail before building a request when re
 
 Dry-run output includes command metadata for auth scope, risk level, parameter mode, required parameters, and optional parameters.
 
+`bydoxe --help` lists required and optional parameter hints from the same command registry metadata.
+
 ## Public REST Commands
 
 | Command | Endpoint |
