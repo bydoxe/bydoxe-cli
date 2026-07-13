@@ -36,6 +36,13 @@ test('public WebSocket subscribe builds a channel message preview', () => {
 
   assert.ok(match);
   assert.equal(match.preview.connection.url, 'wss://example.test/v1/ws/public');
+  assert.deepEqual(match.preview.metadata, {
+    auth: 'public',
+    riskLevel: 'low',
+    requiredParams: [],
+    optionalParams: [],
+    parameterMode: 'message',
+  });
   assert.deepEqual(match.preview.message, {
     op: 'subscribe',
     args: [
@@ -94,6 +101,8 @@ test('private WebSocket spot trade builds params from flags', () => {
   assert.ok(match);
   assert.equal(match.preview.requiresConfirm, true);
   assert.equal(match.preview.confirmToken, 'CONFIRM');
+  assert.equal(match.preview.metadata.riskLevel, 'high');
+  assert.equal(match.preview.metadata.parameterMode, 'message');
   assert.deepEqual(match.preview.message, {
     op: 'trade',
     args: [

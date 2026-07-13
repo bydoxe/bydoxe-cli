@@ -28,3 +28,4 @@
 - Add expanded public REST market data commands for spot metadata, spot trades, futures depth, futures candles, futures funding, and futures open interest.
 - Add private REST read and write command parameter metadata hints.
 - Add required parameter validation before REST request construction.
+- Add command metadata to REST and WebSocket dry-run previews.

@@ -2,7 +2,9 @@ import { signWebSocketLogin } from '../auth/signature.js';
 import type { BydoxeConfig } from '../config/load-config.js';
 import { CliError } from '../errors/cli-error.js';
 import {
+  type CommandPreviewMetadata,
   type CommandMetadata,
+  toPreviewMetadata,
   withCommandMetadata,
 } from './metadata.js';
 import type { ParsedArgs } from './public-rest.js';
@@ -25,6 +27,7 @@ export interface WebSocketPreview {
     url: string;
     scope: WebSocketScope;
   };
+  metadata: CommandPreviewMetadata;
   message: unknown;
   requiresConfirm?: boolean;
   confirmToken?: typeof REQUIRED_CONFIRMATION;
@@ -119,6 +122,7 @@ export function findWebSocketCommand(
         url,
         scope: definition.scope,
       },
+      metadata: toPreviewMetadata(definition),
       message,
       requiresConfirm: definition.requiresConfirm,
       confirmToken: definition.requiresConfirm ? REQUIRED_CONFIRMATION : undefined,

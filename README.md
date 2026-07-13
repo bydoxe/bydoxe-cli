@@ -96,6 +96,8 @@ The dry-run mode prints the request that would be sent without making a network 
 
 Commands with required parameter metadata fail before building a request when required values are missing.
 
+Dry-run output includes command metadata for auth scope, risk level, parameter mode, required parameters, and optional parameters.
+
 ## Public REST Commands
 
 | Command | Endpoint |

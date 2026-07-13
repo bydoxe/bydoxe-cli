@@ -12,6 +12,8 @@ export interface CommandMetadata {
   parameterMode: CommandParameterMode;
 }
 
+export interface CommandPreviewMetadata extends CommandMetadata {}
+
 export function withCommandMetadata<TCommand>(
   commands: TCommand[],
   metadata:
@@ -22,6 +24,18 @@ export function withCommandMetadata<TCommand>(
     ...command,
     ...(typeof metadata === 'function' ? metadata(command) : metadata),
   }));
+}
+
+export function toPreviewMetadata(
+  metadata: CommandMetadata,
+): CommandPreviewMetadata {
+  return {
+    auth: metadata.auth,
+    riskLevel: metadata.riskLevel,
+    requiredParams: [...metadata.requiredParams],
+    optionalParams: [...metadata.optionalParams],
+    parameterMode: metadata.parameterMode,
+  };
 }
 
 export function assertRequiredParamsPresent(

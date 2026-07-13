@@ -2,7 +2,9 @@ import type { HttpMethod } from '../auth/signature.js';
 import type { BuiltRequest } from '../http/request.js';
 import {
   assertRequiredParamsPresent,
+  type CommandPreviewMetadata,
   type CommandMetadata,
+  toPreviewMetadata,
   withCommandMetadata,
 } from './metadata.js';
 
@@ -26,8 +28,11 @@ export interface PublicRestCommandMatch {
 export interface DryRunPreview {
   dryRun: true;
   command: string;
+  metadata: CommandPreviewMetadata;
   request: BuiltRequest;
 }
+
+export { toPreviewMetadata };
 
 const GLOBAL_FLAGS = new Set(['base-url', 'dry-run', 'format', 'help']);
 

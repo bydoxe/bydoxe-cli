@@ -10,6 +10,7 @@ import {
   findPublicRestCommand,
   parseArgs,
   PUBLIC_REST_COMMANDS,
+  toPreviewMetadata,
   type DryRunPreview,
 } from './commands/public-rest.js';
 import {
@@ -61,6 +62,7 @@ async function main(argv: string[]): Promise<void> {
       const preview: DryRunPreview = {
         dryRun: true,
         command: commandToString(parsed.command),
+        metadata: toPreviewMetadata(publicRestCommand.definition),
         request,
       };
       printOutput(preview, format);
@@ -84,6 +86,7 @@ async function main(argv: string[]): Promise<void> {
       const preview: DryRunPreview = {
         dryRun: true,
         command: commandToString(parsed.command),
+        metadata: toPreviewMetadata(privateRestCommand.definition),
         request: redactPrivateRequest(request),
       };
       printOutput(preview, format);
@@ -108,6 +111,7 @@ async function main(argv: string[]): Promise<void> {
         {
           dryRun: true,
           command: commandToString(parsed.command),
+          metadata: toPreviewMetadata(writeRestCommand.definition),
           requiresConfirm: true,
           confirmToken: 'CONFIRM',
           risk: writeRestCommand.definition.risk,
