@@ -86,7 +86,7 @@ Do not paste API secrets into AI chat sessions, issue trackers, release notes, o
 
 ## Publish Readiness
 
-Publishing is deferred until the npm account and package ownership are prepared.
+Publishing requires confirmed npm account access and package ownership for `@bydoxe/bydoxe-cli`.
 
 Before publishing:
 

@@ -1,9 +1,31 @@
 {
   "name": "@bydoxe/bydoxe-cli",
   "version": "0.1.0",
-  "description": "Command-line tool for interacting with the BYDOXE Open API.",
+  "description": "Safe preview-first command-line companion for the BYDOXE Open API.",
   "license": "UNLICENSED",
   "type": "module",
+  "author": "BYDOXE",
+  "homepage": "https://github.com/bydoxe/bydoxe-cli#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bydoxe/bydoxe-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bydoxe/bydoxe-cli/issues"
+  },
+  "keywords": [
+    "bydoxe",
+    "crypto",
+    "exchange",
+    "open-api",
+    "cli",
+    "trading",
+    "websocket",
+    "agent"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "bydoxe": "./dist/cli.js"
   },
