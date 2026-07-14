@@ -5,7 +5,7 @@ This file is generated from `docs/command-catalog.json`. Run `npm run reference:
 ## Summary
 
 - Package: `@bydoxe/bydoxe-cli`
-- Version: `0.1.1`
+- Version: `0.1.2`
 - Schema version: `1`
 - Command count: `106`
 

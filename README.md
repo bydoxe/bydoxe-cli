@@ -7,7 +7,7 @@ Use it to inspect market data, review account information, prepare spot and futu
 The CLI is built around a preview-first workflow:
 
 - Read public market data with simple commands.
-- Keep private API credentials in local environment variables.
+- Keep private API credentials in a local CLI profile or environment variables.
 - Review every sensitive request with `--dry-run`.
 - Require exact `--confirm CONFIRM` before write actions can execute.
 - Use structured JSON output when another tool or agent needs to read the result.
@@ -23,7 +23,7 @@ The CLI is built around a preview-first workflow:
 
 ## Quick Start
 
-Install from npm after the `0.1.1` patch package is published:
+Install from npm after the `0.1.2` patch package is published:
 
 ```text
 npm install -g @bydoxe/bydoxe-cli
@@ -43,6 +43,21 @@ node dist/cli.js --help
 Public market commands do not need credentials.
 
 Private account, order, position, copy trading, and write commands require each installer or operator to configure their own BYDOXE credentials locally:
+
+```sh
+bydoxe config set
+bydoxe config status
+```
+
+`bydoxe config set` stores credentials in the local profile at `~/.bydoxe/config` with `0600` file permissions. `bydoxe config status` reports only masked setup status and never prints secret values.
+
+For non-interactive setup, pass all credential values as flags from a trusted local shell or secret manager:
+
+```sh
+bydoxe config set --access-key "<your-access-key>" --secret-key "<your-secret-key>" --passphrase "<your-passphrase>"
+```
+
+Environment variables are also supported and take priority over the local profile:
 
 ```sh
 export BYDOXE_ACCESS_KEY="<your-access-key>"
@@ -89,7 +104,8 @@ bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","
 
 ## Safety Model
 
-- Private credentials are read from local environment variables.
+- Private credentials are read from environment variables first, then from the local `~/.bydoxe/config` profile.
+- `bydoxe config status` exposes only masked setup state so agents can check whether credentials are configured without reading secret values.
 - Credential-bearing headers and WebSocket login fields are redacted in previews and live result summaries.
 - Required parameters are validated before request construction.
 - Write commands validate common identifiers, positive numeric fields, enum-like fields, order identifier alternatives, and supported nested batch body fields.
@@ -127,7 +143,7 @@ bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCU
 
 Private read-only WebSocket live execution is limited to private subscribe and unsubscribe commands and requires all of these gates:
 
-- Local credentials configured through environment variables.
+- Local credentials configured through `bydoxe config set` or environment variables.
 - Explicit `BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1` opt-in.
 - Explicit `--max-messages` and `--timeout-ms` bounds.
 
@@ -139,7 +155,7 @@ Private WebSocket spot trade payloads remain preview-only.
 
 ## Distribution
 
-The current BYDOXE CLI patch release target is version `0.1.1`, matching the companion BYDOXE Agent Skills release target. The CLI is distributed as the npm package `@bydoxe/bydoxe-cli`.
+The current BYDOXE CLI patch release target is version `0.1.2`, matching the companion BYDOXE Agent Skills release target. The CLI is distributed as the npm package `@bydoxe/bydoxe-cli`.
 
 Use [docs/distribution.md](docs/distribution.md) for versioning, npm distribution, and installer-owned credential configuration policy.
 
@@ -373,7 +389,7 @@ Private read-only WebSocket live execution is limited to private subscribe and u
 - Authenticated login handshake verification.
 - Explicit `BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1` opt-in.
 - Explicit `--max-messages` and `--timeout-ms` bounds.
-- Local credentials configured through environment variables.
+- Local credentials configured through `bydoxe config set` or environment variables.
 
 Example:
 

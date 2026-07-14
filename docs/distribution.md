@@ -9,7 +9,7 @@ The current public release of the BYDOXE CLI must use the same version as the co
 Current patch release target:
 
 ```text
-0.1.1
+0.1.2
 ```
 
 After each release, the maintainer may choose future versions based on implementation scope, safety changes, compatibility changes, and documentation updates.
@@ -55,11 +55,20 @@ npm --cache /private/tmp/bydoxe-npm-cache pack --dry-run
 
 ## Credential Configuration
 
-BYDOXE private API credentials must be configured by each installer or operator in their own local environment.
+BYDOXE private API credentials must be configured by each installer or operator in their own local environment or local CLI profile.
 
 The package must never ship with credentials, placeholder secrets that look real, shared test keys, or account-specific configuration.
 
-Required environment variables for private REST and private WebSocket workflows:
+Recommended local profile setup:
+
+```sh
+bydoxe config set
+bydoxe config status
+```
+
+The local profile is stored at `~/.bydoxe/config` with `0600` permissions. Agents should use `bydoxe config status` to verify setup and must never read or print secret values.
+
+Environment variables are also supported and take priority over the local profile:
 
 ```sh
 export BYDOXE_ACCESS_KEY="<your-access-key>"

@@ -15,6 +15,10 @@ if (commands.length === 0) {
 }
 
 for (const command of commands) {
+  if (isConfigCommand(command)) {
+    continue;
+  }
+
   if (!command.includes(' --dry-run')) {
     problems.push(`README command must use --dry-run: ${command}`);
     continue;
@@ -122,6 +126,10 @@ function tokenize(command) {
   }
 
   return tokens;
+}
+
+function isConfigCommand(command) {
+  return command.startsWith('bydoxe config ');
 }
 
 function getErrorOutput(error) {

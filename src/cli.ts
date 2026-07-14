@@ -1,6 +1,13 @@
 #!/usr/bin/env node
 
 import { loadConfig } from './config/load-config.js';
+import {
+  assertCompleteProfile,
+  clearCredentialProfile,
+  getCredentialStatus,
+  promptCredentialProfile,
+  saveCredentialProfile,
+} from './config/profile.js';
 import { buildRequest } from './http/request.js';
 import { executeRequest } from './http/execute.js';
 import { printOutput, type OutputFormat } from './output/format.js';
@@ -54,6 +61,11 @@ async function main(argv: string[]): Promise<void> {
         ? parsed.flags['base-url']
         : loadedConfig.restBaseUrl,
   };
+
+  if (parsed.command[0] === 'config') {
+    await handleConfigCommand(parsed, format);
+    return;
+  }
 
   const publicRestCommand = findPublicRestCommand(parsed);
   if (publicRestCommand) {
@@ -190,6 +202,73 @@ async function main(argv: string[]): Promise<void> {
   throw new CliError(`Unknown command: ${parsed.command.join(' ')}`);
 }
 
+async function handleConfigCommand(
+  parsed: { command: string[]; flags: Record<string, string | boolean> },
+  format: OutputFormat,
+): Promise<void> {
+  const action = parsed.command[1];
+
+  if (action === 'set') {
+    const profile = hasCredentialFlags(parsed.flags)
+      ? assertCompleteProfile({
+          accessKey: readStringFlag(parsed.flags, 'access-key'),
+          secretKey: readStringFlag(parsed.flags, 'secret-key'),
+          passphrase: readStringFlag(parsed.flags, 'passphrase'),
+        })
+      : await promptCredentialProfile({
+          accessKey: process.env.BYDOXE_ACCESS_KEY,
+          secretKey: process.env.BYDOXE_SECRET_KEY,
+          passphrase: process.env.BYDOXE_PASSPHRASE,
+        });
+    const configPath = saveCredentialProfile(profile);
+    printOutput(
+      {
+        command: 'bydoxe config set',
+        status: 'saved',
+        configPath,
+        fileMode: '0600',
+        credentials: getCredentialStatus(profile),
+      },
+      format,
+    );
+    return;
+  }
+
+  if (action === 'status') {
+    const loadedConfig = loadConfig();
+    printOutput(
+      {
+        command: 'bydoxe config status',
+        credentials: getCredentialStatus({
+          accessKey: loadedConfig.accessKey,
+          secretKey: loadedConfig.secretKey,
+          passphrase: loadedConfig.passphrase,
+        }),
+        sourcePriority: ['environment variables', 'local config file'],
+      },
+      format,
+    );
+    return;
+  }
+
+  if (action === 'clear') {
+    const configPath = clearCredentialProfile();
+    printOutput(
+      {
+        command: 'bydoxe config clear',
+        status: 'cleared',
+        configPath,
+      },
+      format,
+    );
+    return;
+  }
+
+  throw new CliError(
+    'Unknown config command. Use bydoxe config set, bydoxe config status, or bydoxe config clear.',
+  );
+}
+
 function getFormat(flags: Record<string, string | boolean>): OutputFormat {
   if (flags.format === 'json') return 'json';
   if (flags.format === undefined || flags.format === 'human') return 'human';
@@ -221,6 +300,18 @@ function getPositiveIntegerFlag(
   return parsed;
 }
 
+function readStringFlag(
+  flags: Record<string, string | boolean>,
+  name: string,
+): string | undefined {
+  const value = flags[name];
+  return typeof value === 'string' ? value : undefined;
+}
+
+function hasCredentialFlags(flags: Record<string, string | boolean>): boolean {
+  return ['access-key', 'secret-key', 'passphrase'].some((name) => flags[name] !== undefined);
+}
+
 function printHelp(): void {
   const commandColumnWidth = 38;
   const publicCommands = formatHelpCommands(PUBLIC_REST_COMMANDS, commandColumnWidth);
@@ -234,6 +325,11 @@ Usage:
   bydoxe <group> <command> [options]
 
 Commands:
+Config:
+  config set                            Store local BYDOXE credentials
+  config status                         Show local credential setup status without revealing secrets
+  config clear                          Remove the local credential profile
+
 Public REST:
 ${publicCommands}
 
@@ -250,6 +346,9 @@ Options:
   --base-url <url>                  Override the REST base URL
   --body <json>                     JSON request body for write commands
   --confirm CONFIRM                 Required to execute write commands
+  --access-key <value>              Access key for non-interactive config set
+  --secret-key <value>              Secret key for non-interactive config set
+  --passphrase <value>              Passphrase for non-interactive config set
   --format <format>                 Output format: human or json
   --dry-run                         Print the request without sending it
   --live                            Execute a supported WebSocket live session
@@ -259,6 +358,7 @@ Options:
   --help                            Show this help message
 
 Environment:
+  BYDOXE_CONFIG_PATH
   BYDOXE_ACCESS_KEY
   BYDOXE_SECRET_KEY
   BYDOXE_PASSPHRASE

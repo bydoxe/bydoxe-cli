@@ -12,7 +12,7 @@ Use [distribution.md](distribution.md) for versioning, npm publishing, and insta
 - Run `npm pack --dry-run` and review the packaged file list.
 - Confirm the package includes `dist`, `docs`, `README.md`, `DISCLAIMER.md`, and `CHANGELOG.md`.
 - Confirm the package does not include local credentials, generated logs, or temporary files.
-- Confirm private API credentials remain configured only by each installer or operator through local environment variables.
+- Confirm private API credentials remain configured only by each installer or operator through local environment variables or the local CLI profile.
 
 ## Generated Artifacts
 
@@ -27,6 +27,8 @@ Use [distribution.md](distribution.md) for versioning, npm publishing, and insta
 - Write REST commands must require exact `--confirm CONFIRM` before live execution.
 - Write REST commands must support dry-run review before live execution.
 - Credential-bearing request and WebSocket login fields must be redacted in previews and live result summaries.
+- `bydoxe config status` must report only masked credential setup state and must not print secret values.
+- Local credential profiles must be written with `0600` file permissions.
 - Private WebSocket spot trade must remain outside read-only live workflows.
 - Private read-only WebSocket live smoke must require credentials plus explicit environment gates.
 - Public and private live smoke commands must remain bounded by message count or timeout.

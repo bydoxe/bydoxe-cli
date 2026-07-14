@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 - 2026-07-14
+
+- Add `bydoxe config set`, `bydoxe config status`, and `bydoxe config clear` for local credential profile management.
+- Load private API credentials from environment variables first, then from the local `~/.bydoxe/config` profile.
+- Store local credential profiles with restricted `0600` file permissions.
+- Add masked credential status output so agents can verify setup without reading secret values.
+- Document local profile setup, environment overrides, and installer-owned credential handling.
+
 ## 0.1.1 - 2026-07-14
 
 - Align npm package versioning for the patch release after the initial `0.1.0` publication.
