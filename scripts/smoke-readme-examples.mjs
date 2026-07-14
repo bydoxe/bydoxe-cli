@@ -10,6 +10,10 @@ const readmeText = await readFile(readmePath, 'utf8');
 const commands = extractReadmeCommands(readmeText);
 const problems = [];
 
+if (commands.length === 0) {
+  problems.push('README smoke did not find any dry-run bydoxe examples.');
+}
+
 for (const command of commands) {
   if (!command.includes(' --dry-run')) {
     problems.push(`README command must use --dry-run: ${command}`);
@@ -54,14 +58,23 @@ if (problems.length > 0) {
 
 function extractReadmeCommands(markdown) {
   const commands = [];
-  const codeBlockPattern = /```(?:sh|bash)?\n([\s\S]*?)```/g;
+  let inRunnableBlock = false;
 
-  for (const blockMatch of markdown.matchAll(codeBlockPattern)) {
-    const lines = blockMatch[1]
-      .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line.startsWith('bydoxe '));
-    commands.push(...lines);
+  for (const line of markdown.split('\n')) {
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith('```')) {
+      if (inRunnableBlock) {
+        inRunnableBlock = false;
+      } else {
+        inRunnableBlock = trimmed === '```sh' || trimmed === '```bash';
+      }
+      continue;
+    }
+
+    if (inRunnableBlock && trimmed.startsWith('bydoxe ')) {
+      commands.push(trimmed);
+    }
   }
 
   return [...new Set(commands)];

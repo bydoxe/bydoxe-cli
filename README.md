@@ -1,49 +1,149 @@
 # BYDOXE CLI
 
-BYDOXE CLI is a command-line tool for interacting with the BYDOXE Open API.
+BYDOXE CLI is a safe command-line companion for the BYDOXE Open API.
 
-It provides a safe execution layer for market data, account queries, spot trading, futures trading, positions, TP/SL, copy trading, and WebSocket workflows. The CLI handles API credentials, HMAC request signing, REST request construction, structured output, and dry-run previews.
+Use it to inspect market data, review account information, prepare spot and futures trading actions, manage copy trading workflows, and preview WebSocket messages without pasting API secrets into chat sessions or scripts.
 
-## Status
+The CLI is built around a preview-first workflow:
 
-This repository is in the CLI MVP phase.
+- Read public market data with simple commands.
+- Keep private API credentials in local environment variables.
+- Review every sensitive request with `--dry-run`.
+- Require exact `--confirm CONFIRM` before write actions can execute.
+- Use structured JSON output when another tool or agent needs to read the result.
 
-Implemented:
+## What You Can Do
 
-- TypeScript project structure
-- CLI entry point
-- Configuration loading from environment variables
-- HMAC signature helper
-- REST request builder
-- Public REST command routing
-- Authenticated REST read command routing
-- Authenticated REST write command routing
-- WebSocket message preview routing
-- Public WebSocket live execution
-- Command registry metadata for auth, risk, and parameter mode
-- Dry-run request preview support
-- Public REST execution through Node.js fetch
-- Private REST request signing with redacted dry-run previews
-- `--confirm CONFIRM` gate for write command execution
-- Unit tests using Node.js built-in test runner
+- Check BYDOXE server time, spot markets, futures markets, order books, candles, fills, funding, open interest, and trader ratios.
+- Read authenticated account, balance, order, position, trigger order, and copy trading data from a locally configured account.
+- Prepare spot orders, transfers, withdrawals, futures orders, leverage changes, TP/SL, trigger orders, and copy trading changes with validation and dry-run previews.
+- Build public and private WebSocket message previews.
+- Run bounded public WebSocket live sessions.
+- Run private read-only WebSocket live sessions only behind explicit local opt-in gates.
 
-## Default Domains
+## Quick Start
 
-| Type | URL |
-| --- | --- |
-| REST | `https://open-api.bydoxe.com/api/v1` |
-| Public WebSocket | `wss://open-api.bydoxe.com/v1/ws/public` |
-| Private WebSocket | `wss://open-api.bydoxe.com/v1/ws/private` |
-
-## Install
-
-Package installation is not published yet. The CLI is intended to be distributed as an npm package after package ownership is prepared. During development, run the CLI from source after installing dependencies.
+Package installation is not published yet. The CLI is intended to be distributed as an npm package after package ownership is prepared. Until then, run it from source:
 
 ```sh
 npm install
 npm run build
 node dist/cli.js --help
 ```
+
+After package publication, the intended user flow is:
+
+```text
+npm install -g @bydoxe/bydoxe-cli
+bydoxe --help
+```
+
+## Configure Credentials
+
+Public market commands do not need credentials.
+
+Private account, order, position, copy trading, and write commands require each installer or operator to configure their own BYDOXE credentials locally:
+
+```sh
+export BYDOXE_ACCESS_KEY="<your-access-key>"
+export BYDOXE_SECRET_KEY="<your-secret-key>"
+export BYDOXE_PASSPHRASE="<your-passphrase>"
+```
+
+Do not paste API secrets into AI chat sessions, issue trackers, release notes, or documentation examples.
+
+Optional endpoint overrides are available when an approved environment requires them:
+
+```sh
+export BYDOXE_REST_BASE_URL="https://open-api.bydoxe.com/api/v1"
+export BYDOXE_PUBLIC_WS_URL="wss://open-api.bydoxe.com/v1/ws/public"
+export BYDOXE_PRIVATE_WS_URL="wss://open-api.bydoxe.com/v1/ws/private"
+```
+
+## Safe First Commands
+
+Start with dry-run previews. A dry-run prints the request or WebSocket message that would be sent, without sending it.
+
+```sh
+bydoxe public time --dry-run
+bydoxe spot market tickers --symbol BTCUSDT --dry-run --format json
+bydoxe future market candles --symbol BTCUSDT --interval 1m --limit 100 --dry-run --format json
+bydoxe account funding-assets --coin USDT --dry-run --format json
+bydoxe future position all --dry-run --format json
+bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCUSDT --dry-run --format json
+```
+
+Write actions should also start as dry-runs:
+
+```sh
+bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --dry-run --format json
+bydoxe future account set-leverage --symbol BTCUSDT --longLeverage 5 --shortLeverage 5 --dry-run --format json
+bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry-run --format json
+```
+
+Only execute a write command after reviewing the dry-run output and adding the exact confirmation token:
+
+```text
+bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --confirm CONFIRM --format json
+```
+
+## Safety Model
+
+- Private credentials are read from local environment variables.
+- Credential-bearing headers and WebSocket login fields are redacted in previews and live result summaries.
+- Required parameters are validated before request construction.
+- Write commands validate common identifiers, positive numeric fields, enum-like fields, order identifier alternatives, and supported nested batch body fields.
+- Write commands require exact `--confirm CONFIRM` before live execution.
+- WebSocket live sessions are bounded by message count or timeout.
+- Private WebSocket spot trade remains outside read-only live workflows.
+
+See [docs/write-body-validation-plan.md](docs/write-body-validation-plan.md) for nested write body validation scope and [docs/private-websocket-readonly-live-plan.md](docs/private-websocket-readonly-live-plan.md) for private WebSocket read-only live boundaries.
+
+## Output
+
+Use `--format json` when another program or AI agent needs structured output:
+
+```sh
+bydoxe spot market orderbook --symbol BTCUSDT --limit 20 --dry-run --format json
+bydoxe future order detail --symbol BTCUSDT --orderId 123456789 --dry-run --format json
+```
+
+Use the default human output for quick terminal inspection.
+
+## Command Reference
+
+Use [docs/command-reference.md](docs/command-reference.md) for the full generated CLI command surface. It includes REST endpoints, WebSocket scopes, auth requirements, risk levels, required parameters, optional parameters, and write validation rules.
+
+Use [docs/command-summary.md](docs/command-summary.md) for a generated command coverage and safety summary.
+
+## WebSocket Live Sessions
+
+Public WebSocket live sessions are available with bounded runtime options:
+
+```text
+bydoxe websocket public ping --live --timeout-ms 5000 --format json
+bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCUSDT --live --max-messages 5 --timeout-ms 15000 --format json
+```
+
+Private read-only WebSocket live execution is limited to private subscribe and unsubscribe commands and requires all of these gates:
+
+- Local credentials configured through environment variables.
+- Explicit `BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1` opt-in.
+- Explicit `--max-messages` and `--timeout-ms` bounds.
+
+```text
+BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1 bydoxe websocket private subscribe --instType USDT-FUTURES --channel orders --instId BTCUSDT --live --max-messages 2 --timeout-ms 10000 --format json
+```
+
+Private WebSocket spot trade payloads remain preview-only.
+
+## Distribution
+
+The first BYDOXE CLI release is planned to share version `0.1.0` with the first BYDOXE Agent Skills release. The CLI will be distributed as an npm package after account and package ownership are prepared.
+
+Use [docs/distribution.md](docs/distribution.md) for versioning, npm distribution, and installer-owned credential configuration policy.
+
+Use [docs/release-readiness.md](docs/release-readiness.md) before publishing or tagging a release.
 
 ## Development
 
@@ -72,65 +172,9 @@ npm run build
 
 `docs/command-summary.md` is generated from the command catalog. It is the quick status summary for command counts, group coverage, risk profile, and safety scope.
 
-Use [docs/release-readiness.md](docs/release-readiness.md) before publishing or tagging a release.
-
-Use [docs/distribution.md](docs/distribution.md) for versioning, npm distribution, and installer-owned credential configuration policy.
-
-## Command Reference
-
-Use [docs/command-reference.md](docs/command-reference.md) for the full generated CLI command surface. It includes REST endpoints, WebSocket scopes, auth requirements, risk levels, required parameters, optional parameters, and write validation rules.
-
-Use [docs/command-summary.md](docs/command-summary.md) for a generated command coverage and safety summary.
-
-## Credentials
-
-Private BYDOXE API requests require credentials. The initial scaffold reads credentials from environment variables:
-Each installer or operator must configure these values in their own local environment.
-
-```sh
-export BYDOXE_ACCESS_KEY="<your-access-key>"
-export BYDOXE_SECRET_KEY="<your-secret-key>"
-export BYDOXE_PASSPHRASE="<your-passphrase>"
-```
-
-Do not paste API secrets into AI chat sessions. Configure them locally in your shell or a secure environment manager.
-
-## Example
-
-```sh
-bydoxe public time --dry-run
-bydoxe spot market coins --coin BTC --dry-run --format json
-bydoxe spot market tickers --symbol BTCUSDT --dry-run --format json
-bydoxe spot market orderbook --symbol BTCUSDT --limit 20 --dry-run
-bydoxe spot market candles --symbol BTCUSDT --granularity 1m --limit 100 --dry-run
-bydoxe spot market fills --symbol BTCUSDT --limit 50 --dry-run --format json
-bydoxe future market ticker --symbol BTCUSDT --dry-run
-bydoxe future market mark-price --symbol BTCUSDT --dry-run
-bydoxe future market depth --symbol BTCUSDT --limit 500 --dry-run --format json
-bydoxe future market taker-buy-sell --symbol BTCUSDT --period 1h --dry-run --format json
-bydoxe account funding-assets --coin USDT --dry-run --format json
-bydoxe spot trade order-info --orderId 123456789 --dry-run --format json
-bydoxe future position all --dry-run --format json
-bydoxe future trigger orders-history --limit 100 --symbol BTCUSDT --dry-run --format json
-bydoxe copytrading trader followers --pageNo 1 --pageSize 20 --dry-run --format json
-bydoxe copytrading follower settings --traderId trader-1 --dry-run --format json
-bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --dry-run --format json
-bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry-run --format json
-bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCUSDT --dry-run --format json
-bydoxe websocket private login --dry-run --format json
-```
-
-The dry-run mode prints the request that would be sent without making a network call.
-
-Commands with required parameter metadata fail before building a request when required values are missing.
-
-Write commands validate common non-empty string identifiers, positive numeric fields, enum-like fields, order identifier alternatives, and supported nested batch body fields before building a request.
-
-Nested batch body validation covers supported spot and futures batch order arrays and batch cancel identifier arrays. See [docs/write-body-validation-plan.md](docs/write-body-validation-plan.md) for the current scope.
-
-Dry-run output includes command metadata for auth scope, risk level, parameter mode, required parameters, and optional parameters.
-
 `bydoxe --help` lists required and optional parameter hints from the same command registry metadata.
+
+## Optional Live Smoke Checks
 
 The optional public REST live smoke runs a bounded `public time` request only when explicitly enabled:
 

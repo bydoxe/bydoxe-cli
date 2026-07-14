@@ -53,3 +53,5 @@
 - Add a release readiness checklist for validation, generated artifacts, packaging, and safety review.
 - Use the live private WebSocket URL by default for optional private read-only WebSocket smoke validation.
 - Add npm distribution and installer-owned credential configuration policy.
+- Rewrite README introduction and examples around user onboarding, safety, credentials, and common workflows.
+- Tighten README smoke extraction so runnable shell examples are parsed from fenced blocks reliably.
