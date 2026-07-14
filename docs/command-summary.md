@@ -5,7 +5,7 @@ This file is generated from `docs/command-catalog.json`. Run `npm run summary:ge
 ## Totals
 
 - Package: `@bydoxe/bydoxe-cli`
-- Version: `0.1.0`
+- Version: `0.1.1`
 - Schema version: `1`
 - Command count: `106`
 - Write commands with local validation rules: `34/34`

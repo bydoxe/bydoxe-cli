@@ -23,7 +23,7 @@ The CLI is built around a preview-first workflow:
 
 ## Quick Start
 
-Install from npm after the `0.1.0` package is published:
+Install from npm after the `0.1.1` patch package is published:
 
 ```text
 npm install -g @bydoxe/bydoxe-cli
@@ -139,7 +139,7 @@ Private WebSocket spot trade payloads remain preview-only.
 
 ## Distribution
 
-The first BYDOXE CLI release uses version `0.1.0`, matching the first BYDOXE Agent Skills release. The CLI is distributed as the npm package `@bydoxe/bydoxe-cli`.
+The current BYDOXE CLI patch release target is version `0.1.1`, matching the companion BYDOXE Agent Skills release target. The CLI is distributed as the npm package `@bydoxe/bydoxe-cli`.
 
 Use [docs/distribution.md](docs/distribution.md) for versioning, npm distribution, and installer-owned credential configuration policy.
 

@@ -4,15 +4,15 @@ This document defines the release and distribution policy for the BYDOXE CLI.
 
 ## Release Versioning
 
-The first public release of the BYDOXE CLI must use the same version as the first BYDOXE Agent Skills release.
+The current public release of the BYDOXE CLI must use the same version as the companion BYDOXE Agent Skills release.
 
-Initial release target:
+Current patch release target:
 
 ```text
-0.1.0
+0.1.1
 ```
 
-After the first release, the maintainer may choose future versions based on implementation scope, safety changes, compatibility changes, and documentation updates.
+After each release, the maintainer may choose future versions based on implementation scope, safety changes, compatibility changes, and documentation updates.
 
 Recommended versioning rules:
 
@@ -92,6 +92,6 @@ Before publishing:
 
 - Complete the release readiness checklist.
 - Confirm package ownership and npm access.
-- Confirm the version matches the companion BYDOXE Agent Skills release for the first release.
+- Confirm the version matches the companion BYDOXE Agent Skills release for the coordinated release.
 - Confirm private credential setup remains installer-owned.
 - Confirm live write actions are not part of automated release validation.

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1 - 2026-07-14
+
+- Align npm package versioning for the patch release after the initial `0.1.0` publication.
+- Use the live private WebSocket URL by default for optional private read-only WebSocket smoke validation.
+- Add npm distribution and installer-owned credential configuration policy.
+- Rewrite README introduction and examples around user onboarding, safety, credentials, and common workflows.
+- Tighten README smoke extraction so runnable shell examples are parsed from fenced blocks reliably.
+
 ## 0.1.0 - 2026-07-14
 
 - Add initial BYDOXE CLI scaffold.
@@ -51,7 +59,3 @@
 - Add non-empty string validation for remaining write command identifiers.
 - Add optional private read-only WebSocket live smoke validation behind explicit credential gates.
 - Add a release readiness checklist for validation, generated artifacts, packaging, and safety review.
-- Use the live private WebSocket URL by default for optional private read-only WebSocket smoke validation.
-- Add npm distribution and installer-owned credential configuration policy.
-- Rewrite README introduction and examples around user onboarding, safety, credentials, and common workflows.
-- Tighten README smoke extraction so runnable shell examples are parsed from fenced blocks reliably.

@@ -1,6 +1,6 @@
 {
   "name": "@bydoxe/bydoxe-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Safe preview-first command-line companion for the BYDOXE Open API.",
   "license": "UNLICENSED",
   "type": "module",

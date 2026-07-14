@@ -78,5 +78,5 @@ Release is ready only when:
 - Generated artifacts are current.
 - Safety review has no open blocker.
 - Optional live checks are either completed in an approved environment or explicitly deferred.
-- The first release version matches the companion BYDOXE Agent Skills release version.
+- The release version matches the companion BYDOXE Agent Skills release version.
 - The release commit is tagged from a clean working tree.

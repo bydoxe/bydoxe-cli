@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "packageName": "@bydoxe/bydoxe-cli",
-  "packageVersion": "0.1.0",
+  "packageVersion": "0.1.1",
   "commandCount": 106,
   "commands": [
     {
