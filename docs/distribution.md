@@ -1,0 +1,97 @@
+# Distribution Policy
+
+This document defines the release and distribution policy for the BYDOXE CLI.
+
+## Release Versioning
+
+The first public release of the BYDOXE CLI must use the same version as the first BYDOXE Agent Skills release.
+
+Initial release target:
+
+```text
+0.1.0
+```
+
+After the first release, the maintainer may choose future versions based on implementation scope, safety changes, compatibility changes, and documentation updates.
+
+Recommended versioning rules:
+
+- Patch releases for documentation fixes, validation fixes, and small compatibility updates.
+- Minor releases for new commands, new validation coverage, new live smoke gates, or meaningful agent workflow improvements.
+- Major releases for breaking command names, breaking output shapes, credential handling changes, or safety model changes.
+
+## NPM Package Distribution
+
+The CLI is intended to be distributed as an npm package.
+
+The package must include:
+
+- `dist`
+- `docs`
+- `README.md`
+- `DISCLAIMER.md`
+- `CHANGELOG.md`
+
+The package must not include:
+
+- API credentials
+- Local shell profiles
+- Generated logs
+- Temporary test output
+- Workspace-only planning notes
+
+Run this before publishing:
+
+```sh
+npm run validate
+npm pack --dry-run
+```
+
+If the local npm cache has permission issues, use a workspace-safe cache path:
+
+```sh
+npm --cache /private/tmp/bydoxe-npm-cache pack --dry-run
+```
+
+## Credential Configuration
+
+BYDOXE private API credentials must be configured by each installer or operator in their own local environment.
+
+The package must never ship with credentials, placeholder secrets that look real, shared test keys, or account-specific configuration.
+
+Required environment variables for private REST and private WebSocket workflows:
+
+```sh
+export BYDOXE_ACCESS_KEY="<your-access-key>"
+export BYDOXE_SECRET_KEY="<your-secret-key>"
+export BYDOXE_PASSPHRASE="<your-passphrase>"
+```
+
+Optional endpoint overrides:
+
+```sh
+export BYDOXE_REST_BASE_URL="https://open-api.bydoxe.com/api/v1"
+export BYDOXE_PUBLIC_WS_URL="wss://open-api.bydoxe.com/v1/ws/public"
+export BYDOXE_PRIVATE_WS_URL="wss://open-api.bydoxe.com/v1/ws/private"
+```
+
+Private read-only WebSocket live smoke requires explicit local opt-in:
+
+```sh
+export BYDOXE_RUN_LIVE_PRIVATE_WS_TESTS=1
+export BYDOXE_ENABLE_PRIVATE_WS_READONLY_LIVE=1
+```
+
+Do not paste API secrets into AI chat sessions, issue trackers, release notes, or documentation examples.
+
+## Publish Readiness
+
+Publishing is deferred until the npm account and package ownership are prepared.
+
+Before publishing:
+
+- Complete the release readiness checklist.
+- Confirm package ownership and npm access.
+- Confirm the version matches the companion BYDOXE Agent Skills release for the first release.
+- Confirm private credential setup remains installer-owned.
+- Confirm live write actions are not part of automated release validation.

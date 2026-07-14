@@ -37,7 +37,7 @@ Implemented:
 
 ## Install
 
-Package installation is not published yet. During development, run the CLI from source after installing dependencies.
+Package installation is not published yet. The CLI is intended to be distributed as an npm package after package ownership is prepared. During development, run the CLI from source after installing dependencies.
 
 ```sh
 npm install
@@ -74,6 +74,8 @@ npm run build
 
 Use [docs/release-readiness.md](docs/release-readiness.md) before publishing or tagging a release.
 
+Use [docs/distribution.md](docs/distribution.md) for versioning, npm distribution, and installer-owned credential configuration policy.
+
 ## Command Reference
 
 Use [docs/command-reference.md](docs/command-reference.md) for the full generated CLI command surface. It includes REST endpoints, WebSocket scopes, auth requirements, risk levels, required parameters, optional parameters, and write validation rules.
@@ -83,6 +85,7 @@ Use [docs/command-summary.md](docs/command-summary.md) for a generated command c
 ## Credentials
 
 Private BYDOXE API requests require credentials. The initial scaffold reads credentials from environment variables:
+Each installer or operator must configure these values in their own local environment.
 
 ```sh
 export BYDOXE_ACCESS_KEY="<your-access-key>"

@@ -2,6 +2,8 @@
 
 This checklist defines the minimum review path before publishing or tagging a BYDOXE CLI release.
 
+Use [distribution.md](distribution.md) for versioning, npm publishing, and installer-owned credential configuration policy.
+
 ## Required Local Checks
 
 - Run `npm install` from a clean checkout when dependencies change.
@@ -10,6 +12,7 @@ This checklist defines the minimum review path before publishing or tagging a BY
 - Run `npm pack --dry-run` and review the packaged file list.
 - Confirm the package includes `dist`, `docs`, `README.md`, `DISCLAIMER.md`, and `CHANGELOG.md`.
 - Confirm the package does not include local credentials, generated logs, or temporary files.
+- Confirm private API credentials remain configured only by each installer or operator through local environment variables.
 
 ## Generated Artifacts
 
@@ -75,4 +78,5 @@ Release is ready only when:
 - Generated artifacts are current.
 - Safety review has no open blocker.
 - Optional live checks are either completed in an approved environment or explicitly deferred.
+- The first release version matches the companion BYDOXE Agent Skills release version.
 - The release commit is tagged from a clean working tree.
