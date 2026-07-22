@@ -27,7 +27,7 @@
     "access": "public"
   },
   "bin": {
-    "bydoxe": "./dist/cli.js"
+    "bydoxe": "dist/cli.js"
   },
   "files": [
     "dist",
