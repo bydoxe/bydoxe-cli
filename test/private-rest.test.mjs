@@ -174,7 +174,9 @@ test('copy trading follower settings command maps to follower settings endpoint'
     'copytrading',
     'follower',
     'settings',
-    '--traderId',
+    '--productType',
+    'USDT-FUTURES',
+    '--traderUid',
     'trader-1',
   ]);
   const match = findPrivateRestCommand(parsed);
@@ -185,7 +187,8 @@ test('copy trading follower settings command maps to follower settings endpoint'
     '/copy/mix-follower/query-copy-trade-settings',
   );
   assert.deepEqual(match.query, {
-    traderId: 'trader-1',
+    productType: 'USDT-FUTURES',
+    traderUid: 'trader-1',
   });
 });
 

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "packageName": "@bydoxe/bydoxe-cli",
-  "packageVersion": "0.1.2",
-  "commandCount": 106,
+  "packageVersion": "0.1.3",
+  "commandCount": 107,
   "commands": [
     {
       "command": "bydoxe public time",
@@ -1067,13 +1067,17 @@
       "auth": "private",
       "riskLevel": "low",
       "parameterMode": "query",
-      "requiredParams": [],
+      "requiredParams": [
+        "productType"
+      ],
       "optionalParams": [
         "symbol",
-        "traderId",
-        "trackingNo",
-        "pageNo",
-        "pageSize"
+        "traderUid",
+        "startTime",
+        "endTime",
+        "limit",
+        "idLessThan",
+        "idGreaterThan"
       ],
       "method": "GET",
       "path": "/copy/mix-follower/query-current-orders",
@@ -1086,13 +1090,17 @@
       "auth": "private",
       "riskLevel": "low",
       "parameterMode": "query",
-      "requiredParams": [],
+      "requiredParams": [
+        "productType"
+      ],
       "optionalParams": [
         "symbol",
-        "traderId",
-        "trackingNo",
-        "pageNo",
-        "pageSize"
+        "traderUid",
+        "startTime",
+        "endTime",
+        "limit",
+        "idLessThan",
+        "idGreaterThan"
       ],
       "method": "GET",
       "path": "/copy/mix-follower/query-history-orders",
@@ -1106,10 +1114,10 @@
       "riskLevel": "low",
       "parameterMode": "query",
       "requiredParams": [
-        "traderId"
+        "productType"
       ],
       "optionalParams": [
-        "symbol"
+        "traderUid"
       ],
       "method": "GET",
       "path": "/copy/mix-follower/query-copy-trade-settings",
@@ -1122,11 +1130,10 @@
       "auth": "private",
       "riskLevel": "low",
       "parameterMode": "query",
-      "requiredParams": [],
-      "optionalParams": [
-        "pageNo",
-        "pageSize"
+      "requiredParams": [
+        "productType"
       ],
+      "optionalParams": [],
       "method": "GET",
       "path": "/copy/mix-follower/query-my-traders",
       "description": "Build or execute a copy trading follower traders request"
@@ -1139,19 +1146,26 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol",
+        "base",
+        "quote",
         "orderType",
         "tradeType",
         "amount"
       ],
       "optionalParams": [
         "price",
+        "stopPrice",
         "clientOid"
       ],
       "method": "POST",
       "path": "/spot/trade/place-order",
       "description": "Requires CONFIRM: place a spot order",
       "validation": {
+        "nonEmptyStringParams": [
+          "base",
+          "quote",
+          "clientOid"
+        ],
         "positiveNumberParams": [
           "amount",
           "price"
@@ -1190,21 +1204,17 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol"
+        "symbol",
+        "orderId"
       ],
-      "optionalParams": [
-        "orderId",
-        "clientOid"
-      ],
+      "optionalParams": [],
       "method": "POST",
       "path": "/spot/trade/cancel-order",
       "description": "Requires CONFIRM: cancel a spot order",
       "validation": {
-        "requireAnyParams": [
-          [
-            "orderId",
-            "clientOid"
-          ]
+        "nonEmptyStringParams": [
+          "symbol",
+          "orderId"
         ]
       }
     },
@@ -1216,53 +1226,23 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol"
-      ],
-      "optionalParams": [
-        "orderId",
-        "clientOid",
-        "orderType",
-        "tradeType",
+        "symbol",
         "price",
-        "amount"
+        "size",
+        "orderId"
       ],
+      "optionalParams": [],
       "method": "POST",
       "path": "/spot/trade/cancel-replace-order",
       "description": "Requires CONFIRM: cancel and replace a spot order",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "orderId"
+        ],
         "positiveNumberParams": [
-          "amount",
-          "price"
-        ],
-        "enumParams": [
-          {
-            "param": "orderType",
-            "values": [
-              "MARKET",
-              "LIMIT"
-            ]
-          },
-          {
-            "param": "timeInForce",
-            "values": [
-              "GTC",
-              "IOC",
-              "FOK"
-            ]
-          },
-          {
-            "param": "tradeType",
-            "values": [
-              "BUY",
-              "SELL"
-            ]
-          }
-        ],
-        "requireAnyParams": [
-          [
-            "orderId",
-            "clientOid"
-          ]
+          "price",
+          "size"
         ]
       }
     },
@@ -1273,54 +1253,26 @@
       "auth": "private",
       "riskLevel": "high",
       "parameterMode": "body",
-      "requiredParams": [],
-      "optionalParams": [
-        "symbol",
-        "orders"
+      "requiredParams": [
+        "orderList"
       ],
+      "optionalParams": [],
       "method": "POST",
       "path": "/spot/trade/batch-cancel-replace-order",
       "description": "Requires CONFIRM: batch cancel and replace spot orders",
       "validation": {
         "arrayParams": [
           {
-            "param": "orders",
+            "param": "orderList",
             "requiredParams": [
-              "symbol"
+              "symbol",
+              "price",
+              "size",
+              "orderId"
             ],
             "positiveNumberParams": [
-              "amount",
-              "price"
-            ],
-            "enumParams": [
-              {
-                "param": "orderType",
-                "values": [
-                  "MARKET",
-                  "LIMIT"
-                ]
-              },
-              {
-                "param": "timeInForce",
-                "values": [
-                  "GTC",
-                  "IOC",
-                  "FOK"
-                ]
-              },
-              {
-                "param": "tradeType",
-                "values": [
-                  "BUY",
-                  "SELL"
-                ]
-              }
-            ],
-            "requireAnyParams": [
-              [
-                "orderId",
-                "clientOid"
-              ]
+              "price",
+              "size"
             ]
           }
         ]
@@ -1333,9 +1285,12 @@
       "auth": "private",
       "riskLevel": "high",
       "parameterMode": "body",
-      "requiredParams": [],
+      "requiredParams": [
+        "orderList"
+      ],
       "optionalParams": [
-        "orders"
+        "symbol",
+        "batchMode"
       ],
       "method": "POST",
       "path": "/spot/trade/batch-orders",
@@ -1343,38 +1298,29 @@
       "validation": {
         "arrayParams": [
           {
-            "param": "orders",
+            "param": "orderList",
             "requiredParams": [
-              "symbol",
+              "side",
               "orderType",
-              "tradeType",
-              "amount"
+              "size"
             ],
             "positiveNumberParams": [
-              "amount",
+              "size",
               "price"
             ],
             "enumParams": [
+              {
+                "param": "side",
+                "values": [
+                  "BUY",
+                  "SELL"
+                ]
+              },
               {
                 "param": "orderType",
                 "values": [
                   "MARKET",
                   "LIMIT"
-                ]
-              },
-              {
-                "param": "timeInForce",
-                "values": [
-                  "GTC",
-                  "IOC",
-                  "FOK"
-                ]
-              },
-              {
-                "param": "tradeType",
-                "values": [
-                  "BUY",
-                  "SELL"
                 ]
               }
             ]
@@ -1389,21 +1335,24 @@
       "auth": "private",
       "riskLevel": "high",
       "parameterMode": "body",
-      "requiredParams": [],
+      "requiredParams": [
+        "orderList"
+      ],
       "optionalParams": [
         "symbol",
-        "orderIds",
-        "clientOids"
+        "batchMode"
       ],
       "method": "POST",
       "path": "/spot/trade/batch-cancel-orders",
       "description": "Requires CONFIRM: cancel batch spot orders",
       "validation": {
-        "requireAnyNonEmptyArrayParams": [
-          [
-            "orderIds",
-            "clientOids"
-          ]
+        "arrayParams": [
+          {
+            "param": "orderList",
+            "requiredParams": [
+              "orderId"
+            ]
+          }
         ]
       }
     },
@@ -1435,10 +1384,10 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "coin",
-        "amount",
-        "fromType",
-        "toType"
+        "from",
+        "to",
+        "symbol",
+        "quantity"
       ],
       "optionalParams": [],
       "method": "POST",
@@ -1446,12 +1395,32 @@
       "description": "Requires CONFIRM: transfer funds between accounts",
       "validation": {
         "nonEmptyStringParams": [
-          "coin",
-          "fromType",
-          "toType"
+          "from",
+          "to",
+          "symbol"
         ],
         "positiveNumberParams": [
-          "amount"
+          "quantity"
+        ],
+        "enumParams": [
+          {
+            "param": "from",
+            "values": [
+              "FUSD",
+              "SPOT",
+              "LENDING",
+              "STAKING"
+            ]
+          },
+          {
+            "param": "to",
+            "values": [
+              "FUSD",
+              "SPOT",
+              "LENDING",
+              "STAKING"
+            ]
+          }
         ]
       }
     },
@@ -1463,28 +1432,30 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "coin",
-        "chain",
         "address",
-        "amount"
+        "coinSymbol",
+        "network",
+        "quantity",
+        "pinCode"
       ],
       "optionalParams": [
-        "tag",
-        "clientOid"
+        "destinationTag",
+        "otpCode"
       ],
       "method": "POST",
       "path": "/spot/account/withdraw",
       "description": "Requires CONFIRM: withdraw assets",
       "validation": {
         "nonEmptyStringParams": [
-          "coin",
-          "chain",
           "address",
-          "tag",
-          "clientOid"
+          "coinSymbol",
+          "network",
+          "pinCode",
+          "destinationTag",
+          "otpCode"
         ],
         "positiveNumberParams": [
-          "amount"
+          "quantity"
         ]
       }
     },
@@ -1495,27 +1466,16 @@
       "auth": "private",
       "riskLevel": "high",
       "parameterMode": "body",
-      "requiredParams": [],
-      "optionalParams": [
-        "withdrawId",
-        "orderId",
-        "clientOid"
+      "requiredParams": [
+        "orderId"
       ],
+      "optionalParams": [],
       "method": "POST",
       "path": "/spot/account/cancel-withdraw",
       "description": "Requires CONFIRM: cancel a withdrawal",
       "validation": {
         "nonEmptyStringParams": [
-          "withdrawId",
-          "orderId",
-          "clientOid"
-        ],
-        "requireAnyParams": [
-          [
-            "withdrawId",
-            "orderId",
-            "clientOid"
-          ]
+          "orderId"
         ]
       }
     },
@@ -1623,15 +1583,20 @@
       "parameterMode": "body",
       "requiredParams": [
         "symbol",
+        "marginMode",
+        "size",
         "side",
-        "orderType",
-        "size"
+        "tradeSide",
+        "orderType"
       ],
       "optionalParams": [
         "price",
-        "holdSide",
+        "force",
         "clientOid",
-        "timeInForce"
+        "presetTakeProfitPrice",
+        "presetStopLossPrice",
+        "presetTakeProfitExecutePrice",
+        "presetStopLossExecutePrice"
       ],
       "method": "POST",
       "path": "/future/order/place-order",
@@ -1639,40 +1604,43 @@
       "validation": {
         "nonEmptyStringParams": [
           "symbol",
+          "marginMode",
           "clientOid"
         ],
         "positiveNumberParams": [
           "size",
-          "price"
+          "price",
+          "presetTakeProfitPrice",
+          "presetStopLossPrice",
+          "presetTakeProfitExecutePrice",
+          "presetStopLossExecutePrice"
         ],
         "enumParams": [
           {
-            "param": "orderType",
-            "values": [
-              "MARKET",
-              "LIMIT"
-            ]
-          },
-          {
-            "param": "timeInForce",
-            "values": [
-              "GTC",
-              "IOC",
-              "FOK"
-            ]
-          },
-          {
             "param": "side",
-            "values": [
-              "BUY",
-              "SELL"
-            ]
-          },
-          {
-            "param": "holdSide",
             "values": [
               "LONG",
               "SHORT"
+            ]
+          },
+          {
+            "param": "tradeSide",
+            "values": [
+              "OPEN",
+              "CLOSE"
+            ]
+          },
+          {
+            "param": "orderType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          },
+          {
+            "param": "force",
+            "values": [
+              "POST_ONLY"
             ]
           }
         ]
@@ -1686,48 +1654,23 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol"
+        "symbol",
+        "side"
       ],
       "optionalParams": [
-        "side",
-        "size",
-        "holdSide"
+        "clientOid"
       ],
       "method": "POST",
       "path": "/future/order/click-backhand",
       "description": "Requires CONFIRM: place a futures reversal order",
       "validation": {
         "nonEmptyStringParams": [
-          "symbol"
-        ],
-        "positiveNumberParams": [
-          "size"
+          "symbol",
+          "clientOid"
         ],
         "enumParams": [
           {
-            "param": "orderType",
-            "values": [
-              "MARKET",
-              "LIMIT"
-            ]
-          },
-          {
-            "param": "timeInForce",
-            "values": [
-              "GTC",
-              "IOC",
-              "FOK"
-            ]
-          },
-          {
             "param": "side",
-            "values": [
-              "BUY",
-              "SELL"
-            ]
-          },
-          {
-            "param": "holdSide",
             "values": [
               "LONG",
               "SHORT"
@@ -1743,55 +1686,63 @@
       "auth": "private",
       "riskLevel": "high",
       "parameterMode": "body",
-      "requiredParams": [],
-      "optionalParams": [
-        "orders"
+      "requiredParams": [
+        "symbol",
+        "marginMode",
+        "orderList"
       ],
+      "optionalParams": [],
       "method": "POST",
       "path": "/future/order/batch-place-order",
       "description": "Requires CONFIRM: place batch futures orders",
       "validation": {
+        "nonEmptyStringParams": [
+          "symbol",
+          "marginMode"
+        ],
         "arrayParams": [
           {
-            "param": "orders",
+            "param": "orderList",
             "requiredParams": [
-              "symbol",
+              "size",
               "side",
-              "orderType",
-              "size"
+              "tradeSide",
+              "orderType"
             ],
             "positiveNumberParams": [
               "size",
-              "price"
+              "price",
+              "presetTakeProfitPrice",
+              "presetStopLossPrice",
+              "presetTakeProfitExecutePrice",
+              "presetStopLossExecutePrice"
             ],
             "enumParams": [
               {
-                "param": "orderType",
-                "values": [
-                  "MARKET",
-                  "LIMIT"
-                ]
-              },
-              {
-                "param": "timeInForce",
-                "values": [
-                  "GTC",
-                  "IOC",
-                  "FOK"
-                ]
-              },
-              {
                 "param": "side",
-                "values": [
-                  "BUY",
-                  "SELL"
-                ]
-              },
-              {
-                "param": "holdSide",
                 "values": [
                   "LONG",
                   "SHORT"
+                ]
+              },
+              {
+                "param": "tradeSide",
+                "values": [
+                  "OPEN",
+                  "CLOSE"
+                ]
+              },
+              {
+                "param": "orderType",
+                "values": [
+                  "LIMIT",
+                  "MARKET"
+                ]
+              },
+              {
+                "param": "force",
+                "values": [
+                  "POST_ONLY"
                 ]
               }
             ]
@@ -1807,13 +1758,16 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol"
+        "symbol",
+        "newClientOid"
       ],
       "optionalParams": [
         "orderId",
         "clientOid",
-        "price",
-        "size"
+        "newSize",
+        "newPrice",
+        "newPresetTakeProfitPrice",
+        "newPresetStopLossPrice"
       ],
       "method": "POST",
       "path": "/future/order/modify-order",
@@ -1821,12 +1775,15 @@
       "validation": {
         "nonEmptyStringParams": [
           "symbol",
+          "newClientOid",
           "orderId",
           "clientOid"
         ],
         "positiveNumberParams": [
-          "size",
-          "price"
+          "newSize",
+          "newPrice",
+          "newPresetTakeProfitPrice",
+          "newPresetStopLossPrice"
         ],
         "requireAnyParams": [
           [
@@ -1874,21 +1831,24 @@
       "auth": "private",
       "riskLevel": "high",
       "parameterMode": "body",
-      "requiredParams": [],
-      "optionalParams": [
-        "symbol",
-        "orderIds",
-        "clientOids"
+      "requiredParams": [
+        "orderIdList"
       ],
+      "optionalParams": [],
       "method": "POST",
       "path": "/future/order/batch-cancel-orders",
       "description": "Requires CONFIRM: cancel batch futures orders",
       "validation": {
-        "requireAnyNonEmptyArrayParams": [
-          [
-            "orderIds",
-            "clientOids"
-          ]
+        "arrayParams": [
+          {
+            "param": "orderIdList",
+            "requireAnyParams": [
+              [
+                "orderId",
+                "clientOid"
+              ]
+            ]
+          }
         ]
       }
     },
@@ -1899,10 +1859,9 @@
       "auth": "private",
       "riskLevel": "high",
       "parameterMode": "body",
-      "requiredParams": [
-        "symbol"
-      ],
+      "requiredParams": [],
       "optionalParams": [
+        "symbol",
         "holdSide"
       ],
       "method": "POST",
@@ -1931,17 +1890,11 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [],
-      "optionalParams": [
-        "symbol"
-      ],
+      "optionalParams": [],
       "method": "POST",
       "path": "/future/order/cancel-all-orders",
       "description": "Requires CONFIRM: cancel all futures orders",
-      "validation": {
-        "nonEmptyStringParams": [
-          "symbol"
-        ]
-      }
+      "validation": {}
     },
     {
       "command": "bydoxe future trigger place",
@@ -1952,15 +1905,19 @@
       "parameterMode": "body",
       "requiredParams": [
         "symbol",
+        "marginMode",
+        "size",
         "side",
         "triggerPrice",
-        "orderType",
-        "size"
+        "triggerPriceType"
       ],
       "optionalParams": [
         "price",
-        "holdSide",
-        "clientOid"
+        "clientOid",
+        "presetTakeProfitPrice",
+        "presetStopLossPrice",
+        "presetTakeProfitExecutePrice",
+        "presetStopLossExecutePrice"
       ],
       "method": "POST",
       "path": "/future/order/place-plan-order",
@@ -1968,41 +1925,31 @@
       "validation": {
         "nonEmptyStringParams": [
           "symbol",
+          "marginMode",
           "clientOid"
         ],
         "positiveNumberParams": [
           "size",
           "price",
-          "triggerPrice"
+          "triggerPrice",
+          "presetTakeProfitPrice",
+          "presetStopLossPrice",
+          "presetTakeProfitExecutePrice",
+          "presetStopLossExecutePrice"
         ],
         "enumParams": [
           {
-            "param": "orderType",
-            "values": [
-              "MARKET",
-              "LIMIT"
-            ]
-          },
-          {
-            "param": "timeInForce",
-            "values": [
-              "GTC",
-              "IOC",
-              "FOK"
-            ]
-          },
-          {
             "param": "side",
-            "values": [
-              "BUY",
-              "SELL"
-            ]
-          },
-          {
-            "param": "holdSide",
             "values": [
               "LONG",
               "SHORT"
+            ]
+          },
+          {
+            "param": "triggerPriceType",
+            "values": [
+              "LAST",
+              "MARK"
             ]
           }
         ]
@@ -2015,29 +1962,60 @@
       "auth": "private",
       "riskLevel": "high",
       "parameterMode": "body",
-      "requiredParams": [
-        "symbol"
-      ],
+      "requiredParams": [],
       "optionalParams": [
         "orderId",
         "clientOid",
-        "triggerPrice",
-        "price",
-        "size"
+        "newPrice",
+        "newSize",
+        "newTriggerPrice",
+        "newTriggerPriceType",
+        "newPresetTakeProfitPrice",
+        "newPresetTakeProfitExecutePrice",
+        "newPresetTakeProfitPriceType",
+        "newPresetStopLossPrice",
+        "newPresetStopLossExecutePrice",
+        "newPresetStopLossPriceType"
       ],
       "method": "POST",
       "path": "/future/order/modify-plan-order",
       "description": "Requires CONFIRM: modify a futures trigger order",
       "validation": {
         "nonEmptyStringParams": [
-          "symbol",
           "orderId",
           "clientOid"
         ],
         "positiveNumberParams": [
-          "size",
-          "price",
-          "triggerPrice"
+          "newSize",
+          "newPrice",
+          "newTriggerPrice",
+          "newPresetTakeProfitPrice",
+          "newPresetTakeProfitExecutePrice",
+          "newPresetStopLossPrice",
+          "newPresetStopLossExecutePrice"
+        ],
+        "enumParams": [
+          {
+            "param": "newTriggerPriceType",
+            "values": [
+              "LAST",
+              "MARK"
+            ]
+          },
+          {
+            "param": "newPresetTakeProfitPriceType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          },
+          {
+            "param": "newPresetStopLossPriceType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          }
         ],
         "requireAnyParams": [
           [
@@ -2055,26 +2033,28 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol"
+        "orderIdList"
       ],
       "optionalParams": [
-        "orderId",
-        "clientOid"
+        "symbol"
       ],
       "method": "POST",
       "path": "/future/order/cancel-plan-order",
       "description": "Requires CONFIRM: cancel futures trigger orders",
       "validation": {
         "nonEmptyStringParams": [
-          "symbol",
-          "orderId",
-          "clientOid"
+          "symbol"
         ],
-        "requireAnyParams": [
-          [
-            "orderId",
-            "clientOid"
-          ]
+        "arrayParams": [
+          {
+            "param": "orderIdList",
+            "requireAnyParams": [
+              [
+                "orderId",
+                "clientOid"
+              ]
+            ]
+          }
         ]
       }
     },
@@ -2088,11 +2068,14 @@
       "requiredParams": [
         "symbol",
         "planType",
-        "triggerPrice"
+        "holdSide",
+        "orderType",
+        "triggerPrice",
+        "triggerPriceType",
+        "size"
       ],
       "optionalParams": [
-        "holdSide",
-        "size",
+        "executePrice",
         "clientOid"
       ],
       "method": "POST",
@@ -2105,7 +2088,8 @@
         ],
         "positiveNumberParams": [
           "size",
-          "triggerPrice"
+          "triggerPrice",
+          "executePrice"
         ],
         "enumParams": [
           {
@@ -2121,6 +2105,20 @@
               "LONG",
               "SHORT"
             ]
+          },
+          {
+            "param": "orderType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          },
+          {
+            "param": "triggerPriceType",
+            "values": [
+              "LAST",
+              "MARK"
+            ]
           }
         ]
       }
@@ -2133,12 +2131,16 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol"
+        "symbol",
+        "orderType",
+        "triggerPrice",
+        "size"
       ],
       "optionalParams": [
         "orderId",
         "clientOid",
-        "triggerPrice"
+        "triggerPriceType",
+        "executePrice"
       ],
       "method": "POST",
       "path": "/future/order/modify-tpsl-order",
@@ -2150,13 +2152,64 @@
           "clientOid"
         ],
         "positiveNumberParams": [
-          "triggerPrice"
+          "triggerPrice",
+          "size",
+          "executePrice"
+        ],
+        "enumParams": [
+          {
+            "param": "orderType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          },
+          {
+            "param": "triggerPriceType",
+            "values": [
+              "LAST",
+              "MARK"
+            ]
+          }
         ],
         "requireAnyParams": [
           [
             "orderId",
             "clientOid"
           ]
+        ]
+      }
+    },
+    {
+      "command": "bydoxe future tpsl cancel",
+      "group": "write-rest",
+      "transport": "rest",
+      "auth": "private",
+      "riskLevel": "high",
+      "parameterMode": "body",
+      "requiredParams": [
+        "orderIdList"
+      ],
+      "optionalParams": [
+        "symbol"
+      ],
+      "method": "POST",
+      "path": "/future/order/cancel-tpsl-order",
+      "description": "Requires CONFIRM: cancel futures TP/SL orders",
+      "validation": {
+        "nonEmptyStringParams": [
+          "symbol"
+        ],
+        "arrayParams": [
+          {
+            "param": "orderIdList",
+            "requireAnyParams": [
+              [
+                "orderId",
+                "clientOid"
+              ]
+            ]
+          }
         ]
       }
     },
@@ -2168,24 +2221,82 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol",
-        "trackingNo"
+        "trackingNo",
+        "productType"
       ],
       "optionalParams": [
         "stopSurplusPrice",
-        "stopLossPrice"
+        "stopSurplusTriggerPriceType",
+        "stopSurplusOrderType",
+        "stopSurplusLimitPrice",
+        "stopSurplusAmountType",
+        "stopSurplusQuantity",
+        "stopLossPrice",
+        "stopLossTriggerPriceType",
+        "stopLossOrderType",
+        "stopLossLimitPrice",
+        "stopLossAmountType",
+        "stopLossQuantity"
       ],
       "method": "POST",
       "path": "/copy/mix-trader/order-modify-tpsl",
       "description": "Requires CONFIRM: modify copy trading trader TP/SL",
       "validation": {
         "nonEmptyStringParams": [
-          "symbol",
-          "trackingNo"
+          "trackingNo",
+          "productType"
         ],
         "positiveNumberParams": [
           "stopSurplusPrice",
-          "stopLossPrice"
+          "stopSurplusLimitPrice",
+          "stopSurplusQuantity",
+          "stopLossPrice",
+          "stopLossLimitPrice",
+          "stopLossQuantity"
+        ],
+        "enumParams": [
+          {
+            "param": "stopSurplusTriggerPriceType",
+            "values": [
+              "LAST",
+              "MARK"
+            ]
+          },
+          {
+            "param": "stopSurplusOrderType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          },
+          {
+            "param": "stopSurplusAmountType",
+            "values": [
+              "FULL",
+              "PARTIAL"
+            ]
+          },
+          {
+            "param": "stopLossTriggerPriceType",
+            "values": [
+              "LAST",
+              "MARK"
+            ]
+          },
+          {
+            "param": "stopLossOrderType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          },
+          {
+            "param": "stopLossAmountType",
+            "values": [
+              "FULL",
+              "PARTIAL"
+            ]
+          }
         ]
       }
     },
@@ -2197,17 +2308,36 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
+        "trackingNo",
         "symbol",
-        "trackingNo"
+        "productType"
       ],
-      "optionalParams": [],
+      "optionalParams": [
+        "orderType",
+        "quantity",
+        "price"
+      ],
       "method": "POST",
       "path": "/copy/mix-trader/order-close-positions",
       "description": "Requires CONFIRM: close copy trading trader positions",
       "validation": {
         "nonEmptyStringParams": [
+          "trackingNo",
           "symbol",
-          "trackingNo"
+          "productType"
+        ],
+        "positiveNumberParams": [
+          "quantity",
+          "price"
+        ],
+        "enumParams": [
+          {
+            "param": "orderType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          }
         ]
       }
     },
@@ -2218,19 +2348,23 @@
       "auth": "private",
       "riskLevel": "high",
       "parameterMode": "body",
-      "requiredParams": [
-        "symbol"
-      ],
+      "requiredParams": [],
       "optionalParams": [
-        "copyTradeMode"
+        "traderMode",
+        "copyPairList",
+        "nickName",
+        "introduction",
+        "profitShareRatio",
+        "showFund",
+        "showFollowerList",
+        "showLeadingHist"
       ],
       "method": "POST",
       "path": "/copy/mix-trader/config-trader-setting",
       "description": "Requires CONFIRM: change copy trading trader settings",
       "validation": {
-        "nonEmptyStringParams": [
-          "symbol",
-          "copyTradeMode"
+        "positiveNumberParams": [
+          "profitShareRatio"
         ]
       }
     },
@@ -2242,18 +2376,15 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "followerId"
+        "followerUid"
       ],
-      "optionalParams": [
-        "symbol"
-      ],
+      "optionalParams": [],
       "method": "POST",
       "path": "/copy/mix-trader/remove-follower",
       "description": "Requires CONFIRM: remove a copy trading follower",
       "validation": {
         "nonEmptyStringParams": [
-          "followerId",
-          "symbol"
+          "followerUid"
         ]
       }
     },
@@ -2265,24 +2396,82 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol",
+        "productType",
         "trackingNo"
       ],
       "optionalParams": [
         "stopSurplusPrice",
-        "stopLossPrice"
+        "stopSurplusTriggerPriceType",
+        "stopSurplusOrderType",
+        "stopSurplusLimitPrice",
+        "stopSurplusAmountType",
+        "stopSurplusQuantity",
+        "stopLossPrice",
+        "stopLossTriggerPriceType",
+        "stopLossOrderType",
+        "stopLossLimitPrice",
+        "stopLossAmountType",
+        "stopLossQuantity"
       ],
       "method": "POST",
       "path": "/copy/mix-follower/setting-tpsl",
       "description": "Requires CONFIRM: set follower TP/SL",
       "validation": {
         "nonEmptyStringParams": [
-          "symbol",
+          "productType",
           "trackingNo"
         ],
         "positiveNumberParams": [
           "stopSurplusPrice",
-          "stopLossPrice"
+          "stopSurplusLimitPrice",
+          "stopSurplusQuantity",
+          "stopLossPrice",
+          "stopLossLimitPrice",
+          "stopLossQuantity"
+        ],
+        "enumParams": [
+          {
+            "param": "stopSurplusTriggerPriceType",
+            "values": [
+              "LAST",
+              "MARK"
+            ]
+          },
+          {
+            "param": "stopSurplusOrderType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          },
+          {
+            "param": "stopSurplusAmountType",
+            "values": [
+              "FULL",
+              "PARTIAL"
+            ]
+          },
+          {
+            "param": "stopLossTriggerPriceType",
+            "values": [
+              "LAST",
+              "MARK"
+            ]
+          },
+          {
+            "param": "stopLossOrderType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          },
+          {
+            "param": "stopLossAmountType",
+            "values": [
+              "FULL",
+              "PARTIAL"
+            ]
+          }
         ]
       }
     },
@@ -2294,24 +2483,36 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "traderId",
-        "symbol"
+        "productType",
+        "traderUid"
       ],
       "optionalParams": [
-        "copyAmount",
-        "copyMode"
+        "fixedAmount",
+        "dailyMarginLimitMax",
+        "orderType",
+        "amountPerOrderUsdt"
       ],
       "method": "POST",
       "path": "/copy/mix-follower/setting-copy-trade",
       "description": "Requires CONFIRM: change follower copy trading settings",
       "validation": {
         "nonEmptyStringParams": [
-          "traderId",
-          "symbol",
-          "copyMode"
+          "productType",
+          "traderUid"
         ],
         "positiveNumberParams": [
-          "copyAmount"
+          "fixedAmount",
+          "dailyMarginLimitMax",
+          "amountPerOrderUsdt"
+        ],
+        "enumParams": [
+          {
+            "param": "orderType",
+            "values": [
+              "FIXED_AMOUNT",
+              "POSITION_RATE"
+            ]
+          }
         ]
       }
     },
@@ -2323,17 +2524,36 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "symbol",
-        "trackingNo"
+        "productType",
+        "trackingNo",
+        "symbol"
       ],
-      "optionalParams": [],
+      "optionalParams": [
+        "orderType",
+        "quantity",
+        "price"
+      ],
       "method": "POST",
       "path": "/copy/mix-follower/close-positions",
       "description": "Requires CONFIRM: close follower copy trading positions",
       "validation": {
         "nonEmptyStringParams": [
-          "symbol",
-          "trackingNo"
+          "productType",
+          "trackingNo",
+          "symbol"
+        ],
+        "positiveNumberParams": [
+          "quantity",
+          "price"
+        ],
+        "enumParams": [
+          {
+            "param": "orderType",
+            "values": [
+              "LIMIT",
+              "MARKET"
+            ]
+          }
         ]
       }
     },
@@ -2345,7 +2565,8 @@
       "riskLevel": "high",
       "parameterMode": "body",
       "requiredParams": [
-        "traderId"
+        "productType",
+        "traderUid"
       ],
       "optionalParams": [],
       "method": "POST",
@@ -2353,7 +2574,8 @@
       "description": "Requires CONFIRM: cancel following a trader",
       "validation": {
         "nonEmptyStringParams": [
-          "traderId"
+          "productType",
+          "traderUid"
         ]
       }
     },

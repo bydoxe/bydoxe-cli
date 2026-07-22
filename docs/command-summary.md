@@ -5,11 +5,11 @@ This file is generated from `docs/command-catalog.json`. Run `npm run summary:ge
 ## Totals
 
 - Package: `@bydoxe/bydoxe-cli`
-- Version: `0.1.2`
+- Version: `0.1.3`
 - Schema version: `1`
-- Command count: `106`
-- Write commands with local validation rules: `34/34`
-- Commands requiring exact confirmation: `35`
+- Command count: `107`
+- Write commands with local validation rules: `35/35`
+- Commands requiring exact confirmation: `36`
 
 ## Command Groups
 
@@ -17,7 +17,7 @@ This file is generated from `docs/command-catalog.json`. Run `npm run summary:ge
 | --- | --- | --- | --- | --- |
 | Public REST | `27` | public: 27 | low: 27 | `none`, `query` |
 | Authenticated REST | `38` | private: 38 | low: 38 | `body`, `query` |
-| Write REST | `34` | private: 34 | high: 34 | `body` |
+| Write REST | `35` | private: 35 | high: 35 | `body` |
 | WebSocket | `7` | public: 3<br>private: 4 | low: 3<br>medium: 3<br>high: 1 | `message` |
 
 ## Safety Summary

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3 - 2026-07-22
+
+- Add `bydoxe future tpsl cancel` for `POST /future/order/cancel-tpsl-order`.
+- Align spot, futures, TP/SL, and copy trading write command metadata with the current BYDOXE API DTO field names.
+- Strengthen nested validation for `orderList` and `orderIdList` request bodies.
+- Update generated command catalog, command reference, and command summary for the expanded command surface.
+
 ## 0.1.2 - 2026-07-14
 
 - Add `bydoxe config set`, `bydoxe config status`, and `bydoxe config clear` for local credential profile management.

@@ -186,20 +186,38 @@ const PRIVATE_REST_METADATA_BY_PATH: Record<string, CommandMetadata> = {
   },
   '/copy/mix-follower/query-current-orders': {
     ...PRIVATE_QUERY_METADATA,
-    optionalParams: ['symbol', 'traderId', 'trackingNo', 'pageNo', 'pageSize'],
+    requiredParams: ['productType'],
+    optionalParams: [
+      'symbol',
+      'traderUid',
+      'startTime',
+      'endTime',
+      'limit',
+      'idLessThan',
+      'idGreaterThan',
+    ],
   },
   '/copy/mix-follower/query-history-orders': {
     ...PRIVATE_QUERY_METADATA,
-    optionalParams: ['symbol', 'traderId', 'trackingNo', 'pageNo', 'pageSize'],
+    requiredParams: ['productType'],
+    optionalParams: [
+      'symbol',
+      'traderUid',
+      'startTime',
+      'endTime',
+      'limit',
+      'idLessThan',
+      'idGreaterThan',
+    ],
   },
   '/copy/mix-follower/query-copy-trade-settings': {
     ...PRIVATE_QUERY_METADATA,
-    requiredParams: ['traderId'],
-    optionalParams: ['symbol'],
+    requiredParams: ['productType'],
+    optionalParams: ['traderUid'],
   },
   '/copy/mix-follower/query-my-traders': {
     ...PRIVATE_QUERY_METADATA,
-    optionalParams: ['pageNo', 'pageSize'],
+    requiredParams: ['productType'],
   },
 };
 

@@ -17,12 +17,12 @@ Generated references expose these rules when they are attached to a command.
 
 Covered nested rule types:
 
-- Non-empty `orders[]` arrays for supported batch place and batch cancel-replace commands.
-- Required fields inside supported `orders[]` items.
-- Positive numeric fields inside supported `orders[]` items.
-- Enum-like fields inside supported `orders[]` items.
-- Identifier alternatives inside supported cancel-replace `orders[]` items.
-- Non-empty `orderIds[]` or `clientOids[]` alternatives for supported batch cancel commands.
+- Non-empty `orderList[]` arrays for supported spot and futures batch place, cancel, and cancel-replace commands.
+- Required fields inside supported `orderList[]` items.
+- Positive numeric fields inside supported `orderList[]` items.
+- Enum-like fields inside supported `orderList[]` items.
+- Identifier alternatives inside supported futures cancel `orderList[]` or `orderIdList[]` items.
+- Non-empty `orderIdList[]` arrays for supported futures batch cancel, trigger cancel, and TP/SL cancel commands.
 
 ## Nested Validation Scope
 
@@ -32,11 +32,13 @@ Primary batch targets:
 
 | Command | Endpoint | Nested Field | Expected Shape |
 | --- | --- | --- | --- |
-| `bydoxe spot trade batch-orders` | `POST /spot/trade/batch-orders` | `orders` | Non-empty array of spot order objects |
-| `bydoxe spot trade batch-cancel-replace-order` | `POST /spot/trade/batch-cancel-replace-order` | `orders` | Non-empty array of cancel-replace objects |
-| `bydoxe spot trade batch-cancel-orders` | `POST /spot/trade/batch-cancel-orders` | `orderIds` or `clientOids` | Non-empty identifier array |
-| `bydoxe future order batch-place` | `POST /future/order/batch-place-order` | `orders` | Non-empty array of futures order objects |
-| `bydoxe future order batch-cancel` | `POST /future/order/batch-cancel-orders` | `orderIds` or `clientOids` | Non-empty identifier array |
+| `bydoxe spot trade batch-orders` | `POST /spot/trade/batch-orders` | `orderList` | Non-empty array of spot order objects |
+| `bydoxe spot trade batch-cancel-replace-order` | `POST /spot/trade/batch-cancel-replace-order` | `orderList` | Non-empty array of cancel-replace objects |
+| `bydoxe spot trade batch-cancel-orders` | `POST /spot/trade/batch-cancel-orders` | `orderList` | Non-empty array of spot cancel objects |
+| `bydoxe future order batch-place` | `POST /future/order/batch-place-order` | `orderList` | Non-empty array of futures order objects |
+| `bydoxe future order batch-cancel` | `POST /future/order/batch-cancel-orders` | `orderIdList` | Non-empty array of futures cancel identifiers |
+| `bydoxe future trigger cancel` | `POST /future/order/cancel-plan-order` | `orderIdList` | Non-empty array of trigger cancel identifiers |
+| `bydoxe future tpsl cancel` | `POST /future/order/cancel-tpsl-order` | `orderIdList` | Non-empty array of TP/SL cancel identifiers |
 
 Secondary targets after the batch layer:
 
@@ -61,35 +63,35 @@ Implemented mapping:
 
 Spot batch place:
 
-- `orders` must be a non-empty array.
-- Each item should include `symbol`, `orderType`, `tradeType`, and `amount`.
-- Each item should validate positive `amount` and optional positive `price`.
-- Each item should validate spot order enums.
+- `orderList` must be a non-empty array.
+- Each item should include `side`, `orderType`, and `size`.
+- Each item should validate positive `size` and optional positive `price`.
+- Each item should validate spot batch order enums.
 
 Spot batch cancel and replace:
 
-- `orders` must be a non-empty array.
-- Each item should include `symbol`.
-- Each item should include one of `orderId` or `clientOid`.
-- Each item should validate optional positive `amount` and `price`.
-- Each item should validate spot order enums when present.
+- `orderList` must be a non-empty array.
+- Each item should include `symbol`, `price`, `size`, and `orderId`.
+- Each item should validate positive `price` and `size`.
 
 Spot batch cancel:
 
-- Require one of non-empty `orderIds` or non-empty `clientOids`.
-- If `symbol` is present, keep it as a top-level field.
+- `orderList` must be a non-empty array.
+- Each item should include `orderId`.
+- If `symbol` or `batchMode` is present, keep it as a top-level field.
 
 Futures batch place:
 
-- `orders` must be a non-empty array.
-- Each item should include `symbol`, `side`, `orderType`, and `size`.
+- `orderList` must be a non-empty array.
+- Top-level `symbol` and `marginMode` are required.
+- Each item should include `side`, `tradeSide`, `orderType`, and `size`.
 - Each item should validate positive `size` and optional positive `price`.
 - Each item should validate futures order enums.
 
 Futures batch cancel:
 
-- Require one of non-empty `orderIds` or non-empty `clientOids`.
-- If `symbol` is present, keep it as a top-level field.
+- `orderIdList` must be a non-empty array.
+- Each item should include one of `orderId` or `clientOid`.
 
 ## Error Message Shape
 
@@ -98,10 +100,9 @@ Nested errors should point to the exact path that failed.
 Examples:
 
 ```text
-orders[0].amount must be a positive number
-orders[1].orderType must be one of MARKET, LIMIT
-one of orders[2].orderId, orders[2].clientOid is required
-one of orderIds, clientOids must be a non-empty array
+orderList[0].size must be a positive number
+orderList[1].orderType must be one of MARKET, LIMIT
+one of orderIdList[2].orderId, orderIdList[2].clientOid is required
 ```
 
 The CLI should continue to aggregate validation failures into one `CliError` message before request construction.
@@ -113,9 +114,9 @@ The command catalog exposes nested validation rules. The human-readable command 
 Suggested generated summary examples:
 
 ```text
-orders[] required; each item requires symbol, orderType, tradeType, amount
-one of orderIds[], clientOids[] required
-orders[] positive: amount, price; enum: orderType, tradeType
+orderList[] required; each item requires side, orderType, size
+orderIdList[] required; each item requires one of orderId, clientOid
+orderList[] positive: size, price; enum: side, orderType
 ```
 
 ## Safety Policy

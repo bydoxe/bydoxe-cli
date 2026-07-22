@@ -9,7 +9,7 @@ The current public release of the BYDOXE CLI must use the same version as the co
 Current patch release target:
 
 ```text
-0.1.2
+0.1.3
 ```
 
 After each release, the maintainer may choose future versions based on implementation scope, safety changes, compatibility changes, and documentation updates.

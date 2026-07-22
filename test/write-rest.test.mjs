@@ -47,13 +47,14 @@ test('write command builds body from JSON body flag', () => {
     'trade',
     'place-order',
     '--body',
-    '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}',
+    '{"base":"BTC","quote":"USDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}',
   ]);
   const match = findWriteRestCommand(parsed);
 
   assert.ok(match);
   assert.deepEqual(match.body, {
-    symbol: 'BTCUSDT',
+    base: 'BTC',
+    quote: 'USDT',
     orderType: 'MARKET',
     tradeType: 'BUY',
     amount: '0.001',
@@ -74,7 +75,7 @@ test('write command builds body from JSON body flag', () => {
   assert.equal(request.requestPath, '/spot/trade/place-order');
   assert.equal(
     request.body,
-    '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}',
+    '{"base":"BTC","quote":"USDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}',
   );
   assert.ok(request.headers['ACCESS-SIGN']);
 });
@@ -85,7 +86,7 @@ test('write command rejects missing required body parameters', () => {
     'trade',
     'place-order',
     '--body',
-    '{"symbol":"BTCUSDT","amount":"0.001"}',
+    '{"base":"BTC","quote":"USDT","amount":"0.001"}',
     '--dry-run',
   ]);
 
@@ -101,7 +102,7 @@ test('write command rejects invalid numeric and enum body parameters', () => {
     'trade',
     'place-order',
     '--body',
-    '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"HOLD","amount":"0"}',
+    '{"base":"BTC","quote":"USDT","orderType":"MARKET","tradeType":"HOLD","amount":"0"}',
     '--dry-run',
   ]);
 
@@ -117,7 +118,7 @@ test('write command accepts lowercase enum body parameters', () => {
     'order',
     'place',
     '--body',
-    '{"symbol":"BTCUSDT","side":"buy","orderType":"limit","size":"0.01","holdSide":"long"}',
+    '{"symbol":"BTCUSDT","marginMode":"CROSS","side":"long","tradeSide":"open","orderType":"limit","size":"0.01"}',
     '--dry-run',
   ]);
   const match = findWriteRestCommand(parsed);
@@ -126,10 +127,11 @@ test('write command accepts lowercase enum body parameters', () => {
   assert.equal(match.definition.path, '/future/order/place-order');
   assert.deepEqual(match.body, {
     symbol: 'BTCUSDT',
-    side: 'buy',
+    marginMode: 'CROSS',
+    side: 'long',
+    tradeSide: 'open',
     orderType: 'limit',
     size: '0.01',
-    holdSide: 'long',
   });
 });
 
@@ -143,7 +145,7 @@ test('write cancel and modify commands require an order identifier when supporte
       'BTCUSDT',
       '--dry-run',
     ])),
-    /Invalid parameter for bydoxe spot trade cancel-order: one of orderId, clientOid is required/,
+    /Missing required parameter for bydoxe spot trade cancel-order: orderId/,
   );
 
   assert.throws(
@@ -165,13 +167,13 @@ test('spot batch order command validates nested order items', () => {
     'trade',
     'batch-orders',
     '--body',
-    '{"orders":[{"symbol":"BTCUSDT","orderType":"TRAILING","amount":"0"},{"orderType":"LIMIT","tradeType":"BUY","amount":"0.01"}]}',
+    '{"orderList":[{"side":"BUY","orderType":"TRAILING","size":"0"},{"orderType":"LIMIT","size":"0.01"}]}',
     '--dry-run',
   ]);
 
   assert.throws(
     () => findWriteRestCommand(parsed),
-    /orders\[0\]\.amount must be a positive number; orders\[0\]\.orderType must be one of MARKET, LIMIT; orders\[1\]\.symbol is required/,
+    /orderList\[0\]\.size must be a positive number; orderList\[0\]\.orderType must be one of MARKET, LIMIT; orderList\[1\]\.side is required/,
   );
 });
 
@@ -181,13 +183,13 @@ test('spot batch cancel replace command requires nested identifiers', () => {
     'trade',
     'batch-cancel-replace-order',
     '--body',
-    '{"orders":[{"symbol":"BTCUSDT","orderType":"LIMIT","tradeType":"BUY","amount":"0.01"}]}',
+    '{"orderList":[{"symbol":"BTCUSDT","price":"60000","size":"0.01"}]}',
     '--dry-run',
   ]);
 
   assert.throws(
     () => findWriteRestCommand(parsed),
-    /one of orders\[0\]\.orderId, orders\[0\]\.clientOid is required/,
+    /orderList\[0\]\.orderId is required/,
   );
 });
 
@@ -197,7 +199,7 @@ test('future batch place command accepts valid nested order items', () => {
     'order',
     'batch-place',
     '--body',
-    '{"orders":[{"symbol":"BTCUSDT","side":"BUY","orderType":"LIMIT","size":"0.01","price":"60000","holdSide":"LONG"}]}',
+    '{"symbol":"BTCUSDT","marginMode":"CROSS","orderList":[{"side":"LONG","tradeSide":"OPEN","orderType":"LIMIT","size":"0.01","price":"60000"}]}',
     '--dry-run',
   ]);
   const match = findWriteRestCommand(parsed);
@@ -205,14 +207,15 @@ test('future batch place command accepts valid nested order items', () => {
   assert.ok(match);
   assert.equal(match.definition.path, '/future/order/batch-place-order');
   assert.deepEqual(match.body, {
-    orders: [
+    symbol: 'BTCUSDT',
+    marginMode: 'CROSS',
+    orderList: [
       {
-        symbol: 'BTCUSDT',
-        side: 'BUY',
+        side: 'LONG',
+        tradeSide: 'OPEN',
         orderType: 'LIMIT',
         size: '0.01',
         price: '60000',
-        holdSide: 'LONG',
       },
     ],
   });
@@ -225,10 +228,10 @@ test('batch cancel commands require a non-empty identifier array', () => {
       'order',
       'batch-cancel',
       '--body',
-      '{"symbol":"BTCUSDT","orderIds":[]}',
+      '{"orderIdList":[{}]}',
       '--dry-run',
     ])),
-    /one of orderIds\[\], clientOids\[\] must be a non-empty array/,
+    /one of orderIdList\[0\]\.orderId, orderIdList\[0\]\.clientOid is required/,
   );
 
   assert.throws(
@@ -237,10 +240,10 @@ test('batch cancel commands require a non-empty identifier array', () => {
       'trade',
       'batch-cancel-orders',
       '--body',
-      '{"symbol":"BTCUSDT","orderIds":[""]}',
+      '{"symbol":"BTCUSDT","orderList":[{"orderId":""}]}',
       '--dry-run',
     ])),
-    /one of orderIds\[\], clientOids\[\] must be a non-empty array; orderIds\[\] must contain only usable string or number values/,
+    /orderList\[0\]\.orderId is required/,
   );
 
   const match = findWriteRestCommand(parseArgs([
@@ -248,7 +251,7 @@ test('batch cancel commands require a non-empty identifier array', () => {
     'order',
     'batch-cancel',
     '--body',
-    '{"symbol":"BTCUSDT","clientOids":["client-1"]}',
+    '{"orderIdList":[{"clientOid":"client-1"}]}',
     '--dry-run',
   ]));
 
@@ -263,10 +266,10 @@ test('write command rejects invalid non-empty string parameters', () => {
       'follower',
       'cancel-follow',
       '--body',
-      '{"traderId":123}',
+      '{"productType":"USDT-FUTURES","traderUid":123}',
       '--dry-run',
     ])),
-    /traderId must be a non-empty string/,
+    /traderUid must be a non-empty string/,
   );
 
   assert.throws(
@@ -275,7 +278,7 @@ test('write command rejects invalid non-empty string parameters', () => {
       'trader',
       'close-positions',
       '--body',
-      '{"symbol":"BTCUSDT","trackingNo":99}',
+      '{"symbol":"BTCUSDT","productType":"USDT-FUTURES","trackingNo":99}',
       '--dry-run',
     ])),
     /trackingNo must be a non-empty string/,
@@ -292,7 +295,7 @@ test('cancel withdraw command accepts supported withdrawal identifiers', () => {
       '{}',
       '--dry-run',
     ])),
-    /one of withdrawId, orderId, clientOid is required/,
+    /Missing required parameter for bydoxe spot account cancel-withdraw: orderId/,
   );
 
   const match = findWriteRestCommand(parseArgs([
@@ -300,14 +303,14 @@ test('cancel withdraw command accepts supported withdrawal identifiers', () => {
     'account',
     'cancel-withdraw',
     '--body',
-    '{"withdrawId":"withdrawal-id"}',
+    '{"orderId":"withdrawal-id"}',
     '--dry-run',
   ]));
 
   assert.ok(match);
   assert.equal(match.definition.path, '/spot/account/cancel-withdraw');
   assert.deepEqual(match.body, {
-    withdrawId: 'withdrawal-id',
+    orderId: 'withdrawal-id',
   });
 });
 
@@ -317,7 +320,7 @@ test('futures tpsl command validates plan type and trigger price', () => {
     'tpsl',
     'place',
     '--body',
-    '{"symbol":"BTCUSDT","planType":"TRAILING","triggerPrice":"-1"}',
+    '{"symbol":"BTCUSDT","planType":"TRAILING","holdSide":"LONG","orderType":"MARKET","triggerPrice":"-1","triggerPriceType":"LAST","size":"0.01"}',
     '--dry-run',
   ]);
 
@@ -325,6 +328,36 @@ test('futures tpsl command validates plan type and trigger price', () => {
     () => findWriteRestCommand(parsed),
     /Invalid parameters for bydoxe future tpsl place: triggerPrice must be a positive number; planType must be one of TAKE_PROFIT, STOP_LOSS/,
   );
+});
+
+test('futures tpsl cancel command validates nested order identifiers', () => {
+  assert.throws(
+    () => findWriteRestCommand(parseArgs([
+      'future',
+      'tpsl',
+      'cancel',
+      '--body',
+      '{"symbol":"BTCUSDT","orderIdList":[{}]}',
+      '--dry-run',
+    ])),
+    /one of orderIdList\[0\]\.orderId, orderIdList\[0\]\.clientOid is required/,
+  );
+
+  const match = findWriteRestCommand(parseArgs([
+    'future',
+    'tpsl',
+    'cancel',
+    '--body',
+    '{"symbol":"BTCUSDT","orderIdList":[{"orderId":"tpsl-1"}]}',
+    '--dry-run',
+  ]));
+
+  assert.ok(match);
+  assert.equal(match.definition.path, '/future/order/cancel-tpsl-order');
+  assert.deepEqual(match.body, {
+    symbol: 'BTCUSDT',
+    orderIdList: [{ orderId: 'tpsl-1' }],
+  });
 });
 
 test('write command execution requires exact confirmation token', () => {
@@ -345,6 +378,8 @@ test('copy trading trader close positions command builds body from flags', () =>
     'BTCUSDT',
     '--trackingNo',
     'track-1',
+    '--productType',
+    'USDT-FUTURES',
     '--dry-run',
   ]);
   const match = findWriteRestCommand(parsed);
@@ -354,6 +389,7 @@ test('copy trading trader close positions command builds body from flags', () =>
   assert.deepEqual(match.body, {
     symbol: 'BTCUSDT',
     trackingNo: 'track-1',
+    productType: 'USDT-FUTURES',
   });
   assert.match(match.definition.risk, /Closes copy trading trader positions/);
 });
@@ -363,7 +399,9 @@ test('copy trading follower cancel follow command maps to cancel endpoint', () =
     'copytrading',
     'follower',
     'cancel-follow',
-    '--traderId',
+    '--productType',
+    'USDT-FUTURES',
+    '--traderUid',
     'trader-1',
   ]);
   const match = findWriteRestCommand(parsed);
@@ -371,6 +409,7 @@ test('copy trading follower cancel follow command maps to cancel endpoint', () =
   assert.ok(match);
   assert.equal(match.definition.path, '/copy/mix-follower/cancel-follow');
   assert.deepEqual(match.body, {
-    traderId: 'trader-1',
+    productType: 'USDT-FUTURES',
+    traderUid: 'trader-1',
   });
 });

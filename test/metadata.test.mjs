@@ -70,7 +70,7 @@ test('private read commands expose parameter hints for common lookups', () => {
   assert.ok(singlePosition);
   assert.deepEqual(singlePosition.requiredParams, ['symbol']);
   assert.ok(followerSettings);
-  assert.deepEqual(followerSettings.requiredParams, ['traderId']);
+  assert.deepEqual(followerSettings.requiredParams, ['productType']);
   assert.ok(spotOrderInfo);
   assert.equal(spotOrderInfo.parameterMode, 'body');
   assert.deepEqual(spotOrderInfo.requiredParams, ['orderId']);
@@ -88,10 +88,14 @@ test('write commands expose body parameter hints for risky actions', () => {
   const cancelFollow = WRITE_REST_COMMANDS.find(
     (command) => command.command.join(' ') === 'copytrading follower cancel-follow',
   );
+  const tpslCancel = WRITE_REST_COMMANDS.find(
+    (command) => command.command.join(' ') === 'future tpsl cancel',
+  );
 
   assert.ok(spotPlaceOrder);
   assert.deepEqual(spotPlaceOrder.requiredParams, [
-    'symbol',
+    'base',
+    'quote',
     'orderType',
     'tradeType',
     'amount',
@@ -99,5 +103,7 @@ test('write commands expose body parameter hints for risky actions', () => {
   assert.ok(futuresSetLeverage);
   assert.deepEqual(futuresSetLeverage.requiredParams, ['symbol']);
   assert.ok(cancelFollow);
-  assert.deepEqual(cancelFollow.requiredParams, ['traderId']);
+  assert.deepEqual(cancelFollow.requiredParams, ['productType', 'traderUid']);
+  assert.ok(tpslCancel);
+  assert.deepEqual(tpslCancel.requiredParams, ['orderIdList']);
 });

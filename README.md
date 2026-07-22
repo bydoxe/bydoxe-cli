@@ -23,7 +23,7 @@ The CLI is built around a preview-first workflow:
 
 ## Quick Start
 
-Install from npm after the `0.1.2` patch package is published:
+Install from npm after the `0.1.3` patch package is published:
 
 ```text
 npm install -g @bydoxe/bydoxe-cli
@@ -91,15 +91,15 @@ bydoxe websocket public subscribe --instType SPOT --channel ticker --instId BTCU
 Write actions should also start as dry-runs:
 
 ```sh
-bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --dry-run --format json
+bydoxe spot trade place-order --body '{"base":"BTC","quote":"USDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --dry-run --format json
 bydoxe future account set-leverage --symbol BTCUSDT --longLeverage 5 --shortLeverage 5 --dry-run --format json
-bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry-run --format json
+bydoxe copytrading follower cancel-follow --body '{"productType":"USDT-FUTURES","traderUid":"trader-1"}' --dry-run --format json
 ```
 
 Only execute a write command after reviewing the dry-run output and adding the exact confirmation token:
 
 ```text
-bydoxe spot trade place-order --body '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --confirm CONFIRM --format json
+bydoxe spot trade place-order --body '{"base":"BTC","quote":"USDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}' --confirm CONFIRM --format json
 ```
 
 ## Safety Model
@@ -155,7 +155,7 @@ Private WebSocket spot trade payloads remain preview-only.
 
 ## Distribution
 
-The current BYDOXE CLI patch release target is version `0.1.2`, matching the companion BYDOXE Agent Skills release target. The CLI is distributed as the npm package `@bydoxe/bydoxe-cli`.
+The current BYDOXE CLI patch release target is version `0.1.3`, matching the companion BYDOXE Agent Skills release target. The CLI is distributed as the npm package `@bydoxe/bydoxe-cli`.
 
 Use [docs/distribution.md](docs/distribution.md) for versioning, npm distribution, and installer-owned credential configuration policy.
 
@@ -319,6 +319,7 @@ Write commands require local credentials and exact `--confirm CONFIRM` for live 
 | `bydoxe future trigger cancel` | `POST /future/order/cancel-plan-order` |
 | `bydoxe future tpsl place` | `POST /future/order/place-tpsl-order` |
 | `bydoxe future tpsl modify` | `POST /future/order/modify-tpsl-order` |
+| `bydoxe future tpsl cancel` | `POST /future/order/cancel-tpsl-order` |
 | `bydoxe copytrading trader modify-tpsl` | `POST /copy/mix-trader/order-modify-tpsl` |
 | `bydoxe copytrading trader close-positions` | `POST /copy/mix-trader/order-close-positions` |
 | `bydoxe copytrading trader config` | `POST /copy/mix-trader/config-trader-setting` |
@@ -333,8 +334,9 @@ Write request bodies can be built from flags or passed as JSON:
 ```sh
 bydoxe future account set-leverage --symbol BTCUSDT --longLeverage 5 --shortLeverage 5 --dry-run --format json
 bydoxe future account set-leverage --body '{"symbol":"BTCUSDT","longLeverage":5,"shortLeverage":5}' --dry-run --format json
-bydoxe copytrading trader config --body '{"symbol":"BTCUSDT","copyTradeMode":"fixed"}' --dry-run --format json
-bydoxe copytrading follower cancel-follow --body '{"traderId":"trader-1"}' --dry-run --format json
+bydoxe future tpsl cancel --body '{"symbol":"BTCUSDT","orderIdList":[{"orderId":"tpsl-1"}]}' --dry-run --format json
+bydoxe copytrading trader config --body '{"traderMode":true,"copyPairList":["BTCUSDT"],"profitShareRatio":10}' --dry-run --format json
+bydoxe copytrading follower cancel-follow --body '{"productType":"USDT-FUTURES","traderUid":"trader-1"}' --dry-run --format json
 ```
 
 ## WebSocket Commands

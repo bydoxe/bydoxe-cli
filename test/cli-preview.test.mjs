@@ -33,7 +33,7 @@ test('write dry-run output includes high-risk metadata', () => {
     'trade',
     'place-order',
     '--body',
-    '{"symbol":"BTCUSDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}',
+    '{"base":"BTC","quote":"USDT","orderType":"MARKET","tradeType":"BUY","amount":"0.001"}',
     '--dry-run',
     '--format',
     'json',
@@ -44,8 +44,8 @@ test('write dry-run output includes high-risk metadata', () => {
   assert.deepEqual(preview.metadata, {
     auth: 'private',
     riskLevel: 'high',
-    requiredParams: ['symbol', 'orderType', 'tradeType', 'amount'],
-    optionalParams: ['price', 'clientOid'],
+    requiredParams: ['base', 'quote', 'orderType', 'tradeType', 'amount'],
+    optionalParams: ['price', 'stopPrice', 'clientOid'],
     parameterMode: 'body',
   });
 });
@@ -87,7 +87,7 @@ test('help output includes parameter metadata hints', () => {
   );
   assert.match(
     output,
-    /spot trade place-order\s+Requires CONFIRM: place a spot order \(required: symbol, orderType, tradeType, amount; optional: price, clientOid\)/,
+    /spot trade place-order\s+Requires CONFIRM: place a spot order \(required: base, quote, orderType, tradeType, amount; optional: price, stopPrice, clientOid\)/,
   );
 });
 
